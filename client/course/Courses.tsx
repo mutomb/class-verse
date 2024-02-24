@@ -72,6 +72,6 @@ export default function Courses(props){
     )
 }
 
-Courses.propTypes = {
+/*Courses.propTypes = {
   courses: PropTypes.array.isRequired
-}
+}*/

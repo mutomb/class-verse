@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import auth from './../auth/auth-helper'
-import {listByInstructor} from './api-course.js'
+import {listByInstructor} from './api-course'
 import {Redirect, Link} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({

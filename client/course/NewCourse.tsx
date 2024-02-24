@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import Icon from '@material-ui/core/Icon'
 import { makeStyles } from '@material-ui/core/styles'
-import {create} from './api-course.js'
+import {create} from './api-course'
 import {Link, Redirect} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({

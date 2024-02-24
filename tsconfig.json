@@ -1,0 +1,21 @@
+//This configuration sets the target ECMAScript version to ES6
+//enables strict mode 
+//ensures ES module interoperability.
+//Enable React Runtime 
+//sourceMape generates Map files alongside your compiled JavaScript files, aiding in debugging sourceMap 
+//ES6+ module parsing, root directory, DOM and ES6+ libraries, node-style module resolution strategy
+//noEmitOnError: ensures that the compiler won't produce output files when errors are detected in the TypeScript code
+{  
+  "compilerOptions": {
+    "target": "ES6",
+    "strict": true,
+    "esModuleInterop": true,
+    "jsx": "react",  
+    "sourceMap": true,
+    "module": "esnext",
+    "rootDir":"./", 
+    "lib": ["dom", "esnext"],
+    "moduleResolution": "node",
+    "noEmitOnError": true
+  }
+}

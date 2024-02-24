@@ -15,14 +15,26 @@ const config = {
         filename: 'bundle.js',
         publicPath: '/dist/'
     },
+    devServer: { 
+        inline: false, contentBase: "./dist" 
+    },
     module: {
         rules: [
+            // `js` and `jsx` files are parsed using `babel`
             {
-                test: /\.jsx?$/,
+                test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
                 use: [
                     'babel-loader'
                 ]
+            },
+            // `.ts` or `.tsx` files are parsed using `ts-loader`
+            {
+                test: /\.(ts|tsx)$/,
+                loader: "ts-loader",
+                options: {
+                     transpileOnly: true
+                }
             },
             {
                 test: /\.(ttf|eot|svg|gif|jpg|png)(\?[\s\S]+)?$/,
@@ -37,7 +49,9 @@ const config = {
     resolve: {
         alias: {
           'react-dom': '@hot-loader/react-dom'
-        }
+        },
+        // Add `.ts` and `.tsx` as a resolvable extension
+        extensions: [".ts", ".tsx", ".js"],       
     }
 }
 

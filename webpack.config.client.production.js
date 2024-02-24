@@ -13,18 +13,30 @@ const config = {
     },
     module: {
         rules: [
+            // `js` and `jsx` files are parsed using `babel`
             {
-                test: /\.jsx?$/,
+                test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
                 use: [
                     'babel-loader'
                 ]
+            },
+            // `.ts` or `.tsx` files are parsed using `ts-loader`
+            {
+                test: /\.(ts|tsx)$/,
+                loader: "ts-loader",
+                options: {
+                     transpileOnly: true
+                }
             },
             {
                 test: /\.(ttf|eot|svg|gif|jpg|png)(\?[\s\S]+)?$/,
                 use: 'file-loader'
             }
         ]
+    },
+    resolve: {
+        extensions: ["*", ".js", ".jsx", ".ts", ".tsx"],
     }
 }
 

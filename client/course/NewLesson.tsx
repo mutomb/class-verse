@@ -109,7 +109,7 @@ export default function NewLesson(props) {
     </div>
   )
 }
-NewLesson.propTypes = {
+/*NewLesson.propTypes = {
     courseId: PropTypes.string.isRequired,
     addLesson: PropTypes.func.isRequired
-  }
+  }*/

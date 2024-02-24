@@ -14,7 +14,6 @@ import Course from './course/Course'
 import EditCourse from './course/EditCourse'
 import MyCourses from './course/MyCourses'
 import Enrollment from './enrollment/Enrollment'
-
 const MainRouter = () => {
     return (<div>
       <Menu/>

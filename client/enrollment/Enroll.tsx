@@ -43,6 +43,6 @@ export default function Enroll(props) {
   )
 }
 
-Enroll.propTypes = {
+/*Enroll.propTypes = {
   courseId: PropTypes.string.isRequired
-}
+}*/
