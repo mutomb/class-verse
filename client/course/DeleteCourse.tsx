@@ -11,8 +11,13 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import auth from './../auth/auth-helper'
 import {remove} from './api-course'
 
-export default function DeleteCourse(props) {
-  const [open, setOpen] = useState(false)
+interface DeleteCourseProps{
+  course:any,
+  onRemove:Function
+}
+
+const DeleteCourse:React.FC<DeleteCourseProps> = ({course, onRemove}) => {
+  const [open, setOpen] = useState<Boolean>(false)
   
   const jwt = auth.isAuthenticated()
   const clickButton = () => {
@@ -20,13 +25,13 @@ export default function DeleteCourse(props) {
   }
   const deleteCourse = () => {
     remove({
-      courseId: props.course._id
+      courseId: course._id
     }, {t: jwt.token}).then((data) => {
       if (data.error) {
         console.log(data.error)
       } else {
         setOpen(false)
-        props.onRemove(props.course)
+        onRemove(course)
       }
     })
   }
@@ -39,10 +44,10 @@ export default function DeleteCourse(props) {
       </IconButton>
 
       <Dialog open={open} onClose={handleRequestClose}>
-        <DialogTitle>{"Delete "+props.course.name}</DialogTitle>
+        <DialogTitle>{"Delete "+course.name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Confirm to delete your course {props.course.name}.
+            Confirm to delete your course {course.name}.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -56,6 +61,7 @@ export default function DeleteCourse(props) {
       </Dialog>
     </span>)
 }
+export default DeleteCourse;
 /*DeleteCourse.propTypes = {
   course: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired

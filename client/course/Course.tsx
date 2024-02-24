@@ -90,15 +90,19 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function Course ({match}) {
+interface ValuesState{
+  redirect:Boolean,
+  error:String
+}
+export default function Course({match}){
   const classes = useStyles()
   const [stats, setStats] = useState({})
   const [course, setCourse] = useState({instructor:{}})
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<ValuesState>({
       redirect: false,
       error: ''
     })
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState<Boolean>(false)
   const jwt = auth.isAuthenticated()
     useEffect(() => {
       const abortController = new AbortController()

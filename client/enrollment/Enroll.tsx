@@ -12,9 +12,17 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function Enroll(props) {
+interface EnrollProps{
+  courseId:String
+}
+interface ValuesState{
+  redirect:Boolean,
+  error:String,
+  enrollmentId:String
+}
+const Enroll:React.FC<EnrollProps> = ({courseId}) =>{
   const classes = useStyles()
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<ValuesState>({
     enrollmentId: '',
     error: '',
     redirect: false
@@ -22,7 +30,7 @@ export default function Enroll(props) {
   const jwt = auth.isAuthenticated()
   const clickEnroll = () => {
     create({
-      courseId: props.courseId
+      courseId: courseId
     }, {
       t: jwt.token
     }).then((data) => {
@@ -42,7 +50,7 @@ export default function Enroll(props) {
       <Button variant="contained" color="secondary" onClick={clickEnroll}> Enroll </Button>
   )
 }
-
+export default Enroll;
 /*Enroll.propTypes = {
   courseId: PropTypes.string.isRequired
 }*/

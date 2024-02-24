@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 export default function MyCourses(){
   const classes = useStyles()
   const [courses, setCourses] = useState([])
-  const [redirectToSignin, setRedirectToSignin] = useState(false)
+  const [redirectToSignin, setRedirectToSignin] = useState<Boolean>(false)
   const jwt = auth.isAuthenticated()
 
   useEffect(() => {

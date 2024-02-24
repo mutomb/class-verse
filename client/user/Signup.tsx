@@ -41,9 +41,17 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+interface ValuesState{
+  name:String,
+  password:String,
+  email:String,
+  open:Boolean,
+  error:String
+}
+
 export default function Signup() {
   const classes = useStyles()
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<ValuesState>({
     name: '',
     password: '',
     email: '',

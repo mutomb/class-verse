@@ -47,13 +47,15 @@ const useStyles = makeStyles(theme => ({
     color: '#b4f8b4'
   }
 }))
-
-export default function Enrollments(props){
+interface EnrollmentsProps{
+  enrollments:Array<any>
+}
+const Enrollments:React.FC<EnrollmentsProps> = ({enrollments:enrollments}) =>{
   const classes = useStyles()
     return (
       <div>
         <GridList cellHeight={120} className={classes.gridList} cols={4}>
-          {props.enrollments.map((course, i) => (
+          {enrollments.map((course, i) => (
             <GridListTile key={i} className={classes.tile}>
               <Link to={"/learn/"+course._id}><img className={classes.image} src={'/api/courses/photo/'+course.course._id} alt={course.course.name} /></Link>
               <GridListTileBar className={classes.tileBar}
@@ -69,4 +71,4 @@ export default function Enrollments(props){
     </div>
     )
 }
-
+export default Enrollments;

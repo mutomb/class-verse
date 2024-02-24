@@ -30,10 +30,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function Profile({ match }) {
+export default function Profile({match}){
   const classes = useStyles()
   const [user, setUser] = useState({})
-  const [redirectToSignin, setRedirectToSignin] = useState(false)
+  const [redirectToSignin, setRedirectToSignin] = useState<Boolean>(false)
   const jwt = auth.isAuthenticated()
 
   useEffect(() => {

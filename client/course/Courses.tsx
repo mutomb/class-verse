@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import GridList from '@material-ui/core/GridList'
@@ -44,14 +44,19 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function Courses(props){
+interface CoursesProps{
+  courses:array<any>,
+  common:array<any>
+}
+
+const Courses:React.FC<CourseProps> = ({courses, common}) =>{
   const classes = useStyles()
   const findCommon = (course) => {
-    return !props.common.find((enrolled)=>{return enrolled.course._id == course._id})
+    return !common.find((enrolled)=>{return enrolled.course._id == course._id})
   }
     return (
         <GridList cellHeight={220} className={classes.gridList} cols={2}>
-          {props.courses.map((course, i) => {
+          {courses.map((course, i) => {
             return (
             findCommon(course) &&
               <GridListTile className={classes.tile} key={i} style={{padding:0}}>
@@ -71,7 +76,7 @@ export default function Courses(props){
         </GridList>
     )
 }
-
+export default Courses;
 /*Courses.propTypes = {
   courses: PropTypes.array.isRequired
 }*/

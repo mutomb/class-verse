@@ -119,14 +119,19 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function Enrollment ({match}) {
+interface ValuesState{
+  drawer:number,
+  error:String
+}
+
+export default function Enrollment({match}){
   const classes = useStyles()
   const [enrollment, setEnrollment] = useState({course:{instructor:[]}, lessonStatus: []})
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<ValuesState>({
       error: '',
       drawer: -1
     })
-  const [totalComplete, setTotalComplete] = useState(0)
+  const [totalComplete, setTotalComplete] = useState<number>(0)
     const jwt = auth.isAuthenticated()
     useEffect(() => {
       const abortController = new AbortController()

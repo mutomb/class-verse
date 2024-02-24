@@ -38,10 +38,19 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(2)
   }
 }))
+interface ValuesState{
+  name:String,
+  password:String,
+  email:String,
+  open:Boolean,
+  error:String,
+  redirectToProfile:Boolean,
+  educator:Boolean
+}
 
-export default function EditProfile({ match }) {
+export default function EditProfile({match}){
   const classes = useStyles()
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<ValuesState>({
     name: '',
     password: '',
     email: '',
@@ -138,5 +147,4 @@ export default function EditProfile({ match }) {
         </CardActions>
       </Card>
     )
-}
-
+  }

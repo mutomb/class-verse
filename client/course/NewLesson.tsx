@@ -17,10 +17,20 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export default function NewLesson(props) {
+interface NewLessonProps{
+  courseId:String,
+  addLesson: Function
+}
+interface ValuesState{
+  title:String,
+  content:String,
+  resource_url:String
+}
+
+const NewLesson:React.FC<NewLessonProps>= ({courseId, addLesson}) => {
   const classes = useStyles()
-  const [open, setOpen] = useState(false)
-  const [values, setValues] = useState({
+  const [open, setOpen] = useState<Boolean>(false)
+  const [values, setValues] = useState<ValuesState>({
     title: '',
     content: '',
     resource_url: ''
@@ -37,14 +47,14 @@ export default function NewLesson(props) {
       resource_url: values.resource_url || undefined
     }
     newLesson({
-      courseId: props.courseId
+      courseId: courseId
     }, {
       t: jwt.token
     }, lesson).then((data) => {
       if (data && data.error) {
         setValues({...values, error: data.error})
       } else {
-          props.addLesson(data)
+          addLesson(data)
           setValues({...values, title: '',
           content: '',
           resource_url: ''})
@@ -109,6 +119,7 @@ export default function NewLesson(props) {
     </div>
   )
 }
+export default NewLesson;
 /*NewLesson.propTypes = {
     courseId: PropTypes.string.isRequired,
     addLesson: PropTypes.func.isRequired

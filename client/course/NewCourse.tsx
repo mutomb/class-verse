@@ -44,9 +44,18 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+interface ValuesState{
+  name:String,
+  description:String,
+  image:String,
+  category:String,
+  redirect:Boolean,
+  error:String
+}
+
 export default function NewCourse() {
   const classes = useStyles()
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<ValuesState>({
       name: '',
       description: '',
       image: '',

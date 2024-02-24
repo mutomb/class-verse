@@ -9,7 +9,8 @@
     "express",
     "mongodb",
     "node",
-    "mern"
+    "mern",
+    "class-verse"
   ],
   "repository": {
     "type": "git",

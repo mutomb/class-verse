@@ -12,9 +12,13 @@ import auth from './../auth/auth-helper'
 import {remove} from './api-user'
 import {Redirect} from 'react-router-dom'
 
-export default function DeleteUser(props) {
-  const [open, setOpen] = useState(false)
-  const [redirect, setRedirect] = useState(false)
+interface DeleteUserProps{
+  userId:String
+}
+
+const DeleteUser:React.FC<DeleteUserProps> = ({userId}) =>{
+  const [open, setOpen] = useState<Boolean>(false)
+  const [redirect, setRedirect] = useState<Boolean>(false)
 
   const jwt = auth.isAuthenticated()
   const clickButton = () => {
@@ -22,7 +26,7 @@ export default function DeleteUser(props) {
   }
   const deleteAccount = () => { 
     remove({
-      userId: props.userId
+      userId: userId
     }, {t: jwt.token}).then((data) => {
       if (data && data.error) {
         console.log(data.error)
@@ -63,6 +67,7 @@ export default function DeleteUser(props) {
     </span>)
 
 }
+export default DeleteUser;
 /*DeleteUser.propTypes = {
   userId: PropTypes.string.isRequired
 }*/

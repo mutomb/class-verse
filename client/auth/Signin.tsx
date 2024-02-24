@@ -36,10 +36,15 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(2)
   }
 }))
-
-export default function Signin(props) {
+interface ValuesState{
+  email:String,
+  password:String,
+  error:String,
+  return:Boolean
+}
+export default function Signin({location}){
   const classes = useStyles()
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<ValuesState>({
       email: '',
       password: '',
       error: '',
@@ -67,7 +72,7 @@ export default function Signin(props) {
     setValues({ ...values, [name]: event.target.value })
   }
 
-  const {from} = props.location.state || {
+  const {from} = location.state || {
       from: {
         pathname: '/'
       }

@@ -79,9 +79,22 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function EditCourse ({match}) {
+interface CourseState{
+  name:String,
+  description:String,
+  image:String,
+  category:String,
+  instructor:String,
+  lessons:Array<any>
+}
+interface ValuesState{
+  redirect:Boolean,
+  error:String
+}
+
+export default function EditCourse({match}){
   const classes = useStyles()
-  const [course, setCourse] = useState({
+  const [course, setCourse] = useState<CourseState>({
       name: '',
       description: '',
       image:'',
@@ -89,7 +102,7 @@ export default function EditCourse ({match}) {
       instructor:{},
       lessons: []
     })
-  const [values, setValues] = useState({
+  const [values, setValues] = useState<ValuesState>({
       redirect: false,
       error: ''
     })
