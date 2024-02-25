@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const CURRENT_WORKING_DIR = process.cwd()
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const config = {
     name: "browser",
@@ -16,7 +17,8 @@ const config = {
         publicPath: '/dist/'
     },
     devServer: { 
-        inline: false, contentBase: "./dist" 
+        inline: false, contentBase: "./dist",
+        hot: true,
     },
     module: {
         rules: [
@@ -25,7 +27,12 @@ const config = {
                 test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
                 use: [
-                    'babel-loader'
+                  {
+                    loader: require.resolve('babel-loader'),
+                    options: {
+                      plugins: [require.resolve('react-refresh/babel')],
+                    },
+                  },
                 ]
             },
             // `.ts` or `.tsx` files are parsed using `ts-loader`
@@ -44,12 +51,13 @@ const config = {
     },  
     plugins: [
           new webpack.HotModuleReplacementPlugin(),
-          new webpack.NoEmitOnErrorsPlugin()
+          new webpack.NoEmitOnErrorsPlugin(),
+          new ReactRefreshWebpackPlugin()
     ],
     resolve: {
-        alias: {
-          'react-dom': '@hot-loader/react-dom'
-        },
+//        alias: {
+  //        'react-dom': '@hot-loader/react-dom'
+    //    },
         // Add `.ts` and `.tsx` as a resolvable extension
         extensions: [".ts", ".tsx", ".js"],       
     }
