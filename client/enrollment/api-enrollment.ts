@@ -1,4 +1,4 @@
-const create = async (params, credentials) => {
+const create = async (params: { courseId: any }, credentials: { t: any }) => {
     try {
         let response = await fetch('/api/enrollment/new/'+params.courseId, {
           method: 'POST',
@@ -14,7 +14,7 @@ const create = async (params, credentials) => {
     }
   }
   
-  const listEnrolled = async (credentials, signal) => {
+  const listEnrolled = async (credentials: { t: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/enrollment/enrolled', {
         method: 'GET',
@@ -30,7 +30,7 @@ const create = async (params, credentials) => {
     }
   }
 
-  const enrollmentStats = async (params, credentials, signal) => {
+  const enrollmentStats = async (params: { courseId: any }, credentials: { t: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/enrollment/stats/'+params.courseId, {
         method: 'GET',
@@ -46,7 +46,7 @@ const create = async (params, credentials) => {
     }
   }
   
-  const read = async (params, credentials, signal) => {
+  const read = async (params: { enrollmentId: any }, credentials: { t: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/enrollment/' + params.enrollmentId, {
         method: 'GET',
@@ -63,7 +63,7 @@ const create = async (params, credentials) => {
     }
   }
   
-  const complete = async (params, credentials, enrollment) => {
+  const complete = async (params: { enrollmentId: any }, credentials: { t: any }, enrollment: {}) => {
     try {
       let response = await fetch('/api/enrollment/complete/' + params.enrollmentId, {
         method: 'PUT',
@@ -80,7 +80,7 @@ const create = async (params, credentials) => {
     }
   }
   
-  const remove = async (params, credentials) => {
+  const remove = async (params: { enrollmentId: string }, credentials: { t: string }) => {
     try {
       let response = await fetch('/api/enrollment/' + params.enrollmentId, {
         method: 'DELETE',

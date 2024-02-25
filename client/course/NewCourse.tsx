@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 interface ValuesState{
   name:String,
   description:String,
-  image:String,
+  image:any,
   category:String,
   redirect:Boolean,
   error:String
@@ -65,7 +65,7 @@ export default function NewCourse() {
   })
   const jwt = auth.isAuthenticated()
 
-  const handleChange = name => event => {
+  const handleChange = (name: string) => event => {
     const value = name === 'image'
       ? event.target.files[0]
       : event.target.value

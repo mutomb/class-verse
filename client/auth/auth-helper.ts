@@ -6,7 +6,7 @@ const auth = {
       return false
 
     if (sessionStorage.getItem('jwt'))
-      return JSON.parse(sessionStorage.getItem('jwt'))
+      return JSON.parse(sessionStorage.getItem('jwt')!) //non-null assertion
     else
       return false
   },
@@ -27,7 +27,7 @@ const auth = {
   updateUser(user, cb) {
     if(typeof window !== "undefined"){
       if(sessionStorage.getItem('jwt')){
-         let auth = JSON.parse(sessionStorage.getItem('jwt'))
+         let auth = JSON.parse(sessionStorage.getItem('jwt')!)
          auth.user = user
          sessionStorage.setItem('jwt', JSON.stringify(auth))
          cb()

@@ -1,4 +1,4 @@
-const create = async (user) => {
+const create = async (user: { name: String; email: String; password: String }) => {
   try {
       let response = await fetch('/api/users/', {
         method: 'POST',
@@ -14,7 +14,7 @@ const create = async (user) => {
   }
 }
 
-const list = async (signal) => {
+const list = async (signal: AbortSignal) => {
   try {
     let response = await fetch('/api/users/', {
       method: 'GET',
@@ -26,7 +26,7 @@ const list = async (signal) => {
   }
 }
 
-const read = async (params, credentials, signal) => {
+const read = async (params: { userId: any; }, credentials: { t: any; }, signal: AbortSignal) => {
   try {
     let response = await fetch('/api/users/' + params.userId, {
       method: 'GET',
@@ -43,7 +43,7 @@ const read = async (params, credentials, signal) => {
   }
 }
 
-const update = async (params, credentials, user) => {
+const update = async (params: { userId: any; }, credentials: { t: any; }, user: { name: String; email: String; password: String; educator: Boolean; }) => {
   try {
     let response = await fetch('/api/users/' + params.userId, {
       method: 'PUT',
@@ -60,7 +60,7 @@ const update = async (params, credentials, user) => {
   }
 }
 
-const remove = async (params, credentials) => {
+const remove = async (params: { userId: any; }, credentials: { t: any; }) => {
   try {
     let response = await fetch('/api/users/' + params.userId, {
       method: 'DELETE',

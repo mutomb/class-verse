@@ -55,10 +55,6 @@ const config = {
           new ReactRefreshWebpackPlugin()
     ],
     resolve: {
-//        alias: {
-  //        'react-dom': '@hot-loader/react-dom'
-    //    },
-        // Add `.ts` and `.tsx` as a resolvable extension
         extensions: [".ts", ".tsx", ".js"],       
     }
 }

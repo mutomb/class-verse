@@ -1,4 +1,4 @@
-const create = async (params, credentials, course) => {
+const create = async (params: { userId: any }, credentials: { t: any }, course: FormData) => {
     try {
         let response = await fetch('/api/courses/by/'+ params.userId, {
           method: 'POST',
@@ -14,7 +14,7 @@ const create = async (params, credentials, course) => {
         }
   }
   
-  const list = async (signal) => {
+  const list = async (signal:AbortSignal) => {
     try {
       let response = await fetch('/api/courses/', {
         method: 'GET',
@@ -26,7 +26,7 @@ const create = async (params, credentials, course) => {
     }
   }
   
-  const read = async (params, signal) => {
+  const read = async (params: { courseId: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/courses/' + params.courseId, {
         method: 'GET',
@@ -42,7 +42,7 @@ const create = async (params, credentials, course) => {
     }
   }
   
-  const update = async (params, credentials, course) => {
+  const update = async (params: { courseId: any }, credentials: { t: any }, course: FormData) => {
     try {
       let response = await fetch('/api/courses/' + params.courseId, {
         method: 'PUT',
@@ -58,7 +58,7 @@ const create = async (params, credentials, course) => {
     }
   }
   
-  const remove = async (params, credentials) => {
+  const remove = async (params: { courseId: any }, credentials: { t: any }) => {
     try {
       let response = await fetch('/api/courses/' + params.courseId, {
         method: 'DELETE',
@@ -74,7 +74,7 @@ const create = async (params, credentials, course) => {
     }
   }
 
-  const listByInstructor = async (params, credentials, signal) => {
+  const listByInstructor = async (params: { userId: any }, credentials: { t: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/courses/by/'+params.userId, {
         method: 'GET',
@@ -90,7 +90,7 @@ const create = async (params, credentials, course) => {
     }
   }
 
-  const newLesson = async (params, credentials, lesson) => {
+  const newLesson = async (params: { courseId: any }, credentials: { t: any }, lesson: { title: String; content: String; resource_url: String }) => {
     try {
       let response = await fetch('/api/courses/'+params.courseId+'/lesson/new', {
         method: 'PUT',
@@ -106,7 +106,7 @@ const create = async (params, credentials, course) => {
       console.log(err)
     }
   }
-  const listPublished = async (signal) => {
+  const listPublished = async (signal: AbortSignal) => {
     try {
       let response = await fetch('/api/courses/published', {
         method: 'GET',

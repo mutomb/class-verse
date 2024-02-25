@@ -154,7 +154,7 @@ export default function Enrollment({match}){
     setTotalComplete(count)
     return count
   }
-  const selectDrawer = (index) => event => {
+  const selectDrawer = (index: number) => event => {
       setValues({...values, drawer:index})
   }
   const markComplete = () => {

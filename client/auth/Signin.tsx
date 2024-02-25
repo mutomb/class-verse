@@ -40,7 +40,7 @@ interface ValuesState{
   email:String,
   password:String,
   error:String,
-  return:Boolean
+  redirectToReferrer:Boolean
 }
 export default function Signin({location}){
   const classes = useStyles()
@@ -68,7 +68,7 @@ export default function Signin({location}){
     })
   }
 
-  const handleChange = name => event => {
+  const handleChange = (name: string) => event => {
     setValues({ ...values, [name]: event.target.value })
   }
 

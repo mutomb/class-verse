@@ -102,7 +102,7 @@ export default function Course({match}){
       redirect: false,
       error: ''
     })
-  const [open, setOpen] = useState<Boolean>(false)
+  const [open, setOpen] = useState<boolean>(false)
   const jwt = auth.isAuthenticated()
     useEffect(() => {
       const abortController = new AbortController()

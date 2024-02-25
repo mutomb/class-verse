@@ -29,14 +29,14 @@ interface ValuesState{
 
 const NewLesson:React.FC<NewLessonProps>= ({courseId, addLesson}) => {
   const classes = useStyles()
-  const [open, setOpen] = useState<Boolean>(false)
+  const [open, setOpen] = useState<boolean>(false)
   const [values, setValues] = useState<ValuesState>({
     title: '',
     content: '',
     resource_url: ''
   })
   
-  const handleChange = name => event => {
+  const handleChange = (name: string) => event => {
     setValues({ ...values, [name]: event.target.value })
   }
   const clickSubmit = () => {

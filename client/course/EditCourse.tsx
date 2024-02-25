@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
 interface CourseState{
   name:String,
   description:String,
-  image:String,
+  image:any,
   category:String,
   instructor:String,
   lessons:Array<any>
@@ -123,13 +123,13 @@ export default function EditCourse({match}){
     }
   }, [match.params.courseId])
   const jwt = auth.isAuthenticated()
-  const handleChange = name => event => {
+  const handleChange = (name: string) => event => {
     const value = name === 'image'
     ? event.target.files[0]
     : event.target.value
     setCourse({ ...course, [name]: value })
   }
-  const handleLessonChange = (name, index) => event => {
+  const handleLessonChange = (name: string, index: number) => event => {
     const lessons = course.lessons
     lessons[index][name] =  event.target.value
     setCourse({ ...course, lessons: lessons })

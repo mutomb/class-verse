@@ -1,4 +1,4 @@
-const signin = async (user) => {
+const signin = async (user: { email: String; password: String }) => {
   try {
     let response = await fetch('/auth/signin/', {
       method: 'POST',

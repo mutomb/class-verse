@@ -101,7 +101,7 @@ export default function EditProfile({match}){
       }
     })
   }
-  const handleChange = name => event => {
+  const handleChange = (name: string) => event => {
     setValues({...values, [name]: event.target.value})
   }
   const handleCheck = (event, checked) => {

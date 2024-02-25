@@ -45,7 +45,7 @@ interface ValuesState{
   name:String,
   password:String,
   email:String,
-  open:Boolean,
+  open:boolean,
   error:String
 }
 
@@ -59,7 +59,7 @@ export default function Signup() {
     error: ''
   })
 
-  const handleChange = name => event => {
+  const handleChange = (name: string) => event => {
     setValues({ ...values, [name]: event.target.value })
   }
 

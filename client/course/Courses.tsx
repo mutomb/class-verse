@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
@@ -45,11 +44,11 @@ const useStyles = makeStyles(theme => ({
 }))
 
 interface CoursesProps{
-  courses:array<any>,
-  common:array<any>
+  courses:Array<any>,
+  common:Array<any>
 }
 
-const Courses:React.FC<CourseProps> = ({courses, common}) =>{
+const Courses:React.FC<CoursesProps> = ({courses, common}) =>{
   const classes = useStyles()
   const findCommon = (course) => {
     return !common.find((enrolled)=>{return enrolled.course._id == course._id})
