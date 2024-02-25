@@ -2,7 +2,7 @@
 
 A simple web-based classroom application that allows instructors to add courses with lessons, while students can enroll in these courses and track their progress. - developed using React, Node, Express and MongoDB.
 
-![MERN Skeleton](https://URL_to_prototype_image.png "Class Verse") 
+![Class-Verse Prototype](https://URL_to_prototype_image.png "Class Verse") 
 
 ### [Live Demo](http://URL_To_Class_Verse_Demo "CLass Verse") 
 

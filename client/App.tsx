@@ -1,9 +1,19 @@
 import React, {useEffect}from 'react'
 import MainRouter from './MainRouter'
 import {BrowserRouter} from 'react-router-dom'
-import { ThemeProvider } from '@material-ui/styles'
+import { ThemeProvider } from '@mui/material/styles';
+import { StyledEngineProvider } from '@mui/material/styles';
 import theme from './theme'
 import { hot } from 'react-hot-loader'
+import { Theme } from '@mui/material/styles';
+
+/*
+***Augment the DefaultTheme (empty object) in @mui/styles with Theme from the core.
+***Prevents Property "palette", "spacing" does not exist on type 'DefaultTheme' Warning
+*/
+declare module '@mui/styles/defaultTheme' {
+  interface DefaultTheme extends Theme {}
+}
 
 const App = () => {
   useEffect(() => {
@@ -14,9 +24,11 @@ const App = () => {
   }, [])
   return (
   <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <MainRouter/>
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <MainRouter/>
+        </ThemeProvider>
+      </StyledEngineProvider>
   </BrowserRouter>
 )}
 

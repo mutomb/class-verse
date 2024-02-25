@@ -1,39 +1,40 @@
 import React, {useState, useEffect}  from 'react'
-import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
-import CardMedia from '@material-ui/core/CardMedia'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import Edit from '@material-ui/icons/Edit'
-import PeopleIcon from '@material-ui/icons/Group'
-import CompletedIcon from '@material-ui/icons/VerifiedUser'
-import Button from '@material-ui/core/Button'
-import {makeStyles} from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import Avatar from '@material-ui/core/Avatar'
-import ListItemText from '@material-ui/core/ListItemText'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardMedia from '@mui/material/CardMedia'
+import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import Edit from '@mui/icons-material/Edit'
+import PeopleIcon from '@mui/icons-material/Group'
+import CompletedIcon from '@mui/icons-material/VerifiedUser'
+import Button from '@mui/material/Button'
+import {makeStyles} from '@mui/styles'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Avatar from '@mui/material/Avatar'
+import ListItemText from '@mui/material/ListItemText'
 import {read, update} from './api-course'
 import {enrollmentStats} from './../enrollment/api-enrollment'
 import {Link, Redirect} from 'react-router-dom'
 import auth from './../auth/auth-helper'
 import DeleteCourse from './DeleteCourse'
-import Divider from '@material-ui/core/Divider'
+import Divider from '@mui/material/Divider'
 import NewLesson from './NewLesson'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
 import Enroll from './../enrollment/Enroll'
 
 const useStyles = makeStyles(theme => ({
-    root: theme.mixins.gutters({
-        maxWidth: 800,
-        margin: 'auto',
-        padding: theme.spacing(3),
-        marginTop: theme.spacing(12)
-      }),
+  root:{
+    maxWidth: 800,
+    margin: 'auto',
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    marginTop: theme.spacing(12)
+  },
   flex:{
     display:'flex',
     marginBottom: 20
@@ -124,7 +125,7 @@ export default function Course({match}){
     const signal = abortController.signal
 
     enrollmentStats({courseId: match.params.courseId}, {t:jwt.token}, signal).then((data) => {
-      if (data.error) {
+      if (data && data.error) {
         setValues({...values, error: data.error})
       } else {
         setStats(data)
@@ -153,6 +154,7 @@ export default function Course({match}){
         }, {
           t: jwt.token
         }, courseData).then((data) => {
+          console.log()
           if (data && data.error) {
             setValues({...values, error: data.error})
           } else {
@@ -176,14 +178,14 @@ export default function Course({match}){
                 <CardHeader
                   title={course.name}
                   subheader={<div>
-                        <Link to={"/user/"+course.instructor._id} className={classes.sub}>By {course.instructor.name}</Link>
+                        <Link underline="hover" to={"/user/"+course.instructor._id} className={classes.sub}>By {course.instructor.name}</Link>
                         <span className={classes.category}>{course.category}</span>
                       </div>
                     }
                   action={<>
              {auth.isAuthenticated().user && auth.isAuthenticated().user._id == course.instructor._id &&
                 (<span className={classes.action}>
-                  <Link to={"/teach/course/edit/" + course._id}>
+                  <Link underline="hover" to={"/teach/course/edit/" + course._id}>
                     <IconButton aria-label="Edit" color="secondary">
                       <Edit/>
                     </IconButton>
@@ -254,7 +256,7 @@ export default function Course({match}){
                 </List>
                 </div>
               </Card>
-              <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+              <Dialog TransitionProps={{onExit:handleClose}} open={open} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Publish Course</DialogTitle>
                 <DialogContent>
                   <Typography variant="body1">Publishing your course will make it live to students for enrollment. </Typography><Typography variant="body1">Make sure all lessons are added and ready for publishing.</Typography></DialogContent>

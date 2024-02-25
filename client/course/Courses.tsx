@@ -1,8 +1,8 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
-import GridListTileBar from '@material-ui/core/GridListTileBar'
+import { makeStyles } from '@mui/styles'
+import ImageList from '@mui/material/ImageList'
+import ImageListItem from '@mui/material/ImageListItem'
+import ImageListItemBar from '@mui/material/ImageListItemBar'
 import {Link} from 'react-router-dom'
 import auth from './../auth/auth-helper'
 import Enroll from './../enrollment/Enroll'
@@ -54,25 +54,25 @@ const Courses:React.FC<CoursesProps> = ({courses, common}) =>{
     return !common.find((enrolled)=>{return enrolled.course._id == course._id})
   }
     return (
-        <GridList cellHeight={220} className={classes.gridList} cols={2}>
+        <ImageList rowHeight={220} className={classes.gridList} cols={2}>
           {courses.map((course, i) => {
             return (
             findCommon(course) &&
-              <GridListTile className={classes.tile} key={i} style={{padding:0}}>
-                <Link to={"/course/"+course._id}><img className={classes.image} src={'/api/courses/photo/'+course._id} alt={course.name} /></Link>
-                <GridListTileBar className={classes.tileBar}
-                  title={<Link to={"/course/"+course._id} className={classes.tileTitle}>{course.name}</Link>}
+              <ImageListItem className={classes.tile} key={i} style={{padding:0}}>
+                <Link underline="hover" to={"/course/"+course._id}><img className={classes.image} src={'/api/courses/photo/'+course._id} alt={course.name} /></Link>
+                <ImageListItemBar className={classes.tileBar}
+                  title={<Link underline="hover" to={"/course/"+course._id} className={classes.tileTitle}>{course.name}</Link>}
                   subtitle={<span>{course.category}</span>}
                   actionIcon={
                     <div className={classes.action}>
-                    {auth.isAuthenticated() ? <Enroll courseId={course._id}/> : <Link to="/signin">Sign in to Enroll</Link>}
+                    {auth.isAuthenticated() ? <Enroll courseId={course._id}/> : <Link underline="hover" to="/signin">Sign in to Enroll</Link>}
                     </div>
                   }
                 />
-              </GridListTile>)
+              </ImageListItem>)
               }
           )}
-        </GridList>
+        </ImageList>
     )
 }
 export default Courses;

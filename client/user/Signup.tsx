@@ -1,18 +1,18 @@
 import React, {useState} from 'react'
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
-import Icon from '@material-ui/core/Icon'
-import { makeStyles } from '@material-ui/core/styles'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import Icon from '@mui/material/Icon'
+import { makeStyles } from '@mui/styles'
 import {create} from './api-user'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 import {Link} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
@@ -62,7 +62,9 @@ export default function Signup() {
   const handleChange = (name: string) => event => {
     setValues({ ...values, [name]: event.target.value })
   }
-
+  const handleNonBackDropClose = (event, reason) => {
+    setValues({ ...values, open: true})
+  }
   const clickSubmit = () => {
     const user = {
       name: values.name || undefined,
@@ -97,7 +99,7 @@ export default function Signup() {
           <Button color="primary" variant="contained" onClick={clickSubmit} className={classes.submit}>Submit</Button>
         </CardActions>
       </Card>
-      <Dialog open={values.open} disableBackdropClick={true}>
+      <Dialog open={values.open}  onClose={(event, reason) => {if(reason === 'backdropClick'){handleNonBackDropClose(event, reason);}}}>
         <DialogTitle>New Account</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -105,7 +107,7 @@ export default function Signup() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Link to="/signin">
+          <Link underline="hover" to="/signin">
             <Button color="primary" autoFocus="autoFocus" variant="contained">
               Sign In
             </Button>

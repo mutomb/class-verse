@@ -1,6 +1,6 @@
-import { createMuiTheme } from '@material-ui/core/styles'
+import { createTheme, adaptV4Theme } from '@mui/material/styles';
 
-const theme = createMuiTheme({
+const theme = createTheme(adaptV4Theme({
     typography: {
       useNextVariants: true,
     },
@@ -19,8 +19,8 @@ const theme = createMuiTheme({
     },
       openTitle: '#455a64',
       protectedTitle: '#f57c00',
-      type: 'light'
+      mode: 'light'
     }
-  })
+  }))
 
   export default theme

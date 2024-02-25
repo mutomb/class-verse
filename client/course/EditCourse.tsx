@@ -1,33 +1,34 @@
 import React, {useState, useEffect}  from 'react'
-import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
-import CardMedia from '@material-ui/core/CardMedia'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import DeleteIcon from '@material-ui/icons/Delete'
-import FileUpload from '@material-ui/icons/AddPhotoAlternate'
-import ArrowUp from '@material-ui/icons/ArrowUpward'
-import Button from '@material-ui/core/Button'
-import {makeStyles} from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import TextField from '@material-ui/core/TextField'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import Avatar from '@material-ui/core/Avatar'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardMedia from '@mui/material/CardMedia'
+import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import DeleteIcon from '@mui/icons-material/Delete'
+import FileUpload from '@mui/icons-material/AddPhotoAlternate'
+import ArrowUp from '@mui/icons-material/ArrowUpward'
+import Button from '@mui/material/Button'
+import {makeStyles} from '@mui/styles'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import TextField from '@mui/material/TextField'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Avatar from '@mui/material/Avatar'
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
+import ListItemText from '@mui/material/ListItemText'
 import {read, update} from './api-course'
 import {Link, Redirect} from 'react-router-dom'
 import auth from './../auth/auth-helper'
-import Divider from '@material-ui/core/Divider'
+import Divider from '@mui/material/Divider'
 
 const useStyles = makeStyles(theme => ({
-    root: theme.mixins.gutters({
-        maxWidth: 800,
-        margin: 'auto',
-        padding: theme.spacing(3),
-        marginTop: theme.spacing(12)
-      }),
+    root:{
+      maxWidth: 800,
+      margin: 'auto',
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3),
+      marginTop: theme.spacing(12)
+    },
   flex:{
     display:'flex',
     marginBottom: 20
@@ -184,7 +185,7 @@ export default function EditCourse({match}){
                     value={course.name} onChange={handleChange('name')}
                   />}
                   subheader={<div>
-                        <Link to={"/user/"+course.instructor._id} className={classes.sub}>By {course.instructor.name}</Link>
+                        <Link underline="hover" to={"/user/"+course.instructor._id} className={classes.sub}>By {course.instructor.name}</Link>
                         {<TextField
                     margin="dense"
                     label="Category"
@@ -210,7 +211,7 @@ export default function EditCourse({match}){
                   <TextField
                     margin="dense"
                     multiline
-                    rows="5"
+                    minRows="5"
                     label="Description"
                     type="text"
                     className={classes.textfield}
@@ -261,7 +262,7 @@ export default function EditCourse({match}){
                           <TextField
                           margin="dense"
                           multiline
-                          rows="5"
+                          minRows="5"
                           label="Content"
                           type="text"
                           fullWidth
@@ -281,7 +282,7 @@ export default function EditCourse({match}){
                       </IconButton>
                     </ListItemSecondaryAction>}
                     </ListItem>
-                    <Divider style={{backgroundColor:'rgb(106, 106, 106)'}} component="li" />
+                    <Divider style={{borderColor:'rgb(106, 106, 106)'}} component="li" />
                     </span>)
                 }
                 )}

@@ -1,6 +1,6 @@
 export default ({markup, css}) => {
     return `<!doctype html>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <head>
           <meta charset="utf-8">
           <meta

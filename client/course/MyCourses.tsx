@@ -1,26 +1,27 @@
 import React, {useState, useEffect} from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import ListItemText from '@material-ui/core/ListItemText'
-import Avatar from '@material-ui/core/Avatar'
-import Icon from '@material-ui/core/Icon'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
+import { makeStyles } from '@mui/styles'
+import Paper from '@mui/material/Paper'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemText from '@mui/material/ListItemText'
+import Avatar from '@mui/material/Avatar'
+import Icon from '@mui/material/Icon'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
 import auth from './../auth/auth-helper'
 import {listByInstructor} from './api-course'
 import {Redirect, Link} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
-  root: theme.mixins.gutters({
+  root:{
     maxWidth: 600,
     margin: 'auto',
-    padding: theme.spacing(3),
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
     marginTop: theme.spacing(12)
-  }),
+  },
   title: {
     margin: `${theme.spacing(3)}px 0 ${theme.spacing(3)}px ${theme.spacing(1)}px` ,
     color: theme.palette.protectedTitle,
@@ -74,7 +75,7 @@ export default function MyCourses(){
         <Typography type="title" className={classes.title}>
           Your Courses
           <span className={classes.addButton}>
-            <Link to="/teach/course/new">
+            <Link underline="hover" to="/teach/course/new">
               <Button color="primary" variant="contained">
                 <Icon className={classes.leftIcon}>add_box</Icon>  New Course
               </Button>
@@ -83,7 +84,7 @@ export default function MyCourses(){
         </Typography>
         <List dense>
         {courses.map((course, i) => {
-            return   <Link to={"/teach/course/"+course._id} key={i}>
+            return   <Link underline="hover" to={"/teach/course/"+course._id} key={i}>
               <ListItem button>
                 <ListItemAvatar>
                   <Avatar src={'/api/courses/photo/'+course._id+"?" + new Date().getTime()} className={classes.avatar}/>

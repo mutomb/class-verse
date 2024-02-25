@@ -1,10 +1,10 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
-import GridListTileBar from '@material-ui/core/GridListTileBar'
-import CompletedIcon from '@material-ui/icons/VerifiedUser'
-import InProgressIcon from '@material-ui/icons/DonutLarge'
+import { makeStyles } from '@mui/styles'
+import ImageList from '@mui/material/ImageList'
+import ImageListItem from '@mui/material/ImageListItem'
+import ImageListItemBar from '@mui/material/ImageListItemBar'
+import CompletedIcon from '@mui/icons-material/VerifiedUser'
+import InProgressIcon from '@mui/icons-material/DonutLarge'
 import {Link} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
@@ -54,20 +54,20 @@ const Enrollments:React.FC<EnrollmentsProps> = ({enrollments:enrollments}) =>{
   const classes = useStyles()
     return (
       <div>
-        <GridList cellHeight={120} className={classes.gridList} cols={4}>
+        <ImageList rowHeight={120} className={classes.gridList} cols={4}>
           {enrollments.map((course, i) => (
-            <GridListTile key={i} className={classes.tile}>
-              <Link to={"/learn/"+course._id}><img className={classes.image} src={'/api/courses/photo/'+course.course._id} alt={course.course.name} /></Link>
-              <GridListTileBar className={classes.tileBar}
-                title={<Link to={"/learn/"+course._id} className={classes.tileTitle}>{course.course.name}</Link>}
+            <ImageListItem key={i} className={classes.tile}>
+              <Link underline="hover" to={"/learn/"+course._id}><img className={classes.image} src={'/api/courses/photo/'+course.course._id} alt={course.course.name} /></Link>
+              <ImageListItemBar className={classes.tileBar}
+                title={<Link underline="hover" to={"/learn/"+course._id} className={classes.tileTitle}>{course.course.name}</Link>}
                 actionIcon={<div className={classes.action}>
                  {course.completed ? (<CompletedIcon color="secondary"/>)
                  : (<InProgressIcon className={classes.progress} />)
                 }</div>}
               />
-            </GridListTile>
+            </ImageListItem>
           ))}
-        </GridList>
+        </ImageList>
     </div>
     )
 }

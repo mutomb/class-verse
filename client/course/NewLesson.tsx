@@ -1,13 +1,12 @@
 import React, {useState} from 'react'
-import PropTypes from 'prop-types'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Add from '@material-ui/icons/AddBox'
-import {makeStyles} from '@material-ui/core/styles'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Add from '@mui/icons-material/AddBox'
+import {makeStyles} from '@mui/styles'
 import {newLesson} from './api-course'
 import auth from './../auth/auth-helper'
 
@@ -75,7 +74,7 @@ const NewLesson:React.FC<NewLessonProps>= ({courseId, addLesson}) => {
       <Button aria-label="Add Lesson" color="primary" variant="contained" onClick={handleClickOpen}>
         <Add/> &nbsp; New Lesson
       </Button>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog open={open} TransitionProps={{onExit:handleClose}} aria-labelledby="form-dialog-title">
       <div className={classes.form}>
         <DialogTitle id="form-dialog-title">Add New Lesson</DialogTitle>
         <DialogContent>
@@ -92,7 +91,7 @@ const NewLesson:React.FC<NewLessonProps>= ({courseId, addLesson}) => {
             label="Content"
             type="text"
             multiline
-            rows="5"
+            minRows="5"
             fullWidth
             value={values.content} onChange={handleChange('content')}
           /><br/>
