@@ -16,9 +16,12 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import MainRouter from './../client/MainRouter'
 import { StaticRouter } from 'react-router-dom'
-import { ThemeProvider } from '@mui/material/styles';
-import { ServerStyleSheets } from '@mui/styles';
-import theme from './../client/theme'
+import { ThemeProvider } from '@mui/material/styles'
+import { ServerStyleSheets } from '@mui/styles'
+import { StyledEngineProvider } from '@mui/material/styles'
+
+// import theme from './../client/theme'
+import theme from '../client/temp/config/theme'
 //end
 
 //comment out before building for production
@@ -54,9 +57,11 @@ app.get('*', (req, res) => {
   const markup = ReactDOMServer.renderToString(
     sheets.collect(
           <StaticRouter location={req.url} context={context}>
-            <ThemeProvider theme={theme}>
-              <MainRouter />
-            </ThemeProvider>
+            <StyledEngineProvider injectFirst>
+              <ThemeProvider theme={theme}>
+                <MainRouter />
+              </ThemeProvider>
+            </StyledEngineProvider>
           </StaticRouter>
         )
     )

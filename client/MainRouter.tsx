@@ -13,9 +13,16 @@ import Course from './course/Course'
 import EditCourse from './course/EditCourse'
 import MyCourses from './course/MyCourses'
 import Enrollment from './enrollment/Enrollment'
+import {Footer} from './temp/components/footer'
+import { Box } from '@mui/material'
+import './temp/styles/globals.css'
+import './temp/styles/react-slick.css'
+
 const MainRouter = () => {
-    return (<div>
+    return (
+    <Box component="main">
       <Menu/>
+      
       <Switch>
         <Route exact path="/" component={Home}/>
         <Route path="/users" component={Users}/>
@@ -30,9 +37,10 @@ const MainRouter = () => {
         <PrivateRoute path="/teach/course/edit/:courseId" component={EditCourse}/>
         <PrivateRoute path="/teach/course/:courseId" component={Course}/>
         <PrivateRoute path="/learn/:enrollmentId" component={Enrollment}/>
-
       </Switch>
-    </div>)
+
+      <Footer/>
+    </Box>)
 }
 
 export default MainRouter

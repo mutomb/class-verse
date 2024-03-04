@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/mern-classroom.iml" filepath="$PROJECT_DIR$/.idea/mern-classroom.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/fundagate.iml" filepath="$PROJECT_DIR$/.idea/fundagate.iml" />
     </modules>
   </component>
 </project>

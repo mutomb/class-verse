@@ -1,6 +1,6 @@
-import { createTheme, adaptV4Theme } from '@mui/material/styles';
+import { createTheme} from '@mui/material/styles';
 
-const theme = createTheme(adaptV4Theme({
+const theme = createTheme({
     typography: {
       useNextVariants: true,
     },
@@ -21,6 +21,6 @@ const theme = createTheme(adaptV4Theme({
       protectedTitle: '#f57c00',
       mode: 'light'
     }
-  }))
+  })
 
   export default theme

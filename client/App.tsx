@@ -1,11 +1,13 @@
 import React, {useEffect}from 'react'
 import MainRouter from './MainRouter'
 import {BrowserRouter} from 'react-router-dom'
-import { ThemeProvider } from '@mui/material/styles';
-import { StyledEngineProvider } from '@mui/material/styles';
-import theme from './theme'
+import { ThemeProvider } from '@mui/material/styles'
+import { StyledEngineProvider } from '@mui/material/styles'
+//import theme from './theme'
+import theme from './temp/config/theme'
 import { hot } from 'react-hot-loader'
-import { Theme } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles'
+
 
 /*
 ***Augment the DefaultTheme (empty object) in @mui/styles with Theme from the core.

@@ -1,10 +1,10 @@
-# Class Verse
+# Fundagate
 
 A simple web-based classroom application that allows instructors to add courses with lessons, while students can enroll in these courses and track their progress. - developed using React, Node, Express and MongoDB.
 
-![Class-Verse Prototype](https://URL_to_prototype_image.png "Class Verse") 
+![Fundagate Prototype](https://URL_to_prototype_image.png "Fundagate") 
 
-### [Live Demo](http://URL_To_Class_Verse_Demo "CLass Verse") 
+### [Live Demo](http://URL_To_Demo "Fundagate") 
 
 #### What you need to run this code
 1. Node (13.12.0)
