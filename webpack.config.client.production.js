@@ -9,7 +9,7 @@ const config = {
     output: {
         path: path.join(CURRENT_WORKING_DIR , '/dist'),
         filename: 'bundle.js',
-        publicPath: "/dist/"
+        publicPath: "/dist/", //static file route path by webpack middleware for serving bundle.js from filesystem
     },
     module: {
         rules: [

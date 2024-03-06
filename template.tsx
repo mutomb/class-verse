@@ -1,21 +1,28 @@
+import React from 'react'
 import theme from './client/temp/config/theme'
-
-export default ({markup, css}) => {
-    return `<!doctype html>
-      <html lang="en" suppressHydrationWarning>
+import slickStyles from './node_modules/slick-carousel/slick/slick.css'
+import globalStyles from './client/temp/styles/globals.css'
+import reactslickStyles from './client/temp/styles/react-slick.css'
+// inject the initial component HTML and CSS into a template to be rendered on the client-side
+export default (component) => {
+    return (
+      <html lang="en">
         <head>
-          <meta charset="utf-8">
+          <meta charSet="utf-8" />
+          <title>Funda Gate</title>
+          <style>{slickStyles}</style>
+          <style>{globalStyles}</style>
+          <style>{reactslickStyles}</style>
           <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
-          >
-          <title>Funda Gate</title>
+          />
           <meta charSet="utf-8" />
           <link rel="icon" href="/favicon.ico" />
           <meta name="viewport" content="initial-scale=1, width=device-width" />
 
-          <!-- PWA primary color -->
-          <meta name="theme-color" content=${theme.palette.background.paper} />
+          {/* PWA primary color */}
+          <meta name="theme-color" content={theme.palette.background.paper} />
 
           <meta content="#fbfbfb" name="theme-color" />
           <meta content="#fbfbfb" name="msapplication-navbutton-color" />
@@ -23,22 +30,14 @@ export default ({markup, css}) => {
           <meta content="yes" name="apple-mobile-web-app-capable" />
 
           <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link
             href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,700;1,500;1,700&display=swap"
             rel="stylesheet"
           />
-          <style>
-              a{
-                text-decoration: none;
-                color: #bb4d00
-              }
-          </style>
         </head>
-        <body style="margin:0">
-          <div id="root">${markup}</div>
-          <style id="jss-server-side">${css}</style>
-          <script type="text/javascript" src="/dist/bundle.js"></script>
+        <body>
+          <div id="root">{component}</div>
         </body>
-      </html>`
+      </html>)
 }

@@ -38,6 +38,7 @@
     "@types/node": "^20.11.20",
     "@types/react": "^18.2.58",
     "@types/react-dom": "^18.2.19",
+    "@types/react-router-dom": "^5.3.3",
     "@types/react-scroll": "^1.8.10",
     "@types/react-slick": "^0.23.13",
     "@types/react-test-renderer": "^18.0.7",
@@ -59,6 +60,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
+    "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.11",
     "@mui/material": "^5.15.11",
@@ -81,6 +83,7 @@
     "react-router-dom": "5.1.2",
     "react-scroll": "^1.9.0",
     "react-slick": "^0.30.2",
+    "react-spinners": "^0.13.8",
     "slick-carousel": "^1.8.1"
   }
 }

@@ -16,6 +16,6 @@
     "rootDir":"./", 
     "lib": ["dom", "esnext"],
     "moduleResolution": "node",
-    "noEmitOnError": true
+    "noEmitOnError": true,
   }
 }

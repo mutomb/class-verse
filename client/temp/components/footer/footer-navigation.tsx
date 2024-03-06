@@ -44,7 +44,7 @@ interface NavigationItemProps {
 
 const NavigationItem: FC<NavigationItemProps> = ({ label, path }) => {
   return (
-    <Link to={path}>
+    <Link style={{textDecorationLine:'none'}}  to={path}>
       <MuiLink
         underline="hover"
         sx={{
