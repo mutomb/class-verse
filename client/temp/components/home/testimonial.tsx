@@ -11,8 +11,8 @@ import IconArrowBack from '@mui/icons-material/ArrowBack'
 import IconArrowForward from '@mui/icons-material/ArrowForward'
 import { TestimonialItem } from '../../components/testimonial'
 import { data } from './testimonial.data'
-import HeadLineCurve from "../../public/images/headline-curve.svg"
-import HomeTestimonialIcon from "../../public/images/home-testimonial.png"
+import HeadLineCurve from "../../../public/images/headline-curve.svg"
+import HomeTestimonialIcon from "../../../public/images/home-testimonial.png"
 
 interface SliderArrowArrow {
   onClick?: () => void

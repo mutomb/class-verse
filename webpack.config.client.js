@@ -12,12 +12,13 @@ const config = {
         path.join(CURRENT_WORKING_DIR, 'client/main.js')
     ],
     output: {
-        path: path.join(CURRENT_WORKING_DIR , '/dist'),
+        path: path.join(CURRENT_WORKING_DIR , '/dist/js'),
         filename: 'bundle.js',
-        publicPath: '/dist/', //static file route path by webpack middleware for serving bundle.js from memory
+        publicPath: '/dist/js/', //Prefix bundle.js with /dist/js in <script> tag, so that to download bundle.js from server at URL /dist/js/bundle.js
     },
     devServer: { 
-        inline: false, contentBase: "./dist",
+        inline: false, 
+        contentBase: "./dist",
         hot: true,
     },
     module: {
@@ -45,18 +46,23 @@ const config = {
             },
             {
                 test: /\.(ttf|eot|svg|gif|jpg|png)(\?[\s\S]+)?$/,
-                use: 'file-loader'
+                use: [{
+                    loader:'file-loader',
+                        options: {
+                            name:'../images/[name].[ext]'
+                        }
+                    }],
             },
             {
                 test: /\.css$/,
-                use: ['style-loader','css-loader']
+                use: ['style-loader','css-loader'] //css-loader parse @import in CSS files. style-loader inject CSS into bundle DOM
             }
         ]
     },  
     plugins: [
           new webpack.HotModuleReplacementPlugin(),
           new webpack.NoEmitOnErrorsPlugin(),
-          new ReactRefreshWebpackPlugin()
+          new ReactRefreshWebpackPlugin(),
     ],
     resolve: {
         extensions: [".ts", ".tsx", ".js"],       

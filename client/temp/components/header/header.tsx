@@ -20,7 +20,7 @@ const Header: FC = () => {
           <Logo />
           <Box sx={{ ml: 'auto', display: { xs: 'inline-flex', md: 'none' } }}>
             <IconButton onClick={() => setVisibleMenu(!visibleMenu)}>
-              <Menu />
+              <Menu sx={{color: 'primary.main'}} />
             </IconButton>
           </Box>
           <Box
@@ -55,7 +55,7 @@ const Header: FC = () => {
                 }}
                 onClick={() => setVisibleMenu(!visibleMenu)}
               >
-                <Close />
+                <Close sx={{color: 'primary.main'}} />
               </IconButton>
             )}
           </Box>

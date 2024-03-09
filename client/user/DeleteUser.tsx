@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {FC, useState} from 'react'
 import IconButton from '@mui/material/IconButton'
 import Button from '@mui/material/Button'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -15,7 +15,7 @@ interface DeleteUserProps{
   userId:String
 }
 
-const DeleteUser:React.FC<DeleteUserProps> = ({userId}) =>{
+const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
   const [open, setOpen] = useState<boolean>(false)
   const [redirect, setRedirect] = useState<boolean>(false)
 

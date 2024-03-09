@@ -7,9 +7,9 @@ import Typography from '@mui/material/Typography'
 import { Link as ScrollLink } from 'react-scroll'
 import { StyledButton } from '../../components/styled-button'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import CertificateIcon from "../../public/images/certificate.png"
-import HomeHeroIcon from "../../public/images/home-hero.jpg"
-import HeadLineCurve from "../../public/images/headline-curve.svg"
+import CertificateIcon from "../../../public/images/certificate.png"
+import HomeHeroIcon from "../../../public/images/home-hero.jpg"
+import HeadLineCurve from "../../../public/images/headline-curve.svg"
 
 interface Exp {
   label: string

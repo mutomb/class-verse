@@ -25,7 +25,7 @@ const LazyEnrollment = lazy(() => import('./enrollment/Enrollment'))
 const MainRouter = () => {
     return (
     <Box component="main">
-      <Menu/>
+      <Menu />
       <Switch>
         <Suspense fallback={<TransitionLoader />}>
           <Route exact path="/" component={LazyHome}/>

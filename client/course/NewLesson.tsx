@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {FC, useState} from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
@@ -26,7 +26,7 @@ interface ValuesState{
   resource_url:String
 }
 
-const NewLesson:React.FC<NewLessonProps>= ({courseId, addLesson}) => {
+const NewLesson: FC<NewLessonProps>= ({courseId, addLesson}) => {
   const classes = useStyles()
   const [open, setOpen] = useState<boolean>(false)
   const [values, setValues] = useState<ValuesState>({

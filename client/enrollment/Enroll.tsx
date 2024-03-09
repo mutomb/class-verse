@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {FC, useState} from 'react'
 import Button from '@mui/material/Button'
 import {makeStyles} from '@mui/styles'
 import {create} from './api-enrollment'
@@ -19,7 +19,7 @@ interface ValuesState{
   error:String,
   enrollmentId:String
 }
-const Enroll:React.FC<EnrollProps> = ({courseId}) =>{
+const Enroll: FC<EnrollProps> = ({courseId}) =>{
   const classes = useStyles()
   const [values, setValues] = useState<ValuesState>({
     enrollmentId: '',

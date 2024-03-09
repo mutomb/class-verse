@@ -1,18 +1,16 @@
 import React from 'react'
 import theme from './client/temp/config/theme'
-import slickStyles from './node_modules/slick-carousel/slick/slick.css'
-import globalStyles from './client/temp/styles/globals.css'
-import reactslickStyles from './client/temp/styles/react-slick.css'
 // inject the initial component HTML and CSS into a template to be rendered on the client-side
+import slick from './node_modules/slick-carousel/slick/slick.css'
+import globals from './client/temp/styles/globals.css'
+import reactSlick from './client/temp/styles/react-slick.css'
+
 export default (component) => {
     return (
       <html lang="en">
         <head>
           <meta charSet="utf-8" />
           <title>Funda Gate</title>
-          <style>{slickStyles}</style>
-          <style>{globalStyles}</style>
-          <style>{reactslickStyles}</style>
           <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
@@ -35,9 +33,12 @@ export default (component) => {
             href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,700;1,500;1,700&display=swap"
             rel="stylesheet"
           />
+          <style id="slick-server-side"> {slick.toString()} </style>
+          <style id="globals-server-side"> {globals.toString()} </style>
         </head>
         <body>
           <div id="root">{component}</div>
+          <style id="react-slick-server-side"> {reactSlick.toString()} </style>
         </body>
       </html>)
 }

@@ -7,9 +7,9 @@ const config = {
     entry: [ path.join(CURRENT_WORKING_DIR , './server/server.js') ],
     target: "node",
     output: {
-        path: path.join(CURRENT_WORKING_DIR , '/dist/'),
+        path: path.join(CURRENT_WORKING_DIR , '/dist/js'),
         filename: "server.generated.js",
-        publicPath: '/dist/',
+        publicPath: '/dist/js/',
         libraryTarget: "commonjs2",
     },
     externals: [nodeExternals()],
@@ -19,7 +19,7 @@ const config = {
             {
                 test: /\.(js|jsx)?$/,
                 exclude: /node_modules/,
-                use: [ 'babel-loader' ]
+                use: ['babel-loader']
             },
             // `.ts` or `.tsx` files are parsed using `ts-loader`
             {
@@ -31,12 +31,34 @@ const config = {
             },
             {
                 test: /\.(ttf|eot|svg|gif|jpg|png)(\?[\s\S]+)?$/,
-                use: 'file-loader'
+                use: [{
+                    loader:'file-loader',
+                        options: {
+                            name:'../images/[name].[ext]'
+                        }
+                    }],
             },
             {
                 test: /\.css$/,
-                use: ['css-loader'],
+                use: [{
+                    loader:'css-loader',
+                        options: {
+                            sourceMap:false,
+                        }
+                    }],
             }
+            // { // To extract CSS
+            //     test: /\.css$/,
+            //     use: [{
+            //         loader:'file-loader',
+            //             options: {
+            //                 name:'../css/[name].[ext]',
+            //                 sourceMap:false,
+            //                 exportType:"string"
+            //             }
+            //         }],
+            // }
+            
         ]
     },
     resolve: {

@@ -1,11 +1,11 @@
 import type { Course } from '../../interfaces/course'
-import course1photo from '../../public/images/courses/a9e7b27a0c5e986a22416d79e2e9dba9.jpg'
-import course2photo from '../../public/images/courses/alvaro-reyes-qWwpHwip31M-unsplash.jpg'
-import course3photo from '../../public/images/courses/christopher-gower-m_HRfLhgABo-unsplash.jpg'
-import course4photo from '../../public/images/courses/true-agency-o4UhdLv5jbQ-unsplash.jpg'
-import course5photo from '../../public/images/courses/stillness-inmotion-Jh6aQX-25Uo-unsplash.jpg'
-import course6photo from '../../public/images/courses/stillness-inmotion-YSCCnRGrD-4-unsplash.jpg'
-import course7photo from '../../public/images/courses/grovemade-RvPDe41lYBA-unsplash.jpg'
+import course1photo from '../../../public/images/courses/a9e7b27a0c5e986a22416d79e2e9dba9.jpg'
+import course2photo from '../../../public/images/courses/alvaro-reyes-qWwpHwip31M-unsplash.jpg'
+import course3photo from '../../../public/images/courses/christopher-gower-m_HRfLhgABo-unsplash.jpg'
+import course4photo from '../../../public/images/courses/true-agency-o4UhdLv5jbQ-unsplash.jpg'
+import course5photo from '../../../public/images/courses/stillness-inmotion-Jh6aQX-25Uo-unsplash.jpg'
+import course6photo from '../../../public/images/courses/stillness-inmotion-YSCCnRGrD-4-unsplash.jpg'
+import course7photo from '../../../public/images/courses/grovemade-RvPDe41lYBA-unsplash.jpg'
 
 export const data: Array<Course> = [
   {

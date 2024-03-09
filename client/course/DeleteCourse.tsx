@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {FC, useState} from 'react'
 import IconButton from '@mui/material/IconButton'
 import Button from '@mui/material/Button'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -15,7 +15,7 @@ interface DeleteCourseProps{
   onRemove:Function
 }
 
-const DeleteCourse:React.FC<DeleteCourseProps> = ({course, onRemove}) => {
+const DeleteCourse: FC<DeleteCourseProps> = ({course, onRemove}) => {
   const [open, setOpen] = useState<boolean>(false)
   
   const jwt = auth.isAuthenticated()

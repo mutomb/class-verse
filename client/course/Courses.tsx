@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {FC} from 'react'
 import { makeStyles } from '@mui/styles'
 import ImageList from '@mui/material/ImageList'
 import ImageListItem from '@mui/material/ImageListItem'
@@ -48,7 +48,7 @@ interface CoursesProps{
   common:Array<any>
 }
 
-const Courses:React.FC<CoursesProps> = ({courses, common}) =>{
+const Courses:FC<CoursesProps> = ({courses, common}) =>{
   const classes = useStyles()
   const findCommon = (course) => {
     return !common.find((enrolled)=>{return enrolled.course._id == course._id})

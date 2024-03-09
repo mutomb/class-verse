@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { makeStyles } from '@mui/styles'
 import ImageList from '@mui/material/ImageList'
 import ImageListItem from '@mui/material/ImageListItem'
@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
 interface EnrollmentsProps{
   enrollments:Array<any>
 }
-const Enrollments:React.FC<EnrollmentsProps> = ({enrollments:enrollments}) =>{
+const Enrollments: FC<EnrollmentsProps> = ({enrollments:enrollments}) =>{
   const classes = useStyles()
     return (
       <div>

@@ -46,6 +46,7 @@ const NavigationItem: FC<NavigationItemProps> = ({ label, path }) => {
   return (
     <Link style={{textDecorationLine:'none'}}  to={path}>
       <MuiLink
+        component='span'
         underline="hover"
         sx={{
           display: 'block',
@@ -82,6 +83,7 @@ const FooterNavigation: FC = () => {
         >
           <MuiLink
           underline="hover"
+          component='span'
           sx={{
             display: 'block',
             mb: 1,

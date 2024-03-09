@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import Box from '@mui/material/Box'
 import { Link as ScrollLink } from 'react-scroll'
 import { navigations } from './navigation.data'
-import HeadLineCurve from "../../public/images/headline-curve.svg"
+import HeadLineCurve from "../../../public/images/headline-curve.svg"
 
 const Navigation: FC = () => {
   return (
@@ -31,19 +31,20 @@ const Navigation: FC = () => {
               color: 'primary.main',
             }),
 
-            '& > div': { display: 'none' },
+            '& > span': { display: 'none' },
 
-            '&.current>div': { display: 'block' },
+            '&.current>span': { display: 'block' },
 
             '&:hover': {
               color: 'primary.main',
-              '&>div': {
+              '&>span': {
                 display: 'block',
               },
             },
           }}
         >
           <Box
+            component='span'
             sx={{
               position: 'absolute',
               top: 12,

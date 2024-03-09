@@ -3,7 +3,7 @@ import React, { FC } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { Testimonial } from '../../interfaces/testimonial'
-import avatar1 from '../../public/images/avatars/1.jpg'
+import avatar1 from '../../../public/images/avatars/1.jpg'
 
 interface Props {
   item: Testimonial

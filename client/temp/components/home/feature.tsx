@@ -8,8 +8,8 @@ import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress'
 import { data } from './feature.data'
-import HomeFeatureIcon from "../../public/images/home-feature.png"
-import HeadLineCurve from "../../public/images/headline-curve.svg"
+import HomeFeatureIcon from "../../../public/images/home-feature.png"
+import HeadLineCurve from "../../../public/images/headline-curve.svg"
 
 interface LinearProgressProps {
   order: number

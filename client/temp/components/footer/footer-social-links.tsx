@@ -2,11 +2,11 @@ import React, { FC } from 'react'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import { SocialLink } from '../../interfaces/social-link'
-import InstagramIcon from '../../public/images/icons/instagram.svg'
-import YoutubeIcon from '../../public/images/icons/youtube.svg'
-import TwitterIcon from '../../public/images/icons/twitter.svg'
-import GitHubIcon from '../../public/images/icons/github.svg'
-import DribbbleIcon from '../../public/images/icons/dribbble.svg'
+import InstagramIcon from '../../../public/images/icons/instagram.svg'
+import YoutubeIcon from '../../../public/images/icons/youtube.svg'
+import TwitterIcon from '../../../public/images/icons/twitter.svg'
+import GitHubIcon from '../../../public/images/icons/github.svg'
+import DribbbleIcon from '../../../public/images/icons/dribbble.svg'
 
 export const socialLinks: SocialLink[] = [
   {

@@ -36,15 +36,17 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(2)
   }
 }))
-interface ValuesState{
+
+interface Signin{
   email:String,
   password:String,
   error:String,
   redirectToReferrer:Boolean
-}
+} 
+
 export default function Signin({location}){
   const classes = useStyles()
-  const [values, setValues] = useState<ValuesState>({
+  const [values, setValues] = useState<Signin>({
       email: '',
       password: '',
       error: '',

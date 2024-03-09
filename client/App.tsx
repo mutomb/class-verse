@@ -26,6 +26,20 @@ const cache = createEmotionCache();
 -StyleEngineProvider. InjectFrist Inject Emotion before JSS 
 */
 const App = () => {
+  useEffect(() => {
+    const ssrSlick = document.querySelector('#slick-server-side')
+    const ssrGlobal = document.querySelector('#globals-server-side')
+    const ssrReactSlick = document.querySelector('#react-slick-server-side')
+    if (ssrSlick) {
+      ssrSlick.parentNode.removeChild(ssrSlick)
+    }
+    if (ssrGlobal) {
+      ssrGlobal.parentNode.removeChild(ssrGlobal)
+    }
+    if (ssrReactSlick) {
+      ssrReactSlick.parentNode.removeChild(ssrReactSlick)
+    }
+  }, [])
   return (
     <CacheProvider value={cache}>
       {/* <StyledEngineProvider injectFirst={false}> */}
