@@ -15,8 +15,8 @@ declare module '@mui/styles/defaultTheme' {
 }
 
 // default
-const createTheme = (darkMode?: boolean): Theme => {
-  const palette = darkMode ? { ...paletteBase, ...paletteDark } : { ...paletteBase, ...paletteLight }
+const createTheme = (darkMode?: 'dark' | 'light'): Theme => {
+  const palette = darkMode !== 'light' ? { ...paletteBase, ...paletteDark } : { ...paletteBase, ...paletteLight }
   return createMuiTheme({
     palette,
     typography,
@@ -24,7 +24,7 @@ const createTheme = (darkMode?: boolean): Theme => {
   })
 }
 
-const theme = createTheme(false)
+const theme = createTheme
 
 export { paletteBase, paletteLight, paletteDark, typography, shadows }
 export default theme

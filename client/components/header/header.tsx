@@ -7,6 +7,7 @@ import { Logo } from '../../components/logo'
 import { Navigation, AuthNavigation } from '../../components/navigation'
 import { useTheme } from '@mui/material/styles'
 import { Menu, Close } from '@mui/icons-material'
+import { ColorModeButton } from '../color-mode-button'
 
 const Header: FC = () => {
   const [visibleMenu, setVisibleMenu] = useState<boolean>(false)
@@ -46,6 +47,7 @@ const Header: FC = () => {
             <Box /> {/* Magic space */}
             <Navigation />
             <AuthNavigation />
+            <ColorModeButton/>
             {visibleMenu && matchMobileView && (
               <IconButton
                 sx={{

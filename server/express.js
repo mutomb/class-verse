@@ -17,7 +17,7 @@ import {renderToPipeableStream} from 'react-dom/server'
 import MainRouter from '../client/MainRouter'
 import { MainLayout } from '../client/layout'
 import { StaticRouter } from 'react-router-dom'
-import { MUIProvider } from '../providers'
+import { MUIProvider } from '../client/providers'
 import CssBaseline from '@mui/material/CssBaseline';
 import {CacheProvider} from '@emotion/react'
 import {createEmotionCache} from './helpers'

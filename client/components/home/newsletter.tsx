@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography'
 import { StyledButton } from '../styled-button'
 
 const HomeNewsLetter: FC = () => {
-  const [outlined, setOutlined]=useState(false)
   return (
     <Box sx={{ backgroundColor: 'background.paper', py: { xs: 8, md: 10 } }}>
       <Container>

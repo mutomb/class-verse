@@ -22,8 +22,8 @@ function LinearDeterminate() {
   }, []);
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <LinearProgress variant="determinate" value={progress} />
+    <Box sx={{ width: '100%'}}>
+      <LinearProgress color='secondary' variant="determinate" value={progress} />
     </Box>
   );
 }
@@ -32,28 +32,5 @@ function LinearDeterminate() {
             <Component {...props} />
         </Suspense>
 );
-// This will show the animation
-// const Loader = ({animationDuration, progress}) => {
-// const Loader = () => {
-//   return (<Box  
-//     sx={{
-//      background: "red",
-//      height: "0.25rem",
-//      position: "fixed",
-//      top: 0,
-//      left: 0,
-//      width: "100%",
-//      zIndex: 99999,
-//      ml: `${(-1 + 1) * 100}%`,
-//      transition: `margin-left 1000ms linear`,
-//     }} 
-//   /> );
-// };
-
-// const Loadable = (Component) => (props) => (
-//   <Suspense fallback={(progress)=><Loader progress={progress}/>}>
-//     <Component {...props} />
-//   </Suspense>
-// );
 
 export default Loadable;

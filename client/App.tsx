@@ -1,9 +1,9 @@
 import React, { useEffect }from 'react'
 import MainRouter from './MainRouter'
 import { BrowserRouter } from 'react-router-dom'
-import { MUIProvider } from '../providers'
+import { MUIProvider } from './providers'
 import CssBaseline from '@mui/material/CssBaseline';
-import { CacheProvider } from '../providers'
+import { CacheProvider } from './providers'
 import { createEmotionCache } from '../server/helpers';
 import { MainLayout } from './layout';
 // Client-side cache, shared for the whole session of the user in the browser.
