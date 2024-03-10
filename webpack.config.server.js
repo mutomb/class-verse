@@ -46,7 +46,7 @@ const config = {
                             sourceMap:false,
                         }
                     }],
-            }
+            },
             // { // To extract CSS
             //     test: /\.css$/,
             //     use: [{

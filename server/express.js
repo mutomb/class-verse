@@ -1,3 +1,4 @@
+import React from 'react'
 import express from 'express'
 import path from 'path'
 import bodyParser from 'body-parser'
@@ -6,31 +7,22 @@ import compress from 'compression'
 import cors from 'cors'
 import helmet from 'helmet'
 import nocache from './helpers/nocache'
-import Template from './../template'
+import Template from './template'
 import userRoutes from './routes/user.routes'
 import authRoutes from './routes/auth.routes'
 import courseRoutes from './routes/course.routes'
 import enrollmentRoutes from './routes/enrollment.routes'
 // modules for server side rendering
-import React from 'react'
-//import ReactDOMServer from 'react-dom/server'
 import {renderToPipeableStream} from 'react-dom/server'
-import MainRouter from './../client/MainRouter'
+import MainRouter from '../client/MainRouter'
+import { MainLayout } from '../client/layout'
 import { StaticRouter } from 'react-router-dom'
-import { ThemeProvider } from '@mui/material/styles'
-import { ServerStyleSheets } from '@mui/styles'
-import { StyledEngineProvider } from '@mui/material/styles'
+import { MUIProvider } from '../providers'
 import CssBaseline from '@mui/material/CssBaseline';
-import { CacheProvider } from '@emotion/react';
-import createEmotionServer from '@emotion/server/create-instance'
-import createEmotionCache from './createEmotionCache'
-// import theme from './../client/theme'
-import theme from '../client/temp/config/theme'
+import {CacheProvider} from '@emotion/react'
+import {createEmotionCache} from './helpers'
 //comment out before building for production
 import devBundle from './devBundle'
-// import slickStyles from '../node_modules/slick-carousel/slick/slick.css'
-// import globalStyles from '../client/temp/styles/globals.css'
-// import reactslickStyles from '../client/temp/styles/react-slick.css'
 
 const CURRENT_WORKING_DIR = process.cwd()
 const app = express()
@@ -54,22 +46,22 @@ app.use('/', userRoutes)
 app.use('/', authRoutes)
 app.use('/', courseRoutes)
 app.use('/', enrollmentRoutes)
-//SSR applied to all GET routes
+//catches all GET requests
 app.get('*', (req, res) => {
-     // Emotion cache instance to extract the critical MUI emotion styles for the html.
-    const cache = createEmotionCache();
     // Context to extract the critical url for the redirect route.
     const context = {}
+    // Server-side cache, shared for every request to the same page view.
+    const serverSideEmotionCache = createEmotionCache()
     const {pipe} = renderToPipeableStream(
-      Template(<CacheProvider value={cache}>
-        <ThemeProvider theme={theme}>
-          {/* <StyledEngineProvider injectFirst={true}> */}
-          <CssBaseline enableColorScheme />
+      Template(<CacheProvider value={serverSideEmotionCache}>
+        <MUIProvider>
+          <CssBaseline enableColorScheme={true} />
           <StaticRouter location={req.url} context={context}>
-            <MainRouter />
+            <MainLayout> 
+             <MainRouter/>
+            </MainLayout>
           </StaticRouter>
-          {/* </StyledEngineProvider> */}
-        </ThemeProvider>
+        </MUIProvider>
       </CacheProvider>), {
       bootstrapScripts: ['/dist/js/bundle.js'],
       onShellReady() {

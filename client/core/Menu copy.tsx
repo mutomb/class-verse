@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton'
 import HomeIcon from '@mui/icons-material/Home'
 import Library from '@mui/icons-material/LocalLibrary'
 import Button from '@mui/material/Button'
-import auth from './../auth/auth-helper'
+import auth from '../auth/auth-helper'
 import {Link, withRouter} from 'react-router-dom'
 
 const isActive = (history, path) => {

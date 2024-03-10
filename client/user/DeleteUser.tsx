@@ -7,7 +7,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-import auth from './../auth/auth-helper'
+import auth from '../auth/auth-helper'
 import {remove} from './api-user'
 import {Redirect} from 'react-router-dom'
 

@@ -19,7 +19,7 @@
   "homepage": "https://github.com/mutomb/fundagate",
   "main": "./dist/js/server.generated.js",
   "scripts": {
-    "development": "nodemon",
+    "dev": "nodemon",
     "build": "webpack --config webpack.config.client.production.js && webpack --mode=production --config webpack.config.server.js",
     "start": "NODE_ENV=production node ./dist/js/server.generated.js"
   },
@@ -49,6 +49,7 @@
     "file-loader": "6.0.0",
     "mini-css-extract-plugin": "^0.7.0",
     "nodemon": "2.0.2",
+    "react-progress": "0.0.12",
     "react-refresh": "^0.14.0",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.2.0",

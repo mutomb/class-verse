@@ -10,7 +10,7 @@ import Icon from '@mui/material/Icon'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
-import auth from './../auth/auth-helper'
+import auth from '../auth/auth-helper'
 import {listByInstructor} from './api-course'
 import {Redirect, Link} from 'react-router-dom'
 

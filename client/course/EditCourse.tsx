@@ -18,7 +18,7 @@ import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import ListItemText from '@mui/material/ListItemText'
 import {read, update} from './api-course'
 import {Link, Redirect} from 'react-router-dom'
-import auth from './../auth/auth-helper'
+import auth from '../auth/auth-helper'
 import Divider from '@mui/material/Divider'
 
 const useStyles = makeStyles(theme => ({

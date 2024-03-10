@@ -1,31 +1,18 @@
-import React, {useEffect}from 'react'
+import React, { useEffect }from 'react'
 import MainRouter from './MainRouter'
-import {BrowserRouter} from 'react-router-dom'
-import { ThemeProvider } from '@mui/material/styles'
-import { StyledEngineProvider } from '@mui/material/styles'
-//import theme from './theme'
-import theme from './temp/config/theme'
-// import { hot } from 'react-hot-loader'
-import { Theme } from '@mui/material/styles'
-import createEmotionCache from '../server/createEmotionCache'
+import { BrowserRouter } from 'react-router-dom'
+import { MUIProvider } from '../providers'
 import CssBaseline from '@mui/material/CssBaseline';
-import { CacheProvider } from '@emotion/react'
-
-/*
-***Augment the DefaultTheme (empty object) in @mui/styles with Theme from the core.
-***Prevents Property "palette", "spacing" does not exist on type 'DefaultTheme' Warning
-*/
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
-
-// use the same cache configuration as the server-side.
-const cache = createEmotionCache();
-
+import { CacheProvider } from '../providers'
+import { createEmotionCache } from '../server/helpers';
+import { MainLayout } from './layout';
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache()
 /* -CssBaseline initialize css properties with simple baseline to build upon. EnableColorScheme applyies color-scheme on <html> using theme.palette.mode value.
 -StyleEngineProvider. InjectFrist Inject Emotion before JSS 
 */
 const App = () => {
+  /*ummount custom CSS from SSR*/
   useEffect(() => {
     const ssrSlick = document.querySelector('#slick-server-side')
     const ssrGlobal = document.querySelector('#globals-server-side')
@@ -41,16 +28,15 @@ const App = () => {
     }
   }, [])
   return (
-    <CacheProvider value={cache}>
-      {/* <StyledEngineProvider injectFirst={false}> */}
-        <ThemeProvider theme={theme}>
-          <CssBaseline enableColorScheme />
+    <CacheProvider value={clientSideEmotionCache}>
+        <MUIProvider>
+          <CssBaseline enableColorScheme={true} />
           <BrowserRouter> 
-            <MainRouter/>
+            <MainLayout>
+             <MainRouter/>
+            </MainLayout>
           </BrowserRouter> 
-        </ThemeProvider>
-      {/* </StyledEngineProvider> */}
+        </MUIProvider>
     </CacheProvider>
 )}
 export default App
-// export default hot(module)(App)

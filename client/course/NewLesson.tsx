@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Add from '@mui/icons-material/AddBox'
 import {makeStyles} from '@mui/styles'
 import {newLesson} from './api-course'
-import auth from './../auth/auth-helper'
+import auth from '../auth/auth-helper'
 
 const useStyles = makeStyles(theme => ({
     form: {

@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Icon from '@mui/material/Icon'
 import { makeStyles } from '@mui/styles'
-import auth from './../auth/auth-helper'
+import auth from '../auth/auth-helper'
 import {Redirect} from 'react-router-dom'
 import {signin} from './api-auth'
 

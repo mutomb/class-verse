@@ -2,7 +2,7 @@ import React, {FC, useState} from 'react'
 import Button from '@mui/material/Button'
 import {makeStyles} from '@mui/styles'
 import {create} from './api-enrollment'
-import auth from './../auth/auth-helper'
+import auth from '../auth/auth-helper'
 import {Redirect} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({

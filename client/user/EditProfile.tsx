@@ -9,7 +9,7 @@ import Icon from '@mui/material/Icon'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import { makeStyles } from '@mui/styles'
-import auth from './../auth/auth-helper'
+import auth from '../auth/auth-helper'
 import {read, update} from './api-user'
 import {Redirect} from 'react-router-dom'
 

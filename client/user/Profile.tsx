@@ -13,7 +13,7 @@ import Edit from '@mui/icons-material/Edit'
 import Person from '@mui/icons-material/Person'
 import Divider from '@mui/material/Divider'
 import DeleteUser from './DeleteUser'
-import auth from './../auth/auth-helper'
+import auth from '../auth/auth-helper'
 import {read} from './api-user'
 import {Redirect, Link} from 'react-router-dom'
 

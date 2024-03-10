@@ -1,9 +1,9 @@
 import Course from '../models/course.model'
 import extend from 'lodash/extend'
 import fs from 'fs'
-import errorHandler from './../helpers/dbErrorHandler'
+import errorHandler from '../helpers/dbErrorHandler'
 import formidable from 'formidable'
-import defaultCourseImage from './../../client/assets/images/default-course.svg'
+import defaultCourseImage from '../../client/public/images/courses/default.svg'
 
 const create = (req, res) => {
   let form = new formidable.IncomingForm()

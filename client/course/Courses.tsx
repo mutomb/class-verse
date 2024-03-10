@@ -4,8 +4,8 @@ import ImageList from '@mui/material/ImageList'
 import ImageListItem from '@mui/material/ImageListItem'
 import ImageListItemBar from '@mui/material/ImageListItemBar'
 import {Link} from 'react-router-dom'
-import auth from './../auth/auth-helper'
-import Enroll from './../enrollment/Enroll'
+import auth from '../auth/auth-helper'
+import Enroll from '../enrollment/Enroll'
 
 const useStyles = makeStyles(theme => ({
   title: {
