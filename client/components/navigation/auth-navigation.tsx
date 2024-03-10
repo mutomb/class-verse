@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import Box from '@mui/material/Box'
-import { StyledButton } from '../../components/styled-button'
+import { StyledButton } from '../styled-buttons'
 
 const AuthNavigation: FC = () => {
   return (

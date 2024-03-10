@@ -12,8 +12,9 @@ export default function ColorModeButton() {
   return (
       <IconButton
         sx={{ ml: 1, 
-          '&:hover':{
+          ':hover':{
             transform: 'translateY(-3px)',
+            transition: theme.transitions.create(['transform'])
           } }}
         onClick={colorMode.toggleColorMode}
         color="inherit"

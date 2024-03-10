@@ -17,6 +17,7 @@ function LinearDeterminate() {
     }, 500);
 
     return () => {
+      setProgress(100);
       clearInterval(timer);
     };
   }, []);

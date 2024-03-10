@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import { Link as ScrollLink } from 'react-scroll'
-import { StyledButton } from '../../components/styled-button'
+import { StyledButton } from '../styled-buttons'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import CertificateIcon from "../../public/images/certificate.png"
 import HomeHeroIcon from "../../public/images/home-hero.jpg"
@@ -145,7 +145,7 @@ const HomeHero: FC = () => {
                   }
                 </Typography>
               </Box>
-              <Box sx={{ '& button': { mr: 2 } }}>
+              <Box sx={{ '& button': { mr: 2, my:{xs:1, md:0 }} }}>
                 <ScrollLink to="popular-course" spy={true} smooth={true} offset={0} duration={350}>
                   <StyledButton color="primary" size="large" variant="contained">
                     Get Started
