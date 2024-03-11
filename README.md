@@ -2,7 +2,7 @@
 
 A simple web-based classroom application that allows instructors to add courses with lessons, while students can enroll in these courses and track their progress. - developed using **React.js**(and React Router), **Node.js**, **Express.js** and **MongoDB**. The UI is built on top of **MaterialUI 5**, which is simple & light designed to provide all the basic components using the `sx` prop for a developer need to create slick page views.
 
-Take a look the live demo here 👉![Funda-gate Prototype](https://github.com/mutomb/fundagate/client/public/images/prototype.png "Funda-gate") 
+Take a look the live demo here 👉![Funda-gate Prototype](https://github.com/mutomb/fundagate/blob/skeleton/client/public/images/prototype.png "Funda-gate") 
 
 ### [Live Demo](http://URL_To_Demo "Funda-gate") 
 
