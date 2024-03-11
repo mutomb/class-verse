@@ -37,16 +37,19 @@ export default function ScrollTop() {
             smooth={true}
             duration={350}
           >
-            <Fab size="small" aria-label="scroll back to top" variant='circular' 
+            <Fab size="small" aria-label="scroll back to top" variant='extended' 
             sx={{backgroundColor:'primary.main', 
                 color:'primary.contrastText', 
+                borderRadius:1,
+                border:'1px solid',
+                borderColor:'primary.contrastText',
                 ':hover':{
                   backgroundColor:'primary.main',
                   transition: theme.transitions.create(['transform']),
                   transform: 'translateY(-3px)',
                 }
                 }}>
-            <KeyboardArrowUpIcon color='inherit' />
+            <KeyboardArrowUpIcon color='inherit' sx={{mx:0, my:0}}/>
             </Fab>
           </Box>
         </Box>

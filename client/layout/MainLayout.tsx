@@ -10,7 +10,7 @@ interface Props {
 
 const MainLayout: FC<Props> = ({ children }) => {
   return (
-    <Box component="main">
+    <Box component="main" sx={{display:'flex', flexDirection:'column', minHeight:'100vh'}}>
       <Header />
       {children}
       <ScrollToTop />
