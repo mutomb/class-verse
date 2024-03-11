@@ -8,7 +8,7 @@ import { Link as ScrollLink } from 'react-scroll'
 import { StyledButton } from '../styled-buttons'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import CertificateIcon from "../../public/images/certificate.png"
-import HomeHeroIcon from "../../public/images/home-hero.jpg"
+import HomeHeroIcon from "../../public/images/home-hero.png"
 import HeadLineCurve from "../../public/images/headline-curve.svg"
 
 interface Exp {

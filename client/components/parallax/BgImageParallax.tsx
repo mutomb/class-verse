@@ -1,7 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
 import { Parallax, Background } from "react-parallax";
-import Hello from "./Hello";
 
 const styles = {
   fontFamily: "sans-serif",
@@ -24,9 +22,8 @@ const image3 =
 const image4 =
   "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/empire-state-building-black-and-white-square-format-john-farnan.jpg";
 
-const App = () => (
+const ParallaxExample = () => (
   <div style={styles}>
-    <Hello name="Parallax" />
     <Parallax bgImage={image1} strength={500}>
       <div style={{ height: 500 }}>
         <div style={insideStyles}>HTML inside the parallax</div>
@@ -97,5 +94,4 @@ const App = () => (
     <h2>{"\u2728"}</h2>
   </div>
 );
-
-render(<App />, document.getElementById("root"));
+export default ParallaxExample
