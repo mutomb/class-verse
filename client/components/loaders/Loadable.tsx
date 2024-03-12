@@ -1,36 +1,35 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
+import { useTheme } from '@emotion/react';
 
 function LinearDeterminate() {
   const [progress, setProgress] = useState(0);
-
+  const theme = useTheme()
+  console.log("theme.primary.main")
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
         const diff = Math.random() * 10;
         return Math.min(oldProgress + diff, 100);
       });
     }, 500);
 
     return () => {
-      setProgress(100);
+      setProgress(0);
       clearInterval(timer);
     };
   }, []);
 
   return (
-    <Box sx={{ width: '100%'}}>
-      <LinearProgress color='secondary' variant="determinate" value={progress} />
+    <Box sx={{ width: '100%', position:'relative', color:'secondary.main'}}>
+      <LinearProgress color='inherit' variant="determinate" value={progress} style={{height:'7px'}}/>
     </Box>
   );
 }
   const Loadable = (Component) => (props) => (
         <Suspense fallback={<LinearDeterminate />}>
-            <Component {...props} />
+            <Component {...props}/>
         </Suspense>
 );
 

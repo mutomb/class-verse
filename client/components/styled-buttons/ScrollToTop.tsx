@@ -5,22 +5,19 @@ import Fab from '@mui/material/Fab';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Fade from '@mui/material/Fade';
 import { useTheme } from '@mui/styles';
-import { Link as ScrollLink } from 'react-scroll';
+import { scroller } from 'react-scroll';
 
 export default function ScrollTop() {
   const trigger = useScrollTrigger();
   const theme = useTheme();
-  // const handleClick = (event: MouseEvent<HTMLDivElement>) => {
-  //   const anchor = (
-  //     (event.target as HTMLDivElement).ownerDocument || document
-  //   ).querySelector('#hero');
-
-  //   if (anchor) {
-  //     anchor.scrollIntoView({
-  //       block: 'center',
-  //     });
-  //   }
-  // };
+  const scrollToAnchor = (destination:string) => {
+    scroller.scrollTo(destination, {
+      duration: 1500,
+      delay: 100,
+      smooth: true,
+      offset: 50
+    })
+  }
 
   return (
     <Fade in={trigger}>
@@ -30,12 +27,8 @@ export default function ScrollTop() {
             sx={{ position: 'fixed', bottom: 16, right: 16, zIndex:'999' }}
         >
           <Box
-            component={ScrollLink}
-            key={'hero'}
-            to={'hero'}
-            spy={true}
-            smooth={true}
-            duration={350}
+            component='a'
+            onClick={()=>scrollToAnchor('hero')}
           >
             <Fab size="small" aria-label="scroll back to top" variant='extended' 
             sx={{backgroundColor:'primary.main', 

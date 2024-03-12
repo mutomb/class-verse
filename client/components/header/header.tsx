@@ -11,10 +11,9 @@ const Header: FC = () => {
   const { breakpoints } = useTheme()
   const matchMobileView = useMediaQuery(breakpoints.down('md'))
   const trigger = useScrollTrigger();
-  return (
-    <>
+  return (<>
     <Slide id="app-bar" appear={false} direction="down" in={!trigger} color='inherit'>
-      <AppBar position="fixed" color='inherit' enableColorOnDark={true}>
+      <AppBar position="sticky" color='inherit' enableColorOnDark={true}>
        <Toolbar sx={{ backgroundColor: 'inherit', width:'100%' }}>
           <Box sx={{ backgroundColor: 'inherit', width:'100%', mx:0 }}>
             <Container sx={{ py: { xs: 2, md: 3 } }}>
@@ -68,7 +67,6 @@ const Header: FC = () => {
         </Toolbar>
       </AppBar>
     </Slide>
-    <Toolbar />
   </>
   )
 }

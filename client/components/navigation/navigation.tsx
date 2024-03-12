@@ -1,10 +1,26 @@
 import React, { FC } from 'react'
 import Box from '@mui/material/Box'
-import { Link as ScrollLink } from 'react-scroll'
+import { Link as ScrollLink, scroller } from 'react-scroll'
 import { navigations } from './navigation.data'
 import HeadLineCurve from "../../public/images/headline-curve.svg"
+import { useHistory, useLocation } from 'react-router-dom'
 
 const Navigation: FC = () => {
+  const path = useLocation().pathname
+  const location = path.split('/')[1]
+  const history = useHistory()
+  const scrollToAnchor = (destination:string) => {
+    scroller.scrollTo(destination, {
+      duration: 1500,
+      delay: 100,
+      smooth: true,
+      offset: 50
+    })
+  }
+  const goToHomeAndScroll = async (destination:string) => {
+    await history.push('/')
+    await scrollToAnchor(destination)
+  }
   return (
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
       {navigations.map(({ path: destination, label }) => (
@@ -12,7 +28,8 @@ const Navigation: FC = () => {
           component={ScrollLink}
           key={destination}
           activeClass="current"
-          to={destination}
+          to={"#"}
+          onClick={location==='/'?()=>scrollToAnchor(destination):()=>goToHomeAndScroll(destination)}
           spy={true}
           smooth={true}
           duration={350}

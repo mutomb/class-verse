@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import { makeStyles } from '@mui/styles'
 import Card from '@mui/material/Card'
-import {listPublished} from '../course/api-course'
+import {listPublished} from '../courses/api-course'
 import {listEnrolled} from '../enrollment/api-enrollment'
 import Typography from '@mui/material/Typography'
 import auth from '../auth/auth-helper'
-import Courses from '../course/Courses'
+import Courses from '../courses/Courses'
 import Enrollments from '../enrollment/Enrollments'
 
 
