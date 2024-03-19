@@ -6,6 +6,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Fade from '@mui/material/Fade';
 import { useTheme } from '@mui/styles';
 import { scroller } from 'react-scroll';
+import auth from '../auth/auth-helper';
 
 export default function ScrollTop() {
   const trigger = useScrollTrigger();
@@ -15,7 +16,7 @@ export default function ScrollTop() {
       duration: 1500,
       delay: 100,
       smooth: true,
-      offset: 50
+      offset: -10
     })
   }
 
@@ -28,7 +29,7 @@ export default function ScrollTop() {
         >
           <Box
             component='a'
-            onClick={()=>scrollToAnchor('hero')}
+            onClick={auth.isAuthenticated().user? ()=>scrollToAnchor('enrolled-in-courses'):()=>scrollToAnchor('hero')}
           >
             <Fab size="small" aria-label="scroll back to top" variant='extended' 
             sx={{backgroundColor:'primary.main', 

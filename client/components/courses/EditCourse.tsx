@@ -83,9 +83,9 @@ const useStyles = makeStyles(theme => ({
 interface CourseState{
   name:String,
   description:String,
-  image:any,
+  cover:any,
   category:String,
-  instructor:String,
+  teacher:String,
   lessons:Array<any>
 }
 interface ValuesState{
@@ -98,9 +98,9 @@ export default function EditCourse({match}){
   const [course, setCourse] = useState<CourseState>({
       name: '',
       description: '',
-      image:'',
+      cover:'',
       category:'',
-      instructor:{},
+      teacher:{},
       lessons: []
     })
   const [values, setValues] = useState<ValuesState>({
@@ -115,7 +115,7 @@ export default function EditCourse({match}){
         if (data.error) {
           setValues({...values, error: data.error})
         } else {
-          data.image = ''
+          data.cover = ''
           setCourse(data)
         }
       })
@@ -125,7 +125,7 @@ export default function EditCourse({match}){
   }, [match.params.courseId])
   const jwt = auth.isAuthenticated()
   const handleChange = (name: string) => event => {
-    const value = name === 'image'
+    const value = name === 'cover'
     ? event.target.files[0]
     : event.target.value
     setCourse({ ...course, [name]: value })
@@ -151,7 +151,7 @@ export default function EditCourse({match}){
     let courseData = new FormData()
     course.name && courseData.append('name', course.name)
     course.description && courseData.append('description', course.description)
-    course.image && courseData.append('image', course.image)
+    course.cover && courseData.append('cover', course.cover)
     course.category && courseData.append('category', course.category)
     courseData.append('lessons', JSON.stringify(course.lessons))
     update({
@@ -185,7 +185,7 @@ export default function EditCourse({match}){
                     value={course.name} onChange={handleChange('name')}
                   />}
                   subheader={<div>
-                        <Link underline="hover" to={"/user/"+course.instructor._id} className={classes.sub}>By {course.instructor.name}</Link>
+                        <Link underline="hover" to={"/user/"+course.teacher._id} className={classes.sub}>By {course.teacher.name}</Link>
                         {<TextField
                     margin="dense"
                     label="Category"
@@ -196,7 +196,7 @@ export default function EditCourse({match}){
                       </div>
                     }
                   action={
-             auth.isAuthenticated().user && auth.isAuthenticated().user._id == course.instructor._id &&
+             auth.isAuthenticated().user && auth.isAuthenticated().user._id == course.teacher._id &&
                 (<span className={classes.action}><Button variant="contained" color="secondary" onClick={clickSubmit}>Save</Button>
                     </span>)
             }
@@ -217,13 +217,13 @@ export default function EditCourse({match}){
                     className={classes.textfield}
                     value={course.description} onChange={handleChange('description')}
                   /><br/><br/>
-                  <input accept="image/*" onChange={handleChange('image')} className={classes.input} id="icon-button-file" type="file" />
-                 <label htmlFor="icon-button-file">
+                  <input accept="image/*" onChange={handleChange('cover')} className={classes.input} id="icon-button-file" type="file" />
+                  <label htmlFor="icon-button-file">
                     <Button variant="outlined" color="secondary" component="span">
                     Change Photo
                     <FileUpload/>
                     </Button>
-                </label> <span className={classes.filename}>{course.image ? course.image.name : ''}</span><br/>
+                  </label> <span className={classes.filename}>{course.cover ? course.cover.name : ''}</span><br/>
                   </div>
                 
 

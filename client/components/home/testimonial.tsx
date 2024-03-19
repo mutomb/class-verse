@@ -13,6 +13,7 @@ import { TestimonialItem } from '../../components/testimonial'
 import { data } from './testimonial.data'
 import HeadLineCurve from "../../public/images/headline-curve.svg"
 import HomeTestimonialIcon from "../../public/images/home-testimonial.png"
+import auth from '../auth/auth-helper'
 
 interface SliderArrowArrow {
   onClick?: () => void
@@ -62,6 +63,8 @@ const HomeTestimonial: FC = () => {
     prevArrow: <SliderArrow type="prev" />,
     nextArrow: <SliderArrow type="next" />,
   }
+  
+  if(auth.isAuthenticated().user) return(<></>)
 
   return (
     <Box id="testimonial" sx={{ pb: { xs: 6, md: 10 }, backgroundColor: 'background.paper' }}>
@@ -72,7 +75,7 @@ const HomeTestimonial: FC = () => {
               component="h2"
               sx={{
                 position: 'relative',
-                fontSize: { xs: 36, md: 46 },
+                fontSize: { xs: '2rem', md: '3.5rem' },
                 mt: { xs: 0, md: 7 },
                 mb: 4,
                 lineHeight: 1,

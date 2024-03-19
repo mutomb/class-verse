@@ -1,12 +1,14 @@
 import React, {useState, FormEvent} from 'react';
-import { Button, TextField, FormControlLabel, Checkbox, Link as MuiLink, Paper, Box, Grid, Typography,
-  Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, Icon} from '@mui/material';
+import { TextField, Link as MuiLink, Paper, Box, Grid, Typography} from '@mui/material';
+import {Error} from '@mui/icons-material'
 import { Logo } from '../logo';
 import { StyledButton } from '../styled-buttons'
 import {Link} from 'react-router-dom'
 import auth from './auth-helper'
 import {Redirect} from 'react-router-dom'
 import {signin} from './api-auth'
+import { scroller } from 'react-scroll'
+import { useHistory, useLocation } from 'react-router-dom'
 
 function Copyright(props: any) {
   return (
@@ -40,7 +42,7 @@ export default function SignInSide({location}) {
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault()
     const user = {
       email: values.email || undefined,
       password: values.password || undefined
@@ -56,6 +58,21 @@ export default function SignInSide({location}) {
       }
     })
   }
+  const path = useLocation().pathname
+  const history = useHistory()
+  const scrollToAnchor = (destination:string) => {
+    scroller.scrollTo(destination, {
+      duration: 1500,
+      delay: 100,
+      smooth: true,
+      offset: -10
+    })
+  }
+  const goToHomeAndScroll = async (destination:string) => {
+    await history.push('/')
+    await scrollToAnchor(destination)
+  }
+
   const {from} = location.state || {
     from: {
       pathname: '/'
@@ -91,9 +108,9 @@ export default function SignInSide({location}) {
               alignItems: 'center',
             }}
           >
-            <Logo />
+            <Logo onClick={()=>goToHomeAndScroll('hero')} />
             <Box sx={{ textAlign: 'center'}}>
-              <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: 32, md: 42 } }}>
+              <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: '1rem', md: '2rem' } }}>
                 Sign in to manage your course teaching or enrollment.
               </Typography>
             </Box>
@@ -108,7 +125,7 @@ export default function SignInSide({location}) {
                 autoComplete="email"
                 autoFocus
                 value={values.email} 
-                onChange={()=>handleChange('email')}
+                onChange={handleChange('email')}
               />
               <TextField
                 margin="normal"
@@ -120,24 +137,23 @@ export default function SignInSide({location}) {
                 id="password"
                 autoComplete="current-password"
                 value={values.password} 
-                onChange={()=>handleChange('password')}
+                onChange={handleChange('password')}
               />
               <br/> 
               {
                 values.error && (<Typography component="p" color="error">
-                  <Icon color="error" sx={{verticalAlign: 'middle'}}>{"Error:"}</Icon>
-                  {values.error}<br/>. {"Retry."}</Typography>)
+                  <Error color="error" sx={{verticalAlign: 'middle'}}/>
+                  Error: {values.error} Retry.</Typography>)
               }
               <Box sx={{
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
+                  my:2
                 }}>
-                <Link to="/signin">
-                  <StyledButton type='submit' disableHoverEffect={false} variant="outlined">
-                    Sign In
-                  </StyledButton>
-                </Link>
+                <StyledButton type='submit' disableHoverEffect={false} variant="outlined">
+                  Sign In
+                </StyledButton>
               </Box>
               <Grid container>
                 <Grid item xs>

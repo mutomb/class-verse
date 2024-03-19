@@ -6,7 +6,6 @@ import { useTheme } from '@emotion/react';
 function LinearDeterminate() {
   const [progress, setProgress] = useState(0);
   const theme = useTheme()
-  console.log("theme.primary.main")
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((oldProgress) => {

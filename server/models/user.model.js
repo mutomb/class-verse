@@ -1,21 +1,26 @@
 import mongoose from 'mongoose'
 import crypto from 'crypto'
+
 const UserSchema = new mongoose.Schema({
+  photo: {
+    data: Buffer,
+    contentType: String
+  },
   name: {
     type: String,
     trim: true,
-    required: 'Name is required'
+    required: true
   },
   email: {
     type: String,
     trim: true,
     unique: true,
     match: [/.+\@.+\..+/, 'Please fill a valid email address'],
-    required: 'Email is required'
+    required: true
   },
   hashed_password: {
     type: String,
-    required: "Password is required"
+    required: true
   },
   salt: String,
   updated: Date,
@@ -23,10 +28,19 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  educator: {
+  teacher: {
     type: Boolean,
     default: false
   },
+  experience: {
+    type: String,
+    trim: true
+  },
+  category: {
+    type: String,
+    trim: true
+  },
+  company: {type: mongoose.Schema.ObjectId, ref: 'Company'}
 })
 
 UserSchema

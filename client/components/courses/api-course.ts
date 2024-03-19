@@ -74,7 +74,7 @@ const create = async (params: { userId: any }, credentials: { t: any }, course: 
     }
   }
 
-  const listByInstructor = async (params: { userId: any }, credentials: { t: any }, signal: AbortSignal) => {
+  const listByTeacher = async (params: { userId: any }, credentials: { t: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/courses/by/'+params.userId, {
         method: 'GET',
@@ -127,7 +127,7 @@ const create = async (params: { userId: any }, credentials: { t: any }, course: 
     read,
     update,
     remove,
-    listByInstructor,
+    listByTeacher,
     newLesson,
     listPublished
   }

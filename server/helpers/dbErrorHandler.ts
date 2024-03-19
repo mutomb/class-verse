@@ -24,6 +24,8 @@ const getErrorMessage = (err) => {
     if (err.code) {
         switch (err.code) {
             case 11000:
+                message = getUniqueErrorMessage(err)
+                break
             case 11001:
                 message = getUniqueErrorMessage(err)
                 break
@@ -35,7 +37,7 @@ const getErrorMessage = (err) => {
             if (err.errors[errName].message) message = err.errors[errName].message
         }
     }
-
+    if(message.indexOf('email already exists') > -1) return 'Email already exists.'
     return message
 }
 

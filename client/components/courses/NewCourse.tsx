@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 interface ValuesState{
   name:String,
   description:String,
-  image:any,
+  cover:any,
   category:String,
   redirect:Boolean,
   error:String
@@ -58,7 +58,7 @@ export default function NewCourse() {
   const [values, setValues] = useState<ValuesState>({
       name: '',
       description: '',
-      image: '',
+      cover: '',
       category: '',
       redirect: false,
       error: ''
@@ -66,7 +66,7 @@ export default function NewCourse() {
   const jwt = auth.isAuthenticated()
 
   const handleChange = (name: string) => event => {
-    const value = name === 'image'
+    const value = name === 'cover'
       ? event.target.files[0]
       : event.target.value
     setValues({...values, [name]: value })
@@ -75,7 +75,7 @@ export default function NewCourse() {
     let courseData = new FormData()
     values.name && courseData.append('name', values.name)
     values.description && courseData.append('description', values.description)
-    values.image && courseData.append('image', values.image)
+    values.cover && courseData.append('cover', values.cover)
     values.category && courseData.append('category', values.category)
     create({
       userId: jwt.user._id
@@ -100,13 +100,13 @@ export default function NewCourse() {
             New Course
           </Typography>
           <br/>
-          <input accept="image/*" onChange={handleChange('image')} className={classes.input} id="icon-button-file" type="file" />
+          <input accept="image/*" onChange={handleChange('cover')} className={classes.input} id="icon-button-file" type="file" />
           <label htmlFor="icon-button-file">
             <Button variant="contained" color="secondary" component="span">
               Upload Photo
               <FileUpload/>
             </Button>
-          </label> <span className={classes.filename}>{values.image ? values.image.name : ''}</span><br/>
+          </label> <span className={classes.filename}>{values.cover ? values.cover.name : ''}</span><br/>
           <TextField id="name" label="Name" className={classes.textField} value={values.name} onChange={handleChange('name')} margin="normal"/><br/>
           <TextField
             id="multiline-flexible"

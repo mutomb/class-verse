@@ -1,9 +1,10 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import Box from '@mui/material/Box'
 import { Link as ScrollLink, scroller } from 'react-scroll'
 import { navigations } from './navigation.data'
 import HeadLineCurve from "../../public/images/headline-curve.svg"
 import { useHistory, useLocation } from 'react-router-dom'
+import auth from '../auth/auth-helper'
 
 const Navigation: FC = () => {
   const path = useLocation().pathname
@@ -12,9 +13,9 @@ const Navigation: FC = () => {
   const scrollToAnchor = (destination:string) => {
     scroller.scrollTo(destination, {
       duration: 1500,
-      delay: 100,
+      delay: 0,
       smooth: true,
-      offset: 50
+      offset: -10,
     })
   }
   const goToHomeAndScroll = async (destination:string) => {
@@ -23,13 +24,16 @@ const Navigation: FC = () => {
   }
   return (
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
-      {navigations.map(({ path: destination, label }) => (
-        <Box
+      {navigations.map(({ path: destination, label }) => {
+        if (!auth.isAuthenticated().user && ['enrolled-in-courses'].includes(destination)) return null
+        if (auth.isAuthenticated().user && ['hero', 'testimonial'].includes(destination)) return null
+        else{
+          return(<Box
           component={ScrollLink}
           key={destination}
           activeClass="current"
-          to={"#"}
-          onClick={location==='/'?()=>scrollToAnchor(destination):()=>goToHomeAndScroll(destination)}
+          onClick={location==='/'?()=>scrollToAnchor(destination) : ()=>goToHomeAndScroll(destination)}
+          to= {destination}
           spy={true}
           smooth={true}
           duration={350}
@@ -47,9 +51,7 @@ const Navigation: FC = () => {
             ...(destination === '/' && {
               color: 'primary.main',
             }),
-
             '& > span': { display: 'none' },
-
             '&.current>span': { display: 'block' },
             '&.current': { color: 'primary.main' },
             '&:hover': {
@@ -73,10 +75,9 @@ const Navigation: FC = () => {
             <img src={HeadLineCurve} alt="Headline curve" />
           </Box>
           {label}
-        </Box>
-      ))}
-    </Box>
-  )
+        </Box>)}
+      })}
+    </Box>)
 }
 
 export default Navigation

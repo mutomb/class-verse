@@ -9,7 +9,7 @@ const Footer: FC = () => {
   return (
     <Box
       component="footer"
-      sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText', mb:0, mt:'auto' }}
+      sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText', py:{xs:2, md:5}, mb:0, mt:'auto' }}
     >
       <Container>
         <Grid container spacing={1}>

@@ -10,6 +10,7 @@ import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgr
 import { data } from './feature.data'
 import HomeFeatureIcon from "../../public/images/home-feature.png"
 import HeadLineCurve from "../../public/images/headline-curve.svg"
+import auth from '../auth/auth-helper'
 
 interface LinearProgressProps {
   order: number
@@ -38,6 +39,7 @@ const BorderLinearProgress = styled(LinearProgress, {
 }))
 
 const HomeFeature: FC = () => {
+  if(auth.isAuthenticated().user) return(<></>)
   return (
     <Box id="feature" sx={{ py: { xs: 10, md: 14 }, backgroundColor: 'background.paper' }}>
       <Container>
@@ -148,7 +150,7 @@ const HomeFeature: FC = () => {
               component="h2"
               sx={{
                 position: 'relative',
-                fontSize: { xs: 40, md: 50 },
+                fontSize: { xs: '2rem', md: '3.5rem' },
                 ml: { xs: 0, md: 4 },
                 mt: 2,
                 mb: 3,
@@ -192,7 +194,7 @@ const HomeFeature: FC = () => {
             <Grid container spacing={2} sx={{ ml: { xs: 0, md: 2 } }}>
               {data.map(({ title, description, icon }, index) => (
                 <Grid key={String(index)} item xs={12} md={6}>
-                  <Box sx={{ px: 2, py: 1.5, boxShadow: 1, borderRadius: 4, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ px: 2, py: 1.5, boxShadow: 1, borderRadius: 4, display: 'flex', flexDirection:{xs:'column', md:'row'}, alignItems: 'center' }}>
                     <Box
                       sx={{
                         mr: 1,
@@ -205,7 +207,7 @@ const HomeFeature: FC = () => {
                         justifyContent: 'center',
                         color: 'primary.contrastText',
                         '& svg': {
-                          fontSize: 20,
+                          fontSize: 30,
                         },
                       }}
                     >

@@ -98,7 +98,7 @@ interface ValuesState{
 export default function Course({match}){
   const classes = useStyles()
   const [stats, setStats] = useState({})
-  const [course, setCourse] = useState({instructor:{}})
+  const [course, setCourse] = useState({teacher:{}})
   const [values, setValues] = useState<ValuesState>({
       redirect: false,
       error: ''
@@ -178,12 +178,12 @@ export default function Course({match}){
                 <CardHeader
                   title={course.name}
                   subheader={<div>
-                        <Link underline="hover" to={"/user/"+course.instructor._id} className={classes.sub}>By {course.instructor.name}</Link>
+                        <Link underline="hover" to={"/user/"+course.teacher._id} className={classes.sub}>By {course.teacher.name}</Link>
                         <span className={classes.category}>{course.category}</span>
                       </div>
                     }
                   action={<>
-             {auth.isAuthenticated().user && auth.isAuthenticated().user._id == course.instructor._id &&
+             {auth.isAuthenticated().user && auth.isAuthenticated().user._id == course.teacher._id &&
                 (<span className={classes.action}>
                   <Link underline="hover" to={"/teach/course/edit/" + course._id}>
                     <IconButton aria-label="Edit" color="secondary">
@@ -230,7 +230,7 @@ export default function Course({match}){
                 }
                   subheader={<Typography variant="body1" className={classes.subheading}>{course.lessons && course.lessons.length} lessons</Typography>}
                   action={
-             auth.isAuthenticated().user && auth.isAuthenticated().user._id == course.instructor._id && !course.published &&
+             auth.isAuthenticated().user && auth.isAuthenticated().user._id == course.teacher._id && !course.published &&
                 (<span className={classes.action}>
                   <NewLesson courseId={course._id} addLesson={addLesson}/>
                 </span>)

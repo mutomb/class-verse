@@ -3,7 +3,7 @@ import extend from 'lodash/extend'
 import fs from 'fs'
 import errorHandler from '../helpers/dbErrorHandler'
 import formidable from 'formidable'
-import defaultCourseImage from '../../client/public/images/courses/default.svg'
+import defaultCourseImage from '../../client/public/images/courses/courses-default.svg'
 
 const create = (req, res) => {
   let form = new formidable.IncomingForm()
@@ -15,10 +15,10 @@ const create = (req, res) => {
       })
     }
     let course = new Course(fields)
-    course.instructor= req.profile
-    if(files.image){
-      course.image.data = fs.readFileSync(files.image.path)
-      course.image.contentType = files.image.type
+    course.teacher= req.profile
+    if(files.cover){
+      course.cover.data = fs.readFileSync(files.cover.path)
+      course.cover.contentType = files.cover.type
     }
     try {
       let result = await course.save()
@@ -36,7 +36,7 @@ const create = (req, res) => {
  */
 const courseByID = async (req, res, next, id) => {
   try {
-    let course = await Course.findById(id).populate('instructor', '_id name')
+    let course = await Course.findById(id).populate('teacher', '_id name')
     if (!course)
       return res.status('400').json({
         error: "Course not found"
@@ -51,7 +51,7 @@ const courseByID = async (req, res, next, id) => {
 }
 
 const read = (req, res) => {
-  req.course.image = undefined
+  req.course.cover = undefined
   return res.json(req.course)
 }
 
@@ -82,8 +82,8 @@ const update = async (req, res) => {
     }
     course.updated = Date.now()
     if(files.image){
-      course.image.data = fs.readFileSync(files.image.path)
-      course.image.contentType = files.image.type
+      course.cover.data = fs.readFileSync(files.image.path)
+      course.cover.contentType = files.image.type
     }
     try {
       await course.save()
@@ -100,7 +100,7 @@ const newLesson = async (req, res) => {
   try {
     let lesson = req.body.lesson
     let result = await Course.findByIdAndUpdate(req.course._id, {$push: {lessons: lesson}, updated: Date.now()}, {new: true})
-                            .populate('instructor', '_id name')
+                            .populate('teacher', '_id name')
                             .exec()
     res.json(result)
   } catch (err) {
@@ -122,9 +122,9 @@ const remove = async (req, res) => {
   }
 }
 
-const isInstructor = (req, res, next) => {
-    const isInstructor = req.course && req.auth && req.course.instructor._id == req.auth._id
-    if(!isInstructor){
+const isTeacher = (req, res, next) => {
+    const isTeacher = req.course && req.auth && req.course.teacher._id == req.auth._id
+    if(!isTeacher){
       return res.status('403').json({
         error: "User is not authorized"
       })
@@ -132,15 +132,15 @@ const isInstructor = (req, res, next) => {
     next()
 }
 
-const listByInstructor = (req, res) => {
-  Course.find({instructor: req.profile._id}, (err, courses) => {
+const listByTeacher = (req, res) => {
+  Course.find({teacher: req.profile._id}, (err, courses) => {
     if (err) {
       return res.status(400).json({
         error: errorHandler.getErrorMessage(err)
       })
     }
     res.json(courses)
-  }).populate('instructor', '_id name')
+  }).populate('teacher', '_id name')
 }
 
 const listPublished = (req, res) => {
@@ -151,13 +151,13 @@ const listPublished = (req, res) => {
       })
     }
     res.json(courses)
-  }).populate('instructor', '_id name')
+  }).populate('teacher', '_id name')
 }
 
 const photo = (req, res, next) => {
-  if(req.course.image.data){
-    res.set("Content-Type", req.course.image.contentType)
-    return res.send(req.course.image.data)
+  if(req.course.cover.data){
+    res.set("Content-Type", req.course.cover.contentType)
+    return res.send(req.course.cover.data)
   }
   next()
 }
@@ -173,8 +173,8 @@ export default {
   list,
   remove,
   update,
-  isInstructor,
-  listByInstructor,
+  isTeacher,
+  listByTeacher,
   photo,
   defaultPhoto,
   newLesson,

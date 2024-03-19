@@ -10,7 +10,7 @@ router.route('/api/courses/published')
 
 router.route('/api/courses/by/:userId')
   .post(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.isEducator, courseCtrl.create)
-  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, courseCtrl.listByInstructor)
+  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, courseCtrl.listByTeacher)
 
 router.route('/api/courses/photo/:courseId')
   .get(courseCtrl.photo, courseCtrl.defaultPhoto)
@@ -19,12 +19,12 @@ router.route('/api/courses/defaultphoto')
   .get(courseCtrl.defaultPhoto)
 
 router.route('/api/courses/:courseId/lesson/new')
-  .put(authCtrl.requireSignin, courseCtrl.isInstructor, courseCtrl.newLesson)
+  .put(authCtrl.requireSignin, courseCtrl.isTeacher, courseCtrl.newLesson)
 
 router.route('/api/courses/:courseId')
   .get(courseCtrl.read)
-  .put(authCtrl.requireSignin, courseCtrl.isInstructor, courseCtrl.update)
-  .delete(authCtrl.requireSignin, courseCtrl.isInstructor, courseCtrl.remove)
+  .put(authCtrl.requireSignin, courseCtrl.isTeacher, courseCtrl.update)
+  .delete(authCtrl.requireSignin, courseCtrl.isTeacher, courseCtrl.remove)
 
 router.param('courseId', courseCtrl.courseByID)
 router.param('userId', userCtrl.userByID)

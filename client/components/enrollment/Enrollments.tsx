@@ -1,74 +1,64 @@
 import React, { FC } from 'react'
-import { makeStyles } from '@mui/styles'
-import ImageList from '@mui/material/ImageList'
-import ImageListItem from '@mui/material/ImageListItem'
-import ImageListItemBar from '@mui/material/ImageListItemBar'
+import {ImageList, ImageListItem, ImageListItemBar, Box, useMediaQuery} from '@mui/material'
 import CompletedIcon from '@mui/icons-material/VerifiedUser'
 import InProgressIcon from '@mui/icons-material/DonutLarge'
 import {Link} from 'react-router-dom'
+import MuiLink from '@mui/material/Link'
+import { useTheme } from '@mui/material/styles'
 
-const useStyles = makeStyles(theme => ({
-  title: {
-    padding:`${theme.spacing(3)}px ${theme.spacing(2.5)}px ${theme.spacing(2)}px`,
-    color: theme.palette.openTitle
-  },
-  media: {
-    minHeight: 400
-  },
-  container: {
-    minWidth: '100%',
-    paddingBottom: '14px'
-  },
-  gridList: {
-    width: '100%',
-    minHeight: 100,
-    padding: '12px 0 10px'
-  },
-  tile: {
-    textAlign: 'center'
-  },
-  image: {
-    height: '100%'
-  },
-  tileBar: {
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
-    textAlign: 'left'
-  },
-  tileTitle: {
-    fontSize:'1.1em',
-    marginBottom:'5px',
-    color:'#fffde7',
-    display:'block'
-  },
-  action:{
-    margin: '0 10px'
-  },
-  progress:{
-    color: '#b4f8b4'
-  }
-}))
+
 interface EnrollmentsProps{
   enrollments:Array<any>
 }
 const Enrollments: FC<EnrollmentsProps> = ({enrollments:enrollments}) =>{
-  const classes = useStyles()
-    return (
-      <div>
-        <ImageList rowHeight={120} className={classes.gridList} cols={4}>
+    const { breakpoints } = useTheme()
+    const matchMobileView = useMediaQuery(breakpoints.down('md'))
+    return (<Box>
+        <ImageList rowHeight={120} 
+          sx={{
+            width: '100%',
+            minHeight: 100,
+            padding: '12px 0 10px'
+          }} 
+          cols={matchMobileView ? 1 : 3}
+          >
           {enrollments.map((course, i) => (
-            <ImageListItem key={i} className={classes.tile}>
-              <Link underline="hover" to={"/learn/"+course._id}><img className={classes.image} src={'/api/courses/photo/'+course.course._id} alt={course.course.name} /></Link>
-              <ImageListItemBar className={classes.tileBar}
-                title={<Link underline="hover" to={"/learn/"+course._id} className={classes.tileTitle}>{course.course.name}</Link>}
-                actionIcon={<div className={classes.action}>
-                 {course.completed ? (<CompletedIcon color="secondary"/>)
-                 : (<InProgressIcon className={classes.progress} />)
+            <ImageListItem key={i} sx={{textAlign: 'center'}}>
+              <Link to={"/learn/"+course._id}>
+                <img style={{height: '100%'}} src={'/api/courses/photo/'+course.course._id} 
+                loading="lazy"
+                alt={course.course.name} />
+                </Link>
+              <ImageListItemBar 
+              sx={{
+                backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                textAlign: 'left'
+              }} 
+                title={
+                  <Link style={{textDecorationLine:'none'}}  to={"/learn/"+course._id}>
+                  <MuiLink
+                    component='span'
+                    underline="hover"
+                    sx={{
+                      display: 'block',
+                      mb: 1,
+                      color: 'primary.contrastText',
+                      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                      textAlign: 'left'
+                    }}
+                  >
+                    {course.course.name}
+                  </MuiLink>
+                </Link>}
+                actionIcon={<div style={{margin: '0 10px'}}>
+                 {course.completed ? (<CompletedIcon sx={{color:"primary.main"}} />)
+                 : (<InProgressIcon sx={{color: 'seondary.main'}} 
+                 aria-label={`info about ${course.course.name}`} />)
                 }</div>}
               />
             </ImageListItem>
           ))}
         </ImageList>
-    </div>
-    )
+    </Box>)
 }
 export default Enrollments;

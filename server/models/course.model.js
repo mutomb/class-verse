@@ -10,10 +10,10 @@ const CourseSchema = new mongoose.Schema({
   name: {
     type: String,
     trim: true,
-    required: 'Name is required',
+    required: true,
     unique: true
   },
-  image: {
+  cover: {
     data: Buffer,
     contentType: String
   },
@@ -23,19 +23,24 @@ const CourseSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: 'Category is required'
+    required: true
   },
   updated: Date,
   created: {
     type: Date,
     default: Date.now
   },
-  instructor: {type: mongoose.Schema.ObjectId, ref: 'User'},
+  teacher: {type: mongoose.Schema.ObjectId, ref: 'User'},
   published: {
     type: Boolean,
     default: false
   },
-  lessons: [LessonSchema]
+  lessons: [LessonSchema],
+  price: {
+    type: Number,
+    required: true
+  }
+
 })
 
 export default mongoose.model('Course', CourseSchema)

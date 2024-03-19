@@ -2,14 +2,13 @@ import React, { FC } from 'react'
 // import Image from 'next/image'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-
-import { Mentor } from '../../interfaces/mentor'
+import { Teacher } from '../../interfaces/teacher'
 
 interface Props {
-  item: Mentor
+  item: Teacher
 }
 
-const MentorCardItem: FC<Props> = ({ item }) => {
+const TeacherCardItem: FC<Props> = ({ item }) => {
   return (
     <Box
       sx={{
@@ -37,8 +36,7 @@ const MentorCardItem: FC<Props> = ({ item }) => {
             mb: 2,
           }}
         >
-          <Box component='img' src={item.photo} sx={{width:'100%', height:'auto'}} alt={'Mentor ' + item.id} />
-          {/* <Image src={item.photo as string} width={570} height={427} alt={'Mentor ' + item.id} /> */}
+          <Box component='img' src={item.photo} sx={{width:'100%', height:'auto'}} alt={'Teacher ' + item.id} />
         </Box>
         <Box sx={{ mb: 2 }}>
           <Typography component="h2" variant="h4" sx={{ fontSize: '1.4rem' }}>
@@ -46,7 +44,7 @@ const MentorCardItem: FC<Props> = ({ item }) => {
           </Typography>
           <Typography sx={{ mb: 2, color: 'text.secondary' }}>{item.category}</Typography>
           <Typography sx={{ mb: 2, color: 'text.secondary' }} variant="subtitle1">
-            {item.description}
+            {item.experience}
           </Typography>
           <Box sx={{ '& img': { height: 26 } }}>
             {/* eslint-disable-next-line */}
@@ -57,4 +55,4 @@ const MentorCardItem: FC<Props> = ({ item }) => {
     </Box>
   )
 }
-export default MentorCardItem
+export default TeacherCardItem

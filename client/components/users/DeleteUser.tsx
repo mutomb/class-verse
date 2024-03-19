@@ -10,6 +10,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import auth from '../auth/auth-helper'
 import {remove} from './api-user'
 import {Redirect} from 'react-router-dom'
+import { useTheme } from '@mui/material/styles'
 
 interface DeleteUserProps{
   userId:String
@@ -18,8 +19,9 @@ interface DeleteUserProps{
 const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
   const [open, setOpen] = useState<boolean>(false)
   const [redirect, setRedirect] = useState<boolean>(false)
-
   const jwt = auth.isAuthenticated()
+  const theme = useTheme();
+
   const clickButton = () => {
     setOpen(true)
   }
@@ -43,7 +45,17 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
     return <Redirect to='/'/>
   }
     return (<span>
-      <IconButton aria-label="Delete" onClick={clickButton} color="secondary">
+      <IconButton aria-label="Delete" onClick={clickButton} color="error"
+        sx={{
+          zIndex: 10,
+          boxShadow: 3,
+          transform: 'unset',
+          mr: 1, 
+          ':hover':{
+            transform: 'translateY(-3px)',
+            transition: theme.transitions.create(['transform'])
+          }}}
+      >
         <DeleteIcon/>
       </IconButton>
 

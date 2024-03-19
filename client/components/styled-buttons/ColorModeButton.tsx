@@ -11,7 +11,18 @@ export default function ColorModeButton() {
 
   return (
       <IconButton
-        sx={{ ml: 1, 
+        sx={{ ml: 1,
+          zIndex: 10,
+          boxShadow: 3,
+          display: 'inline-flex',
+          alignItems: 'center',
+          userSelect: 'none',
+          transform: 'unset',
+          position: 'relative',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          WebkitTapHighlightColor: 'transparent',
+          verticalAlign: 'middle', 
           ':hover':{
             transform: 'translateY(-3px)',
             transition: theme.transitions.create(['transform'])

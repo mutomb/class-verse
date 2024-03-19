@@ -126,7 +126,7 @@ interface ValuesState{
 
 export default function Enrollment({match}){
   const classes = useStyles()
-  const [enrollment, setEnrollment] = useState({course:{instructor:[]}, lessonStatus: []})
+  const [enrollment, setEnrollment] = useState({course:{teacher:[]}, lessonStatus: []})
   const [values, setValues] = useState<ValuesState>({
       error: '',
       drawer: -1
@@ -233,7 +233,7 @@ export default function Enrollment({match}){
                 <CardHeader
                   title={enrollment.course.name}
                   subheader={<div>
-                        <Link underline="hover" to={"/user/"+enrollment.course.instructor._id} className={classes.sub}>By {enrollment.course.instructor.name}</Link>
+                        <Link underline="hover" to={"/user/"+enrollment.course.teacher._id} className={classes.sub}>By {enrollment.course.teacher.name}</Link>
                         <span className={classes.category}>{enrollment.course.category}</span>
                       </div>
                     }
@@ -265,7 +265,7 @@ export default function Enrollment({match}){
                 }
                   subheader={<Typography variant="body1" className={classes.subheading}>{enrollment.course.lessons && enrollment.course.lessons.length} lessons</Typography>}
                   action={
-             auth.isAuthenticated().user && auth.isAuthenticated().user._id == enrollment.course.instructor._id &&
+             auth.isAuthenticated().user && auth.isAuthenticated().user._id == enrollment.course.teacher._id &&
                 (<span className={classes.action}>
                   
                 </span>)

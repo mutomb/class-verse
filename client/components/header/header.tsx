@@ -5,12 +5,34 @@ import { Menu, Close } from '@mui/icons-material'
 import { ColorModeButton } from '../styled-buttons'
 import { AppBar, Toolbar, Box, Slide, Container, IconButton,useMediaQuery, useTheme, 
   useScrollTrigger} from '@mui/material'
+import { scroller } from 'react-scroll'
+import { useHistory, useLocation } from 'react-router-dom'
+import auth from '../auth/auth-helper'
 
 const Header: FC = () => {
   const [visibleMenu, setVisibleMenu] = useState<boolean>(false)
   const { breakpoints } = useTheme()
   const matchMobileView = useMediaQuery(breakpoints.down('md'))
   const trigger = useScrollTrigger();
+  
+  const onClickLogo = () => {
+    auth.isAuthenticated().user?scrollToAnchor('enrolled-in-courses'):goToHomeAndScroll('hero')
+  }
+  const path = useLocation().pathname
+  const location = path.split('/')[1]
+  const history = useHistory()
+  const scrollToAnchor = (destination:string) => {
+    scroller.scrollTo(destination, {
+      duration: 1500,
+      delay: 100,
+      smooth: true,
+      offset: -10
+    })
+  }
+  const goToHomeAndScroll = async (destination:string) => {
+    await history.push('/')
+    await scrollToAnchor(destination)
+  }
   return (<>
     <Slide id="app-bar" appear={false} direction="down" in={!trigger} color='inherit'>
       <AppBar position="sticky" color='inherit' enableColorOnDark={true}>
@@ -18,9 +40,15 @@ const Header: FC = () => {
           <Box sx={{ backgroundColor: 'inherit', width:'100%', mx:0 }}>
             <Container sx={{ py: { xs: 2, md: 3 } }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Logo />
+                <Logo onClick={onClickLogo}/>
                 <Box sx={{ ml: 'auto', display: { xs: 'inline-flex', md: 'none' } }}>
-                  <IconButton onClick={() => setVisibleMenu(!visibleMenu)}>
+                  <IconButton 
+                  sx={{
+                    position: 'fixed',
+                    top: 20,
+                    right: 20,
+                  }}
+                  onClick={() => setVisibleMenu(!visibleMenu)}>
                     <Menu sx={{color: 'primary.main'}} />
                   </IconButton>
                 </Box>
@@ -52,8 +80,8 @@ const Header: FC = () => {
                     <IconButton
                       sx={{
                         position: 'fixed',
-                        top: 10,
-                        right: 10,
+                        top: 20,
+                        right: 20,
                       }}
                       onClick={() => setVisibleMenu(!visibleMenu)}
                     >

@@ -43,16 +43,16 @@ const read = async (params: { userId: any; }, credentials: { t: any; }, signal: 
   }
 }
 
-const update = async (params: { userId: any; }, credentials: { t: any; }, user: { name: String; email: String; password: String; educator: Boolean; }) => {
+const update = async (params: { userId: any; }, credentials: { t: any; }, 
+  user: FormData) => {
   try {
     let response = await fetch('/api/users/' + params.userId, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + credentials.t
       },
-      body: JSON.stringify(user)
+      body: user
     })
     return await response.json()
   } catch(err) {

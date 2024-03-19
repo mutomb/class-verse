@@ -10,6 +10,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import CertificateIcon from "../../public/images/certificate.png"
 import HomeHeroIcon from "../../public/images/home-hero.png"
 import HeadLineCurve from "../../public/images/headline-curve.svg"
+import auth from '../auth/auth-helper'
 
 interface Exp {
   label: string
@@ -29,7 +30,7 @@ const exps: Array<Exp> = [
     value: '20+',
   },
   {
-    label: 'Experience Mentors',
+    label: 'Experience Teachers',
     value: '10+',
   },
 ]
@@ -51,6 +52,7 @@ const ExpItem: FC<ExpItemProps> = ({ item }) => {
 }
 
 const HomeHero: FC = () => {
+  if(auth.isAuthenticated().user) return(<></>)
   return (
     <Box id="hero" sx={{ backgroundColor: 'background.paper', position: 'relative', pt: 4, pb: { xs: 8, md: 10 } }}>
       <Container maxWidth="lg">
@@ -70,7 +72,7 @@ const HomeHero: FC = () => {
                   component="h2"
                   sx={{
                     position: 'relative',
-                    fontSize: { xs: 40, md: 72 },
+                    fontSize: { xs: '2rem', md: '4.5rem' },
                     letterSpacing: 1.5,
                     fontWeight: 'bold',
                     lineHeight: 1.3,
@@ -174,7 +176,6 @@ const HomeHero: FC = () => {
                 backgroundColor: 'background.paper',
                 display: 'flex',
                 alignItems: 'flex-start',
-                width: 280,
               }}
             >
               <Box
