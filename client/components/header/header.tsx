@@ -14,13 +14,25 @@ const Header: FC = () => {
   const { breakpoints } = useTheme()
   const matchMobileView = useMediaQuery(breakpoints.down('md'))
   const trigger = useScrollTrigger();
-  
-  const onClickLogo = () => {
-    auth.isAuthenticated().user?scrollToAnchor('enrolled-in-courses'):goToHomeAndScroll('hero')
-  }
   const path = useLocation().pathname
   const location = path.split('/')[1]
   const history = useHistory()
+
+  const isActive = (path: string) => {
+    return location === path
+  }
+  const isPartActive = (path: string) => {
+    return location.includes(path)
+  }
+
+  const onClickLogo = () => {
+    if (auth.isAuthenticated().user){
+      isActive('/')? scrollToAnchor('enrolled-in-courses') : goToHomeAndScroll('enrolled-in-courses') 
+    }else{
+      isActive('/')? scrollToAnchor('hero') : goToHomeAndScroll('hero')
+    }
+  }
+
   const scrollToAnchor = (destination:string) => {
     scroller.scrollTo(destination, {
       duration: 1500,
@@ -33,6 +45,7 @@ const Header: FC = () => {
     await history.push('/')
     await scrollToAnchor(destination)
   }
+
   return (<>
     <Slide id="app-bar" appear={false} direction="down" in={!trigger} color='inherit'>
       <AppBar position="sticky" color='inherit' enableColorOnDark={true}>
