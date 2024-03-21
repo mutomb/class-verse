@@ -167,6 +167,7 @@ const photo = (req, res, next) => {
 }
 
 const defaultPhoto = (req, res) => {
+  console.log('user default photo request')
   return res.sendFile(path.resolve(process.cwd()+profileImage))
 }
 

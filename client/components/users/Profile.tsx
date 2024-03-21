@@ -4,7 +4,7 @@ IconButton, Typography, Box, Avatar} from '@mui/material'
 import Edit from '@mui/icons-material/Edit'
 import DeleteUser from './DeleteUser'
 import auth from '../auth/auth-helper'
-import {read} from './api-user'
+import {fetchImage, read} from './api-user'
 import {Redirect, Link} from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 
@@ -13,7 +13,11 @@ export default function Profile({match}){
   const [redirectToSignin, setRedirectToSignin] = useState<Boolean>(false)
   const jwt = auth.isAuthenticated()
   const theme = useTheme();
-
+  const [photo, setPhoto] = useState("");
+  const [logo, setLogo] = useState("");
+  const userPhotoUrl = user._id ? `/api/users/photo/${user._id}?${new Date().getTime()}`: '/api/users/defaultphoto'
+  const companyLogoUrl = (user._id && user.company?._id) ? 
+                        `/api/users/${user._id}/company/photo/${user.company._id}?${new Date().getTime()}`: '/api/users/defaultphoto'
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
@@ -33,9 +37,34 @@ export default function Profile({match}){
     }
 
   }, [match.params.userId])
-  const userPhotoUrl = user._id ? `/api/users/photo/${user._id}?${new Date().getTime()}`: '/api/users/defaultphoto'
-  const companyLogoUrl = (user._id && user.company?._id) ? 
-                        `/api/users/${user._id}/company/photo/${user.company._id}?${new Date().getTime()}`: '/api/users/defaultphoto'
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    const signal = abortController.signal
+
+    fetchImage(userPhotoUrl, {t: jwt.token}, signal).then((data) => {
+      if(data) setPhoto(URL.createObjectURL(data));
+    })
+
+    return function cleanup(){
+      abortController.abort()
+    }
+
+  }, [user._id])
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    const signal = abortController.signal
+
+    fetchImage(companyLogoUrl, {t: jwt.token}, signal).then((data) => {
+      if(data) setLogo(URL.createObjectURL(data));
+    })
+
+    return function cleanup(){
+      abortController.abort()
+    }
+
+  }, [user._id, user.company])
 
     if (redirectToSignin) {
       return <Redirect to='/signin'/>
@@ -74,7 +103,7 @@ export default function Profile({match}){
                   fontWeight: 'bold', textAlign: {xs: 'center', md: 'unset'}}}}
                 >
                   <Avatar 
-                    src={userPhotoUrl}
+                    src={photo}
                     alt='profile picture' 
                     sx={{
                       width: 80,
@@ -134,7 +163,7 @@ export default function Profile({match}){
                   />
                   <ListItemText sx={{textAlign:'justify'}} primary={user.company.name} 
                     secondary={<Box sx={{ overflow: 'hidden', borderRadius: 2, height: 50, mb: 2 }}>
-                      <Box component='img' src={companyLogoUrl} sx={{width: 50, height:'auto'}} alt={user.company.name + ' logo'} />
+                      <Box component='img' src={logo} sx={{width: 50, height:'auto'}} alt={user.company.name + ' logo'} />
                     </Box>} />
                 </ListItem>
                 </>)

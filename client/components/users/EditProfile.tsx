@@ -1,11 +1,13 @@
 import React, {useState, FormEvent, useEffect, ChangeEvent} from 'react';
 import { TextField, Link as MuiLink, Paper, Box, Grid, Typography, Button, FormControlLabel,
-  Switch } from '@mui/material';
-import {Error, FileUpload} from '@mui/icons-material'
-import { read, update } from './api-user'
+  Switch, IconButton } from '@mui/material';
+import {Error, FileUpload, Delete, Edit} from '@mui/icons-material'
+import { fetchImage, read, update } from './api-user'
 import { StyledButton } from '../styled-buttons'
 import { Redirect} from 'react-router-dom'
 import auth from '../auth/auth-helper';
+import { useTheme } from '@mui/material/styles'
+
 
 function Copyright(props: any) {
   return (
@@ -53,6 +55,9 @@ export default function EditProfile({ match }) {
   })
   
   const jwt = auth.isAuthenticated()
+  const theme = useTheme();
+  const [photoLocalURL, setPhotoLocalURL] = useState('');
+  const [logoLocalURL, setLogoLocalURL] = useState('');
 
   useEffect(() => {
       const abortController = new AbortController()
@@ -68,15 +73,44 @@ export default function EditProfile({ match }) {
               category: (data.category && data.category!=='null')? data.category:'',  
               experience: (data.experience && data.experience!=='null')? data.experience:'', 
               company: (data.company && data.company!=='null')? {name: data.company.name, id: data.company._id, logo: data.company.logo} : {} })
-              console.log(data.category==='null')
         }
       })
       return function cleanup(){
         abortController.abort()
       }
     }, [match.params.userId])
-  const userPhotoUrl = values.id? `/api/users/photo/${values.id}?${new Date().getTime()}`: '/api/users/defaultphoto'
-  const companyLogoUrl = (values.id && values.company?.id) ? `/api/users/${values.id}/company/photo/${values.company.id}?${new Date().getTime()}`: '/api/users/defaultphoto'
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    const signal = abortController.signal
+
+    if (values.id) {
+      const userPhotoUrl = `/api/users/photo/${values.id}?${new Date().getTime()}`
+      fetchImage(userPhotoUrl, {t: jwt.token}, signal).then((data) => {
+        if(data) setPhotoLocalURL(URL.createObjectURL(data));
+      })
+    }
+
+    return function cleanup(){
+      abortController.abort()
+    }
+  }, [values.id])
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    const signal = abortController.signal
+    if(values.id && values.company?.id){
+      const companyLogoUrl = `/api/users/${values.id}/company/photo/${values.company.id}?${new Date().getTime()}`
+      fetchImage(companyLogoUrl, {t: jwt.token}, signal).then((data) => {
+        if(data) setLogoLocalURL(URL.createObjectURL(data));
+      })
+    }
+
+    return function cleanup(){
+      abortController.abort()
+    }
+  }, [values.id, values.company && values.company?.id]) 
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!(values.name && values.email && values.password)) return;
@@ -112,6 +146,8 @@ export default function EditProfile({ match }) {
     name.indexOf('company') > -1 
     ? setValues({ ...values, company:{ ...values.company, [name.slice(7).toLocaleLowerCase()]: value}}) 
     :setValues({ ...values, [name]: value })
+    name === 'photo' && setPhotoLocalURL(URL.createObjectURL(value))
+    name === 'companyLogo' && setLogoLocalURL(URL.createObjectURL(value))
   }
 
   const handleCheck = (event: ChangeEvent<HTMLFormElement>) => {
@@ -153,19 +189,50 @@ export default function EditProfile({ match }) {
                Update your profile
               </Typography>
             </Box>
-            <Box sx={{overflow: 'hidden', borderRadius: '50%', height: 200, mb: 2 }}>
-              <Box component='img' src={userPhotoUrl} sx={{width: 200, height:'auto'}} alt={'Teacher ' + values.name + 'profile picture'} />
-            </Box>
-            <input accept="image/*" onChange={handleChange('photo')} style={{display: 'none'}} id="photo-upload-button" type="file" />
-            <label htmlFor="photo-upload-button">
-                <Button variant="outlined" color="primary" component="span">
-                  Change Photo
-                  <FileUpload/>
+            <Box sx={{ position: 'relative', mx: 'auto'}}>
+              <Box sx={{ overflow: 'hidden', borderRadius: '50%', height: 200, mb: 2 }}>
+                <Box component='img' src={photoLocalURL? photoLocalURL : '/api/users/defaultphoto'} sx={{width: 200, height:'auto'}} alt={'Teacher ' + values.name + 'profile picture'} />
+              </Box>
+              <Box sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: 200, height: 200, borderRadius: '50%',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                        backgroundColor: 'secondary.main', opacity: 0,
+                         ':hover':{
+                          opacity: 0.7,
+                          transition: 'opacity 0.5s ease'
+                        },
+                      }}>
+                <input accept="image/*" onChange={handleChange('photo')} style={{display: 'none'}} id="photo-upload-button" type="file" />
+                <label htmlFor="photo-upload-button">
+                <Button aria-label="Edit" color="primary" component="span"
+                                      sx={{
+                                        zIndex: 10,
+                                        boxShadow: 3,
+                                        width: '40px',
+                                        height: '40px',
+                                        minWidth: 0,
+                                        borderRadius:'50%',
+                                        transform: 'unset',
+                                        ':hover':{
+                                          transform: 'translateY(-3px)',
+                                          transition: theme.transitions.create(['transform'])
+                                        }}}>
+                  <Edit/>
                 </Button>
-            </label> 
-            <span style={{marginLeft: '10px'}}>{values.photo ? values.photo.name : ''}</span><br/>    
-            <br/> 
-            <br />
+                </label> 
+                {photoLocalURL && (<IconButton aria-label="Delete"  color="error" onClick={()=>setPhotoLocalURL('')}
+                              sx={{
+                                zIndex: 10,
+                                boxShadow: 3,
+                                transform: 'unset',
+                                mr: 1, 
+                                ':hover':{
+                                  transform: 'translateY(-3px)',
+                                  transition: theme.transitions.create(['transform'])
+                                }}}>
+                            <Delete />
+                          </IconButton>)}
+              </Box>
+            </Box>   
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
              <TextField
                 margin="normal"
@@ -257,18 +324,51 @@ export default function EditProfile({ match }) {
                   alignItems: 'center',
                 }}
               >
-                <Box sx={{ overflow: 'hidden', borderRadius: 2, height: 100, mb: 2 }}>
-                  <Box component='img' src={companyLogoUrl} sx={{width: 100, height:'auto'}} alt={values.company.name + ' logo'} />
-                </Box>
-                <Box sx={{ color: 'primary.main' }}> Upload company logo </Box> 
-                <input accept="image/*" onChange={handleChange('companyLogo')} style={{display: 'none'}} id="logo-upload-button" type="file" />
-                <label htmlFor="logo-upload-button">
-                    <Button variant="outlined" color="primary" component="span">
-                      Upload Logo
-                    <FileUpload/>
+                <Box sx={{ position: 'relative', mx: 'auto'}}>
+                  <Box sx={{ overflow: 'hidden', borderRadius: '50%', height: 100, mb: 2 }}>
+                    <Box component='img' src={logoLocalURL? logoLocalURL : '/api/users/defaultphoto'} sx={{width: 100, height:'auto'}} alt={values.company? values.company.name + ' logo': ''} />
+                  </Box>
+                  <Box sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: 100, height: 100, borderRadius: 2,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                            backgroundColor: 'secondary.main', opacity: 0,
+                            ':hover':{
+                              opacity: 0.7,
+                              transition: 'opacity 0.5s ease'
+                            },
+                          }}>
+                    <input accept="image/*" onChange={handleChange('companyLogo')} style={{display: 'none'}} id="logo-upload-button" type="file" />
+                    <label htmlFor="logo-upload-button">
+                    <Button aria-label="Edit" color="primary" component="span"
+                                          sx={{
+                                            zIndex: 10,
+                                            boxShadow: 3,
+                                            width: '40px',
+                                            height: '40px',
+                                            minWidth: 0,
+                                            borderRadius:'50%',
+                                            transform: 'unset',
+                                            ':hover':{
+                                              transform: 'translateY(-3px)',
+                                              transition: theme.transitions.create(['transform'])
+                                            }}}>
+                      <Edit/>
                     </Button>
-                </label>
-                <span style={{marginLeft: '10px'}}>{(values.company && values.company.logo)? values.company.logo.name : ''}</span><br/>    
+                    </label> 
+                    {logoLocalURL && (<IconButton aria-label="Delete"  color="error" onClick={()=>setLogoLocalURL('')}
+                                  sx={{
+                                    zIndex: 10,
+                                    boxShadow: 3,
+                                    transform: 'unset',
+                                    mr: 1, 
+                                    ':hover':{
+                                      transform: 'translateY(-3px)',
+                                      transition: theme.transitions.create(['transform'])
+                                    }}}>
+                                <Delete />
+                              </IconButton>)}
+                  </Box>
+                </Box> 
+
               </Box>
               </>):null
               }

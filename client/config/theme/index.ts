@@ -4,7 +4,7 @@ import typography from './typography'
 import paletteBase from './palette-base'
 import paletteLight from './palette-light'
 import paletteDark from './palette-dark'
-import shadows from './shadows'
+import {DarkShadows, LightShadows} from './shadows'
 
 /*
 ***Augment the DefaultTheme (empty object) in @mui/styles with Theme from the core.
@@ -15,8 +15,10 @@ declare module '@mui/styles/defaultTheme' {
 }
 
 // default
-const createTheme = (darkMode?: 'dark' | 'light'): Theme => {
-  const palette = darkMode !== 'light' ? { ...paletteBase, ...paletteDark } : { ...paletteBase, ...paletteLight }
+let shadows = DarkShadows;
+const createTheme = (mode?: 'dark' | 'light'): Theme => {
+  const palette = mode !== 'light' ? { ...paletteBase, ...paletteDark } : { ...paletteBase, ...paletteLight }
+  shadows = mode === 'light' ? DarkShadows : LightShadows; 
   return createMuiTheme({
     palette,
     typography,

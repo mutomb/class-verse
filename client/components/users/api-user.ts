@@ -76,10 +76,27 @@ const remove = async (params: { userId: any; }, credentials: { t: any; }) => {
   }
 }
 
+const fetchImage = async (url: string, credentials: { t: any; }, signal: AbortSignal) => {
+  try {
+    let response = await fetch(url, {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Authorization': 'Bearer ' + credentials.t
+      }
+    })
+    return await response.blob()
+  } catch(err) {
+      console.log(err)
+  }
+}
+
+
 export {
   create,
   list,
   read,
   update,
-  remove
+  remove,
+  fetchImage
 }
