@@ -85,7 +85,8 @@ const fetchImage = async (url: string, credentials: { t: any; }, signal: AbortSi
         'Authorization': 'Bearer ' + credentials.t
       }
     })
-    return await response.blob()
+    const isDefault = eval(response.headers.get('defaultphoto'))
+    return {data: await response.blob(), isDefault: isDefault === null? false: isDefault}
   } catch(err) {
       console.log(err)
   }

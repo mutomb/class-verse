@@ -1,26 +1,12 @@
 import React, {useState, FormEvent, useEffect, ChangeEvent} from 'react';
-import { TextField, Link as MuiLink, Paper, Box, Grid, Typography, Button, FormControlLabel,
+import { TextField, Paper, Box, Grid, Typography, Button, FormControlLabel,
   Switch, IconButton } from '@mui/material';
-import {Error, FileUpload, Delete, Edit} from '@mui/icons-material'
+import {Error, Delete, Edit} from '@mui/icons-material'
 import { fetchImage, read, update } from './api-user'
 import { StyledButton } from '../styled-buttons'
 import { Redirect} from 'react-router-dom'
 import auth from '../auth/auth-helper';
 import { useTheme } from '@mui/material/styles'
-
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <MuiLink color="inherit" href="#">
-        Funda Gate
-      </MuiLink>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 interface SignUpProps{
   id: string,
@@ -56,60 +42,98 @@ export default function EditProfile({ match }) {
   
   const jwt = auth.isAuthenticated()
   const theme = useTheme();
-  const [photoLocalURL, setPhotoLocalURL] = useState('');
-  const [logoLocalURL, setLogoLocalURL] = useState('');
-
-  useEffect(() => {
-      const abortController = new AbortController()
-      const signal = abortController.signal
-
-      read({
-        userId: match.params.userId
-      }, {t: jwt.token}, signal).then((data) => {
-        if (data && data.error) {
-          setValues({...values, error: data.error})
-        } else {
-            setValues({...values, id: data._id, name: data.name, email: data.email, teacher: data.teacher, 
-              category: (data.category && data.category!=='null')? data.category:'',  
-              experience: (data.experience && data.experience!=='null')? data.experience:'', 
-              company: (data.company && data.company!=='null')? {name: data.company.name, id: data.company._id, logo: data.company.logo} : {} })
-        }
-      })
-      return function cleanup(){
-        abortController.abort()
-      }
-    }, [match.params.userId])
+  const defaultphotoURL ='/api/users/defaultphoto'
+  const [localPhoto, setLocalPhoto] = useState({
+    data: '',
+    url: '',
+    isDefault: false
+  });
+  const [localLogo, setLocalLogo] = useState({
+    data: '',
+    url: '',
+    isDefault: false
+  });
 
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
+    read({
+      userId: match.params.userId
+    }, {t: jwt.token}, signal).then((data) => {
+      if (data && data.error) {
+        setValues({...values, error: data.error})
+      } else {
+          setValues({...values, id: data._id, name: data.name, email: data.email, teacher: data.teacher,
+            category: (data.category && data.category!=='null')? data.category:'',  
+            experience: (data.experience && data.experience!=='null')? data.experience:'', 
+            company: (data.company && data.company!=='null')? {name: data.company.name, id: data.company._id} : {} })
+      }
+    })
+    return function cleanup(){
+      abortController.abort()
+    }
+  }, [match.params.userId])
 
+  useEffect(() => {
+    const abortController = new AbortController()
+    const signal = abortController.signal
     if (values.id) {
       const userPhotoUrl = `/api/users/photo/${values.id}?${new Date().getTime()}`
-      fetchImage(userPhotoUrl, {t: jwt.token}, signal).then((data) => {
-        if(data) setPhotoLocalURL(URL.createObjectURL(data));
+      fetchImage(userPhotoUrl, {t: jwt.token}, signal).then(({data, isDefault}) => {
+        if(data) setLocalPhoto({ data: data, url: URL.createObjectURL(data), isDefault: isDefault });
       })
     }
-
     return function cleanup(){
       abortController.abort()
     }
   }, [values.id])
 
   useEffect(() => {
+    setValues({...values, photo: localPhoto.data})
+  }, [localPhoto.data])
+
+  useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
     if(values.id && values.company?.id){
       const companyLogoUrl = `/api/users/${values.id}/company/photo/${values.company.id}?${new Date().getTime()}`
-      fetchImage(companyLogoUrl, {t: jwt.token}, signal).then((data) => {
-        if(data) setLogoLocalURL(URL.createObjectURL(data));
+      fetchImage(companyLogoUrl, {t: jwt.token}, signal).then(({data, isDefault}) => {
+        if(data)  setLocalLogo({ data: data, url: URL.createObjectURL(data), isDefault: isDefault })  
       })
     }
-
     return function cleanup(){
       abortController.abort()
     }
-  }, [values.id, values.company && values.company?.id]) 
+  }, [values.company && values.company.id])
+
+  useEffect(() => {
+    setValues({...values, company: {...values.company, logo: localLogo.data}})
+  }, [localLogo.data])
+  
+    
+  const handleChange = (name: string) => (event: FormEvent<HTMLFormElement>) => {
+    const value = name === 'photo' || name === 'companyLogo'
+    ? event.target.files[0]
+    : event.target.value
+    name.indexOf('company') > -1 
+    ? setValues({ ...values, company:{ ...values.company, [name.slice(7).toLocaleLowerCase()]: value}}) 
+    :setValues({ ...values, [name]: value })
+    name === 'photo' && setLocalPhoto({...localPhoto, url: URL.createObjectURL(value), isDefault: false})
+    name === 'companyLogo' && setLocalLogo({ ...localLogo, url: URL.createObjectURL(value), isDefault: false })
+  }
+
+  const handleCheck = (event: ChangeEvent<HTMLFormElement>) => {
+    setValues({...values, teacher: event.target.checked})
+  }
+  const deletePhoto = () => {
+    setLocalPhoto({ data: '', url: '' });
+    values.photo && setValues({ ...values, photo: '' })
+  }
+
+  const deleteLogo = () => {
+    setLocalLogo({ data: '', url: '' });
+    values.teacher && values.company && values.company.logo && setValues({ ...values, company: {...values.company, logo: ''} })
+  }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -137,21 +161,6 @@ export default function EditProfile({ match }) {
           })
         }
       })
-  }
-    
-  const handleChange = (name: string) => (event: FormEvent<HTMLFormElement>) => {
-    const value = name === 'photo' || name === 'companyLogo'
-    ? event.target.files[0]
-    : event.target.value
-    name.indexOf('company') > -1 
-    ? setValues({ ...values, company:{ ...values.company, [name.slice(7).toLocaleLowerCase()]: value}}) 
-    :setValues({ ...values, [name]: value })
-    name === 'photo' && setPhotoLocalURL(URL.createObjectURL(value))
-    name === 'companyLogo' && setLogoLocalURL(URL.createObjectURL(value))
-  }
-
-  const handleCheck = (event: ChangeEvent<HTMLFormElement>) => {
-    setValues({...values, teacher: event.target.checked})
   }
 
   if (values.redirectToProfile) {
@@ -185,13 +194,13 @@ export default function EditProfile({ match }) {
             }}
           >
             <Box sx={{ textAlign: 'center'}}>
-              <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: '1.5rem', md: '2.5rem' } }}>
+              <Typography onClick={()=>console.log(localLogo.data)}  variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: '1.5rem', md: '2.5rem' } }}>
                Update your profile
               </Typography>
             </Box>
             <Box sx={{ position: 'relative', mx: 'auto'}}>
               <Box sx={{ overflow: 'hidden', borderRadius: '50%', height: 200, mb: 2 }}>
-                <Box component='img' src={photoLocalURL? photoLocalURL : '/api/users/defaultphoto'} sx={{width: 200, height:'auto'}} alt={'Teacher ' + values.name + 'profile picture'} />
+                <Box component='img' src={localPhoto.url? localPhoto.url : defaultphotoURL} sx={{width: 200, height:'auto'}} alt={'Teacher ' + values.name + 'profile picture'} />
               </Box>
               <Box sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: 200, height: 200, borderRadius: '50%',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', 
@@ -219,7 +228,7 @@ export default function EditProfile({ match }) {
                   <Edit/>
                 </Button>
                 </label> 
-                {photoLocalURL && (<IconButton aria-label="Delete"  color="error" onClick={()=>setPhotoLocalURL('')}
+                {localPhoto.url && !localPhoto.isDefault && (<IconButton aria-label="Delete"  color="error" onClick={deletePhoto}
                               sx={{
                                 zIndex: 10,
                                 boxShadow: 3,
@@ -326,7 +335,7 @@ export default function EditProfile({ match }) {
               >
                 <Box sx={{ position: 'relative', mx: 'auto'}}>
                   <Box sx={{ overflow: 'hidden', borderRadius: '50%', height: 100, mb: 2 }}>
-                    <Box component='img' src={logoLocalURL? logoLocalURL : '/api/users/defaultphoto'} sx={{width: 100, height:'auto'}} alt={values.company? values.company.name + ' logo': ''} />
+                    <Box component='img' src={localLogo.url? localLogo.url : defaultphotoURL } sx={{width: 100, height:'auto'}} alt={values.company? values.company.name + ' logo': ''} />
                   </Box>
                   <Box sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: 100, height: 100, borderRadius: 2,
                             display: 'flex', alignItems: 'center', justifyContent: 'center', 
@@ -354,7 +363,7 @@ export default function EditProfile({ match }) {
                       <Edit/>
                     </Button>
                     </label> 
-                    {logoLocalURL && (<IconButton aria-label="Delete"  color="error" onClick={()=>setLogoLocalURL('')}
+                    {localLogo.url && !localLogo.isDefault && (<IconButton aria-label="Delete"  color="error" onClick={deleteLogo}
                                   sx={{
                                     zIndex: 10,
                                     boxShadow: 3,
@@ -387,7 +396,6 @@ export default function EditProfile({ match }) {
                   Save Changes
                 </StyledButton>
               </Box>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
         </Grid>

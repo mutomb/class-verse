@@ -12,12 +12,18 @@ export default function Profile({match}){
   const [user, setUser] = useState({})
   const [redirectToSignin, setRedirectToSignin] = useState<Boolean>(false)
   const jwt = auth.isAuthenticated()
-  const theme = useTheme();
-  const [photo, setPhoto] = useState("");
-  const [logo, setLogo] = useState("");
-  const userPhotoUrl = user._id ? `/api/users/photo/${user._id}?${new Date().getTime()}`: '/api/users/defaultphoto'
-  const companyLogoUrl = (user._id && user.company?._id) ? 
-                        `/api/users/${user._id}/company/photo/${user.company._id}?${new Date().getTime()}`: '/api/users/defaultphoto'
+  const theme = useTheme()
+  const defaultPhotoURL = '/api/users/defaultphoto'
+  const [localPhoto, setLocalPhoto] = useState({
+    data: '',
+    url: '',
+    isDefault: false
+  });
+  const [localLogo, setLocalLogo] = useState({
+    data: '',
+    url: '',
+    isDefault: false
+  });
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
@@ -41,11 +47,12 @@ export default function Profile({match}){
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
-
-    fetchImage(userPhotoUrl, {t: jwt.token}, signal).then((data) => {
-      if(data) setPhoto(URL.createObjectURL(data));
-    })
-
+    if(user._id){
+      const userPhotoUrl = `/api/users/photo/${user._id}?${new Date().getTime()}`;          
+      fetchImage(userPhotoUrl, {t: jwt.token}, signal).then(({data, isDefault}) => {
+        if(data) setLocalPhoto({ data: data, url: URL.createObjectURL(data), isDefault: isDefault });
+      })
+    }
     return function cleanup(){
       abortController.abort()
     }
@@ -53,18 +60,28 @@ export default function Profile({match}){
   }, [user._id])
 
   useEffect(() => {
+    setUser({...user, photo: localPhoto.data})
+  }, [localPhoto.data])
+
+  useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
-
-    fetchImage(companyLogoUrl, {t: jwt.token}, signal).then((data) => {
-      if(data) setLogo(URL.createObjectURL(data));
-    })
+    if(user._id && user.company && user.company._id){
+      const companyLogoUrl = `/api/users/${user._id}/company/photo/${user.company._id}?${new Date().getTime()}`;
+      fetchImage(companyLogoUrl, {t: jwt.token}, signal).then(({ data, isDefault }) => {
+        if(data)  setLocalLogo({ data: data, url: URL.createObjectURL(data), isDefault: isDefault})
+      })
+    }
 
     return function cleanup(){
       abortController.abort()
     }
 
-  }, [user._id, user.company])
+  }, [user.company && user.company._id])
+
+  useEffect(() => {
+    setUser({...user, company: {...user.company, logo: localLogo.data}})
+  }, [localLogo.data])
 
     if (redirectToSignin) {
       return <Redirect to='/signin'/>
@@ -103,7 +120,7 @@ export default function Profile({match}){
                   fontWeight: 'bold', textAlign: {xs: 'center', md: 'unset'}}}}
                 >
                   <Avatar 
-                    src={photo}
+                    src={localPhoto.url? localPhoto.url : defaultPhotoURL}
                     alt='profile picture' 
                     sx={{
                       width: 80,
@@ -163,7 +180,7 @@ export default function Profile({match}){
                   />
                   <ListItemText sx={{textAlign:'justify'}} primary={user.company.name} 
                     secondary={<Box sx={{ overflow: 'hidden', borderRadius: 2, height: 50, mb: 2 }}>
-                      <Box component='img' src={logo} sx={{width: 50, height:'auto'}} alt={user.company.name + ' logo'} />
+                      <Box component='img' src={localLogo.url? localLogo.url : defaultPhotoURL} sx={{width: 50, height:'auto'}} alt={user.company.name + ' logo'} />
                     </Box>} />
                 </ListItem>
                 </>)

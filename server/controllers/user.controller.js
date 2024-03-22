@@ -103,7 +103,7 @@ const update = async (req, res) => {
         if (user.company){ //if company already associated with user in DB, removed it
           await Company.findByIdAndRemove({_id: user.company._id}).exec()
           user.company = null
-          console.log('removed company updated company name attached to user as model:', user.company)
+          console.log('removed company, null attached to user company:', user.company)
       }
     }
 
@@ -119,12 +119,26 @@ const update = async (req, res) => {
         user.company = company
         console.log('new company logo attached to user as model:', user.company)
       }
+    }else{
+      if (user.company && user.company.logo){ //if logo already associated with company in DB, removed it
+        let company = await Company.findByIdAndUpdate({_id: user.company._id}, {logo: null}, {new: true}).exec()
+        user.company = company
+        console.log('removed logo, null attached to company logo:', user.company)
+      }
     }
+
+
     if(files.photo){
       user.photo.data = fs.readFileSync(files.photo.path)
       user.photo.contentType = files.photo.type
       console.log('photo file attached to user:', user.photo)
+    }else{
+      if (user.photo){ //if photo already associated with user in DB, removed it
+        user = await User.findByIdAndUpdate({_id: user._id}, {photo: null}, {new: true}).exec()
+        console.log('removed photo, null attached to company photo:', user.company)
+      }
     }
+
     try {
       user =  await user.save()
       console.log('user updated in DB, company:', user.company)
@@ -159,26 +173,30 @@ const remove = async (req, res) => {
 
 const photo = (req, res, next) => {
   console.log('user photo request, company:', req.profile.company)
-  if(req.profile.photo && req.profile.photo.data){
+  if(req.profile.photo && req.profile.photo.contentType && req.profile.photo.data){
     res.set("Content-Type", req.profile.photo.contentType)
     return res.send(req.profile.photo.data)
   }
   next()
 }
 
-const defaultPhoto = (req, res) => {
-  console.log('user default photo request')
-  return res.sendFile(path.resolve(process.cwd()+profileImage))
-}
-
 const companyLogo = (req, res, next) => {
   console.log('company photo request, company:', req.profile.company)
-  if(req.profile.company && req.profile.company.logo){
+  if(req.profile.company && req.profile.company.logo && req.profile.company.logo.contentType && req.profile.company.logo.data){
+    console.log('company photo request, logo found company:', req.profile.company)
     res.set("Content-Type", req.profile.company.logo.contentType)
     return res.send(req.profile.company.logo.data)
   }
   next()
 }
+
+const defaultPhoto = (req, res) => {
+  console.log('user default photo request')
+  res.set("Access-Control-Expose-Headers","defaultPhoto")
+  res.set({"defaultPhoto": true})
+  return res.sendFile(path.resolve(process.cwd()+profileImage))
+}
+
 
 const isEducator = (req, res, next) => {
   const isEducator = req.profile && req.profile.teacher
