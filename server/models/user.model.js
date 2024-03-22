@@ -1,12 +1,17 @@
 import mongoose from 'mongoose'
 import crypto from 'crypto'
-
+//mongoose schema
 const UserSchema = new mongoose.Schema({
   photo: {
     data: Buffer,
     contentType: String
   },
   name: {
+    type: String,
+    trim: true,
+    required: true
+  },
+  surname: {
     type: String,
     trim: true,
     required: true
@@ -43,6 +48,7 @@ const UserSchema = new mongoose.Schema({
   company: {type: mongoose.Schema.ObjectId, ref: 'Company'}
 })
 
+//mongoose schema methods
 UserSchema
   .virtual('password')
   .set(function(password) {
@@ -83,4 +89,28 @@ UserSchema.methods = {
   }
 }
 
+//mongoose schema middlewares
+UserSchema.pre('remove',function(next){
+  console.log("Removing company of user " + this._id);
+  this.model('Company').find({ _id : this.company }, function(err, companies){
+      if(err){
+          console.log("Error, No company found in this user");
+      }else if(companies.length == 0){
+          console.log("No company found in this user");
+      }else{
+          for (var i=0; i<companies.length; i++){
+               companies[i].remove(function(delete_err,delete_data){
+                  if(delete_err){
+                      console.log("No company found in this user");
+                  }else{
+                      console.log("company deleted");
+                  }
+              });
+          }
+      }
+  });
+  next();
+});
+
+//mongoose model
 export default mongoose.model('User', UserSchema)

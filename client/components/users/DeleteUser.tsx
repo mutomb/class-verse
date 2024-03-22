@@ -1,16 +1,13 @@
-import React, {FC, useState} from 'react'
-import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
-import DeleteIcon from '@mui/icons-material/Delete'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
+import React, {FC, FormEvent, useState} from 'react'
+import {Typography, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, IconButton
+} from '@mui/material'
+import {Delete} from '@mui/icons-material'
 import auth from '../auth/auth-helper'
 import {remove} from './api-user'
 import {Redirect} from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
+import { Logo } from '../logo';
+import { StyledButton } from '../styled-buttons';
 
 interface DeleteUserProps{
   userId:String
@@ -37,14 +34,15 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
       }
     })
   }
-  const handleRequestClose = () => {
+
+  const handleNonBackDropClose = (event: FormEvent<HTMLFormElement>, reason) => {
     setOpen(false)
   }
 
   if (redirect) {
     return <Redirect to='/'/>
   }
-    return (<span>
+    return (<>
       <IconButton aria-label="Delete" onClick={clickButton} color="error"
         sx={{
           zIndex: 10,
@@ -56,26 +54,37 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
             transition: theme.transitions.create(['transform'])
           }}}
       >
-        <DeleteIcon/>
+        <Delete/>
       </IconButton>
 
-      <Dialog open={open} TransitionProps={{onExit:handleRequestClose}}>
-        <DialogTitle>{"Delete Account"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Confirm to delete your account.
+      <Dialog open={open}  onClose={(event, reason) => {if(reason === 'backdropClick'){handleNonBackDropClose(event, reason);}}}>
+        <DialogTitle sx={{ textAlign: 'center', borderRadius:1, borderColor:'primary.main'}}>
+          <Logo />
+          <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: 32, md: 42 } }}>
+              Delete Account
+          </Typography>        
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: 'center'}}>
+          <DialogContentText variant="body1" component="p" sx={{ fontSize: { xs: 16, md: 21 } }}>
+            You will loose all your data. Deleting cannot be undone. Please confirm.
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleRequestClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={deleteAccount} color="secondary" autoFocus="autoFocus">
-            Confirm
-          </Button>
+        <DialogActions 
+        sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            my:2
+        }}>
+            <StyledButton disableHoverEffect={false} variant="contained" onClick={handleNonBackDropClose}>
+              Cancel
+            </StyledButton>
+            <StyledButton disableHoverEffect={false} variant="outlined" onClick={deleteAccount}>
+              Confirm
+            </StyledButton>
         </DialogActions>
       </Dialog>
-    </span>)
+    </>)
 
 }
 export default DeleteUser;

@@ -1,5 +1,6 @@
 import React, {useState, FormEvent} from 'react';
-import { TextField, Link as MuiLink, Paper, Box, Grid, Typography} from '@mui/material';
+import { TextField, Link as MuiLink, Paper, Box, Grid, Typography, formControlLabelClasses, formLabelClasses, 
+  inputBaseClasses, inputLabelClasses} from '@mui/material';
 import {Error} from '@mui/icons-material'
 import { Logo } from '../logo';
 import { StyledButton } from '../styled-buttons'
@@ -8,7 +9,8 @@ import auth from './auth-helper'
 import {Redirect} from 'react-router-dom'
 import {signin} from './api-auth'
 import { scroller } from 'react-scroll'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+import { useTheme } from '@mui/material/styles'
 
 function Copyright(props: any) {
   return (
@@ -31,6 +33,7 @@ interface Signin{
 } 
 
 export default function SignInSide({location}) {
+  const theme = useTheme();
   const [values, setValues] = useState<Signin>({
     email: '',
     password: '',
@@ -58,7 +61,6 @@ export default function SignInSide({location}) {
       }
     })
   }
-  const path = useLocation().pathname
   const history = useHistory()
   const scrollToAnchor = (destination:string) => {
     scroller.scrollTo(destination, {
@@ -114,7 +116,14 @@ export default function SignInSide({location}) {
                 Sign in to manage your course teaching or enrollment.
               </Typography>
             </Box>
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} 
+            sx={{ mt: 1,
+              [`& .${formControlLabelClasses.asterisk}`]: {display: 'none'},
+              [`& .${formLabelClasses.asterisk}`]: {display: 'none'},
+              [`& .${inputLabelClasses.focused}`]: { 
+                color: theme.palette.mode === 'dark' ? 'secondary.main': 'primary.main',
+              },
+            }}>
               <TextField
                 margin="normal"
                 required
@@ -164,6 +173,7 @@ export default function SignInSide({location}) {
                         display: 'block',
                         mb: 1,
                         color: 'primary',
+                        cursor:'pointer'
                       }}
                     >
                       {"Forgot password?"}

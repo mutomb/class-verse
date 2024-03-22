@@ -128,7 +128,7 @@ export default function Profile({match}){
                       margin: {xs: 'auto', md: 5},
                     }}/>
                 </ListItemAvatar>
-                <ListItemText primary={user.name} secondary={user.email} sx={{textAlign: {xs: 'center', md: 'unset'}}} /> 
+                <ListItemText primary={user.name+" "+user.surname } secondary={user.email} sx={{textAlign: {xs: 'center', md: 'unset'}}} /> 
                 {auth.isAuthenticated().user && auth.isAuthenticated().user._id == user._id &&
                   (<ListItemSecondaryAction sx={{position: 'absolute', top:{xs: 20, md: 50}, right:{xs: 20, md: 50}, flex:'none'}}>
                     <Link to={"/user/edit/" + user._id}>

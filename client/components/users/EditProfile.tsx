@@ -1,6 +1,6 @@
 import React, {useState, FormEvent, useEffect, ChangeEvent} from 'react';
 import { TextField, Paper, Box, Grid, Typography, Button, FormControlLabel,
-  Switch, IconButton } from '@mui/material';
+  Switch, IconButton, formControlLabelClasses, formLabelClasses, inputBaseClasses, inputLabelClasses } from '@mui/material';
 import {Error, Delete, Edit} from '@mui/icons-material'
 import { fetchImage, read, update } from './api-user'
 import { StyledButton } from '../styled-buttons'
@@ -12,6 +12,7 @@ interface SignUpProps{
   id: string,
   photo: any,
   name:string,
+  surname: string,
   password:string,
   email:string,
   open:boolean,
@@ -28,12 +29,12 @@ export default function EditProfile({ match }) {
     id: '',
     photo: '',
     name: '',
+    surname: '',
     password: '',
     email: '',
     teacher: false,
     experience: '',
     company: {},
-    // company: {name: '', logo: '', id: ''},
     category: '',
     open: false,
     error: '',
@@ -63,7 +64,7 @@ export default function EditProfile({ match }) {
       if (data && data.error) {
         setValues({...values, error: data.error})
       } else {
-          setValues({...values, id: data._id, name: data.name, email: data.email, teacher: data.teacher,
+          setValues({...values, id: data._id, name: data.name, surname: data.surname, email: data.email, teacher: data.teacher,
             category: (data.category && data.category!=='null')? data.category:'',  
             experience: (data.experience && data.experience!=='null')? data.experience:'', 
             company: (data.company && data.company!=='null')? {name: data.company.name, id: data.company._id} : {} })
@@ -140,6 +141,7 @@ export default function EditProfile({ match }) {
     if (!(values.name && values.email && values.password)) return;
     let userData = new FormData()
     values.name && userData.append('name', values.name);
+    values.surname && userData.append('surname', values.surname);
     values.email && userData.append('email', values.email);
     values.password && userData.append('password', values.password);
     userData.append('teacher', values.teacher); 
@@ -200,7 +202,7 @@ export default function EditProfile({ match }) {
             </Box>
             <Box sx={{ position: 'relative', mx: 'auto'}}>
               <Box sx={{ overflow: 'hidden', borderRadius: '50%', height: 200, mb: 2 }}>
-                <Box component='img' src={localPhoto.url? localPhoto.url : defaultphotoURL} sx={{width: 200, height:'auto'}} alt={'Teacher ' + values.name + 'profile picture'} />
+                <Box component='img' src={localPhoto.url? localPhoto.url : defaultphotoURL} sx={{width: 200, height:'auto'}} alt={'Teacher ' + values.name +" "+ values.surname + ' profile picture'} />
               </Box>
               <Box sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: 200, height: 200, borderRadius: '50%',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', 
@@ -242,7 +244,14 @@ export default function EditProfile({ match }) {
                           </IconButton>)}
               </Box>
             </Box>   
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} 
+            sx={{ mt: 1,
+              [`& .${formControlLabelClasses.asterisk}`]: {display: 'none'},
+              [`& .${formLabelClasses.asterisk}`]: {display: 'none'},
+              [`& .${inputLabelClasses.focused}`]: { 
+                color: theme.palette.mode === 'dark' ? 'secondary.main': 'primary.main',
+              },
+            }}>
              <TextField
                 margin="normal"
                 required
@@ -254,6 +263,18 @@ export default function EditProfile({ match }) {
                 autoFocus
                 value={values.name} 
                 onChange={handleChange('name')}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="surname"
+                label="Surname"
+                name="surname"
+                autoComplete="surname"
+                autoFocus
+                value={values.surname} 
+                onChange={handleChange('surname')}
               />
               <TextField
                 margin="normal"

@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react'
-import Box from '@mui/material/Box'
+import {Container} from '@mui/material'
 import { Footer } from '../footer'
 import { Header } from '../header'
 
@@ -9,11 +9,11 @@ interface Props {
 
 const MainLayout: FC<Props> = ({ children }) => {
   return (
-    <Box component="main">
-      <Header />
+    <Container component="main" >
+    <Header />
       {children}
       <Footer />
-    </Box>
+    </Container>
   )
 }
 
