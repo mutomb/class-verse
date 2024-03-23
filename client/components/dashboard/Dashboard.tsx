@@ -1,6 +1,6 @@
 import React, { FC, FormEvent, useState } from 'react';
 import MuiDrawer from '@mui/material/Drawer';
-import { Toolbar, List, Divider, IconButton, buttonBaseClasses, ListSubheader } from '@mui/material';
+import { Toolbar, List, Divider, IconButton, buttonBaseClasses, ListSubheader, svgIconClasses } from '@mui/material';
 import {ChevronLeftRounded, ChevronRightRounded} from '@mui/icons-material';
 import { ProfileSideNavLink, StudentSideNavLink, TeacherSideNavLink, ReportSideNavLink } from './listItems';
 import { useLocation } from 'react-router-dom'
@@ -80,7 +80,7 @@ const Dashboard: FC = () => {
             >
               <IconButton onClick={toggleDrawer} 
               sx={{ border: open? '1px solid': 'none',
-                    borderColor: open? 'primary.contrastText':'unset',
+                    borderColor: (theme) => open? ( theme.palette.mode === 'dark'? 'primary.contrastText': 'primary.main' ):'unset',
                     ':hover': { backgroundColor: open? 'secondary.main': 'inherit'}
                   }}>
                 {open? <ChevronLeftRounded /> : <ChevronRightRounded />}
@@ -108,6 +108,9 @@ const Dashboard: FC = () => {
                 },
                 [`.${buttonBaseClasses.root}:hover`]:{ 
                   backgroundColor: 'secondary.main',
+                },
+                [`.${svgIconClasses.root}`]:{ 
+                  color: 'primary.main',
                 }
               }}>
               <ListSubheader component="div" inset>

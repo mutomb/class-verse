@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import {ListItemButton, ListItem, ListItemText, ListSubheader} from '@mui/material';
-import {Dashboard, ShoppingCart, People, Layers, Assignment, Person, Settings, Stars,
-Quiz, Book, Checkroom, HelpCenter, Help, Map, BarChart, MonetizationOn, School, Public, Security, AddCircle, AddComment, PendingActions} from '@mui/icons-material';
+import {ShoppingCart, People, Person, Settings, Stars, Quiz, Book, Help, BarChart, 
+  MonetizationOn, School, Public, AddCircle, AddComment, PendingActions, GpsFixed, CurrencyExchange} from '@mui/icons-material';
 // import BarChartIcon from '@mui/icons-material/BarChart';
 
 export const ProfileSideNavLink: FC = () => (
@@ -61,7 +61,7 @@ export const StudentSideNavLink: FC = () => (
     </ListItemButton>
     <ListItemButton>
       <ListItem sx={{width: 40}}>
-        <Map />
+        <GpsFixed />
       </ListItem>
       <ListItemText primary="Find Teacher" />
     </ListItemButton>
@@ -73,7 +73,7 @@ export const StudentSideNavLink: FC = () => (
     </ListItemButton>
     <ListItemButton>
       <ListItem sx={{width: 40}}>
-        <MonetizationOn />
+        <CurrencyExchange />
       </ListItem>
       <ListItemText primary="Transactions" />
     </ListItemButton>
