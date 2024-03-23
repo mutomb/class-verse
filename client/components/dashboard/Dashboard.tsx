@@ -1,10 +1,11 @@
 import React, { FC, FormEvent, useState } from 'react';
 import MuiDrawer from '@mui/material/Drawer';
-import { Toolbar, List, Divider, IconButton, buttonBaseClasses } from '@mui/material';
+import { Toolbar, List, Divider, IconButton, buttonBaseClasses, ListSubheader } from '@mui/material';
 import {ChevronLeftRounded, ChevronRightRounded} from '@mui/icons-material';
 import { ProfileSideNavLink, StudentSideNavLink, TeacherSideNavLink, ReportSideNavLink } from './listItems';
 import { useLocation } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
+import { Logo } from '../logo';
 
 const Dashboard: FC = () => {
   const [open, setOpen] = useState(true);
@@ -109,6 +110,9 @@ const Dashboard: FC = () => {
                   backgroundColor: 'secondary.main',
                 }
               }}>
+              <ListSubheader component="div" inset>
+              <Logo onClick={handleClose} />
+              </ListSubheader>
               <ProfileSideNavLink />
               <Divider sx={{ my: 1 }} />
               <StudentSideNavLink />
