@@ -16,6 +16,12 @@ declare module '@mui/styles/defaultTheme' {
 
 // default
 let shadows = DarkShadows;
+/**
+ * Generate a theme base on the options received.
+ * @param options Takes an incomplete theme object and adds the missing parts.
+ * @param args Deep merge the arguments with the about to be returned theme.
+ * @returns A complete, ready-to-use theme object.
+ */
 const createTheme = (mode?: 'dark' | 'light'): Theme => {
   const palette = mode !== 'light' ? { ...paletteBase, ...paletteDark } : { ...paletteBase, ...paletteLight }
   shadows = mode === 'light' ? DarkShadows : LightShadows; 
@@ -27,6 +33,6 @@ const createTheme = (mode?: 'dark' | 'light'): Theme => {
 }
 
 const theme = createTheme
+export default theme
 
 export { paletteBase, paletteLight, paletteDark, typography, shadows }
-export default theme

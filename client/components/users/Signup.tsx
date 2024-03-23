@@ -53,8 +53,8 @@ export default function SignUpSide() {
     setValues({...values, complied: event.target.checked})
   }
 
-  const handleNonBackDropClose = (event: FormEvent<HTMLFormElement>, reason) => {
-    setValues({ ...values, open: true})
+  const handleClose = (event: FormEvent<HTMLFormElement>, reason) => {
+    setValues({ ...values, open: false})
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -221,7 +221,7 @@ export default function SignUpSide() {
           </Box>
         </Grid>
       </Grid>
-      <Dialog open={values.open}  onClose={(event, reason) => {if(reason === 'backdropClick'){handleNonBackDropClose(event, reason);}}}>
+      <Dialog open={values.open}  onClose={(event, reason) => {if(reason === 'backdropClick'){handleClose(event, reason);}}}>
         <DialogTitle sx={{ textAlign: 'center', borderRadius:1, borderColor:'primary.main'}}>
           <Logo />
           <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: 32, md: 42 } }}>

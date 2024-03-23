@@ -38,7 +38,7 @@ export default function ScrollTop() {
                 border:'1px solid',
                 borderColor:'primary.contrastText',
                 ':hover':{
-                  backgroundColor:'primary.main',
+                  backgroundColor:'secondary.main',
                   transition: theme.transitions.create(['transform']),
                   transform: 'translateY(-3px)',
                 }

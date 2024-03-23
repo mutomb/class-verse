@@ -35,7 +35,7 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
     })
   }
 
-  const handleNonBackDropClose = (event: FormEvent<HTMLFormElement>, reason) => {
+  const handleClose = (event: FormEvent<HTMLFormElement>, reason) => {
     setOpen(false)
   }
 
@@ -57,7 +57,7 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
         <Delete/>
       </IconButton>
 
-      <Dialog open={open}  onClose={(event, reason) => {if(reason === 'backdropClick'){handleNonBackDropClose(event, reason);}}}>
+      <Dialog open={open}  onClose={(event, reason) => {if(reason === 'backdropClick'){handleClose(event, reason);}}}>
         <DialogTitle sx={{ textAlign: 'center', borderRadius:1, borderColor:'primary.main'}}>
           <Logo />
           <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: 32, md: 42 } }}>
@@ -72,11 +72,14 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
         <DialogActions 
         sx={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: {xs: 'column', sm:'row'},
             alignItems: 'center',
-            my:2
+            justifyContent: 'center',
+           '& > button':{ 
+            mx: {xs: 'unset', sm: 1},
+            my: {xs: 1, sm: 'unset'}}
         }}>
-            <StyledButton disableHoverEffect={false} variant="contained" onClick={handleNonBackDropClose}>
+            <StyledButton disableHoverEffect={false} variant="contained" onClick={handleClose}>
               Cancel
             </StyledButton>
             <StyledButton disableHoverEffect={false} variant="outlined" onClick={deleteAccount}>
