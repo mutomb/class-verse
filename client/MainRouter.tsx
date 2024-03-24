@@ -5,7 +5,7 @@ import {Loadable} from './components/loaders'
 import '../node_modules/slick-carousel/slick/slick.css'
 import './styles/globals.css'
 import './styles/react-slick.css'
-import Home from './components/core/Home'
+import Home from './components/home/Home'
 const LazyUsers = Loadable(lazy(() => import('./components/users/Users')))
 const LazySignup = Loadable(lazy(() => import('./components/users/Signup')))
 const LazySignin = Loadable(lazy(() => import('./components/auth/Signin')))
@@ -21,9 +21,9 @@ const MainRouter = () => {
     return (
       <Switch>
         <Route exact path="/" component={Home}/>
-        <Route path="/users" component={LazyUsers}/>
         <Route path="/signup" component={LazySignup}/>
         <Route path="/signin" component={LazySignin}/>
+        <Route path="/users" component={LazyUsers}/>
         <PrivateRoute path="/user/edit/:userId" component={LazyEditProfile}/>        
         <Route path="/user/:userId" component={LazyProfile}/>       
         <Route path="/course/:courseId" component={LazyCourse}/>

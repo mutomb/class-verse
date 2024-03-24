@@ -1,6 +1,6 @@
 import React from 'react'
 import {HomeHero, HomeFeature, HomeNewsLetter, HomeOurTeachers, HomePopularCourse, 
-  HomeTestimonial, HomeEnrolledInCourses} from '../home'
+  HomeTestimonial, HomeEnrolledInCourses} from '.'
 
 export default function Home(){
     return(

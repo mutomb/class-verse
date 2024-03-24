@@ -1,13 +1,13 @@
 import React, { FC, FormEvent, useState } from 'react';
 import MuiDrawer from '@mui/material/Drawer';
-import { Toolbar, List, Divider, IconButton, buttonBaseClasses, ListSubheader, svgIconClasses } from '@mui/material';
+import { Toolbar, IconButton, List, ListSubheader, buttonBaseClasses, svgIconClasses } from '@mui/material';
 import {ChevronLeftRounded, ChevronRightRounded} from '@mui/icons-material';
-import { ProfileSideNavLink, StudentSideNavLink, TeacherSideNavLink, ReportSideNavLink } from './listItems';
 import { useLocation } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
+import NavigationSide from '../navigation/admin-navigation';
 import { Logo } from '../logo';
 
-const Dashboard: FC = () => {
+const SideBar: FC = () => {
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -113,19 +113,12 @@ const Dashboard: FC = () => {
                   color: 'primary.main',
                 }
               }}>
-              <ListSubheader component="div" inset>
-              <Logo onClick={handleClose} />
-              </ListSubheader>
-              <ProfileSideNavLink />
-              <Divider sx={{ my: 1 }} />
-              <StudentSideNavLink />
-              <Divider sx={{ my: 1 }} />
-              <TeacherSideNavLink />
-              <Divider sx={{ my: 1 }} />
-              <ReportSideNavLink />
-              <Divider sx={{ my: 1 }} />
-            </List>
+                <ListSubheader component="div" inset>
+                  <Logo onClick={handleClose}/>
+                </ListSubheader>
+                <NavigationSide />
+              </List>
         </MuiDrawer>);
 }
 
-export default Dashboard
+export default SideBar

@@ -66,7 +66,7 @@ const Navigation: FC = () => {
             component='span'
             sx={{
               position: 'absolute',
-              top: 12,
+              top: 15,
               transform: 'rotate(3deg)',
               '& img': { width: 44, height: 'auto' },
             }}

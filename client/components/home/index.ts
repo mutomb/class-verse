@@ -1,3 +1,4 @@
+export {default as Home} from './Home'
 export { default as HomeHero } from './hero'
 export {default as HomeEnrolledInCourses} from './enrolled-in-courses'
 export { default as HomePopularCourse } from './popular-courses'
