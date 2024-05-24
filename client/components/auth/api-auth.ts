@@ -26,5 +26,5 @@ const signout = async () => {
 
 export {
   signin,
-  signout
+  signout,
 }

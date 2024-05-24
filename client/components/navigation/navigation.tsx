@@ -2,15 +2,34 @@ import React, { FC, useState } from 'react'
 import Box from '@mui/material/Box'
 import { Link as ScrollLink, scroller } from 'react-scroll'
 import { navigations } from './navigation.data'
-import HeadLineCurve from "../../public/images/headline-curve.svg"
-import { useHistory, useLocation } from 'react-router-dom'
-import auth from '../auth/auth-helper'
+import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
+import { Link, useHistory, useLocation } from 'react-router-dom'
+import {useAuth} from '../auth'
+import { MoreMenuVertButton, StyledButton } from '../styled-buttons'
+import Library from '@mui/icons-material/LocalLibrary'
+import { Collapse, Divider, Menu, MenuItem, avatarClasses } from '@mui/material'
+import { ExpandLess, ExpandMore } from '@mui/icons-material'
+import MoreMenuVert from '../styled-buttons/more-menu-vert'
 
-const Navigation: FC = () => {
+interface Navigation{
+  onClick?: ()=> void
+}
+
+const Navigation: FC<Navigation> = ({onClick}) => {
   const path = useLocation().pathname
   const location = path.split('/')[1]
   const history = useHistory()
+  const {isAuthenticated} = useAuth()
+  const [openMore, setOpenMore] = useState('')
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const goToAbout = (destination:string) => {
+    history.push('/about')
+  }
   const scrollToAnchor = (destination:string) => {
+    onClick && onClick()
+    if(destination==='about') return goToAbout(destination)
     scroller.scrollTo(destination, {
       duration: 1500,
       delay: 0,
@@ -18,26 +37,41 @@ const Navigation: FC = () => {
       offset: -10,
     })
   }
-  const goToHomeAndScroll = async (destination:string) => {
-    await history.push('/')
-    await scrollToAnchor(destination)
+  const goToHomeAndScroll = (destination:string) => {
+    if(destination==='about') return goToAbout(destination)
+    history.push('/')
+    let delayedScroll=setTimeout(()=>{scrollToAnchor(destination), clearTimeout(delayedScroll)},1000)
   }
+  const showMore = (destination: string) => event => {
+    console.log(destination)
+    setOpenMore(destination)
+    setAnchorEl(event.currentTarget);
+  }
+  const hideMore = () => {
+    console.log('left')
+    setOpenMore('')
+    setAnchorEl(null);
+  }
+  
   return (
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
       {navigations.map(({ path: destination, label }) => {
-        if (!auth.isAuthenticated().user && ['enrolled-in-courses'].includes(destination)) return null
-        if (auth.isAuthenticated().user && ['hero', 'testimonial'].includes(destination)) return null
+        if (isAuthenticated().user && ['hero', 'testimonial', 'about'].includes(destination)) return null
         else{
           return(<Box
           component={ScrollLink}
           key={destination}
           activeClass="current"
-          onClick={location==='/'?()=>scrollToAnchor(destination) : ()=>goToHomeAndScroll(destination)}
+          onClick={location===''?()=>scrollToAnchor(destination) : ()=>goToHomeAndScroll(destination)}
+          onMouseEnter={showMore(destination)}
+          onMouseLeave={hideMore}
           to= {destination}
           spy={true}
           smooth={true}
           duration={350}
           sx={{
+            textWrap: 'nowrap',
+            whiteSpace: 'nowrap',
             position: 'relative',
             color: 'text.disabled',
             cursor: 'pointer',
@@ -59,6 +93,7 @@ const Navigation: FC = () => {
               '&>span': {
                 display: 'block',
               },
+              [`& .${avatarClasses.root}`]: {color: 'primary.main'}
             },
           }}
         >
@@ -74,9 +109,46 @@ const Navigation: FC = () => {
             {/* eslint-disable-next-line */}
             <img src={HeadLineCurve} alt="Headline curve" />
           </Box>
-          {label}
+          {label} {openMore === destination ? <ExpandLess /> : <ExpandMore />}
+          <Menu
+            id="more-vert-menu"
+            anchorEl={anchorEl}
+            open={openMore === destination}
+            onClose={hideMore}
+            MenuListProps={{
+              'aria-labelledby': 'more-vert-menu-button',
+              component: 'div'
+            }}
+            anchorOrigin={{
+              vertical: 0,
+              horizontal: 0,
+            }}
+            transformOrigin={
+              {vertical: 'bottom', horizontal: 'center'}
+            }>
+            <Divider/>
+            <MenuItem sx={{color: "primary.main", transition: (theme)=> theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+              More options
+            </MenuItem>
+          </Menu>          
         </Box>)}
       })}
+      { isAuthenticated().user && (<>
+        {isAuthenticated().user.teacher && (
+          <Link onClick={()=> onClick && onClick()} to="/teach/courses">
+            <StyledButton disableHoverEffect={false} color='secondary' variant="outlined">
+              <Library/> Teach 
+            </StyledButton>
+          </Link>)
+          }
+        {!isAuthenticated().user.teacher && (
+          <Link onClick={()=> onClick && onClick()} to="/learn/courses">
+            <StyledButton disableHoverEffect={false} color='secondary' variant="outlined">
+              <Library/> Learn 
+            </StyledButton>
+          </Link>)
+        }
+      </>)}
     </Box>)
 }
 

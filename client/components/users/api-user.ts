@@ -26,7 +26,7 @@ const list = async (signal: AbortSignal) => {
   }
 }
 
-const read = async (params: { userId: any; }, credentials: { t: any; }, signal: AbortSignal) => {
+const read = async (params: { userId: any; }, credentials: { token: any; }, signal: AbortSignal) => {
   try {
     let response = await fetch('/api/users/' + params.userId, {
       method: 'GET',
@@ -34,7 +34,7 @@ const read = async (params: { userId: any; }, credentials: { t: any; }, signal: 
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + credentials.t
+        'Authorization': 'Bearer ' + credentials.token
       }
     })
     return await response.json()
@@ -43,14 +43,14 @@ const read = async (params: { userId: any; }, credentials: { t: any; }, signal: 
   }
 }
 
-const update = async (params: { userId: any; }, credentials: { t: any; }, 
+const update = async (params: { userId: any; }, credentials: { token: any; }, 
   user: FormData) => {
   try {
     let response = await fetch('/api/users/' + params.userId, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer ' + credentials.t
+        'Authorization': 'Bearer ' + credentials.token
       },
       body: user
     })
@@ -60,14 +60,14 @@ const update = async (params: { userId: any; }, credentials: { t: any; },
   }
 }
 
-const remove = async (params: { userId: any; }, credentials: { t: any; }) => {
+const remove = async (params: { userId: any; }, credentials: { token: any; }) => {
   try {
     let response = await fetch('/api/users/' + params.userId, {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + credentials.t
+        'Authorization': 'Bearer ' + credentials.token
       }
     })
     return await response.json()
@@ -76,13 +76,13 @@ const remove = async (params: { userId: any; }, credentials: { t: any; }) => {
   }
 }
 
-const fetchImage = async (url: string, credentials: { t: any; }, signal: AbortSignal) => {
+const fetchImage = async (url: string, credentials: { token: any; }, signal: AbortSignal) => {
   try {
     let response = await fetch(url, {
       method: 'GET',
       signal: signal,
       headers: {
-        'Authorization': 'Bearer ' + credentials.t
+        'Authorization': 'Bearer ' + credentials.token
       }
     })
     const isDefault = eval(response.headers.get('defaultphoto'))
@@ -92,6 +92,56 @@ const fetchImage = async (url: string, credentials: { t: any; }, signal: AbortSi
   }
 }
 
+const createCookie = async (params: { userId: any; }, credentials: { token: any; }, signal: AbortSignal) => {
+  try {
+    let response = await fetch(`/api/users/${params.userId}/createcookie/`, {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+const stripeUpdate = async (params, credentials, auth_code, signal) => {
+  try {
+    let response = await fetch ('/api/stripe_auth/'+params.userId, {
+      method: 'PUT',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      },
+      body: JSON.stringify({stripe: auth_code})
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+// const checkAuth0Status = async () => {
+//   try {
+//     let response = await fetch('/oidc/checkAuth0Status/', {
+//       method: 'GET',
+//       headers: {
+//         'Accept': 'application/json',
+//         'Content-Type': 'application/json'
+//       }
+//     })
+//     return await response.json()
+//   } catch(err) {
+//     console.log(err)
+//   }
+// }
+
 
 export {
   create,
@@ -99,5 +149,8 @@ export {
   read,
   update,
   remove,
-  fetchImage
+  fetchImage,
+  createCookie,
+  // checkAuth0Status,
+  stripeUpdate
 }

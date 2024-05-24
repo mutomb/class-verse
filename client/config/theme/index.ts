@@ -32,7 +32,4 @@ const createTheme = (mode?: 'dark' | 'light'): Theme => {
   })
 }
 
-const theme = createTheme
-export default theme
-
-export { paletteBase, paletteLight, paletteDark, typography, shadows }
+export { paletteBase, paletteLight, paletteDark, typography, shadows, createTheme }

@@ -11,27 +11,27 @@ import DribbbleIcon from '../../public/images/icons/dribbble.svg'
 export const socialLinks: SocialLink[] = [
   {
     name: 'Instagram',
-    link: '#',
+    link: 'https://instagram.com/gosquare',
     icon: InstagramIcon,
   },
   {
     name: 'YouTube',
-    link: '#',
+    link: 'https://youtube.com/gosquare',
     icon: YoutubeIcon,
   },
   {
     name: 'Twitter',
-    link: '#',
+    link: 'https://x.com/gosquare',
     icon: TwitterIcon,
   },
   {
     name: 'Dribbble',
-    link: 'https://dribbble.com/shots/18114471-Coursespace-Online-Course-Landing-Page',
+    link: 'https://dribbble.com/shots/gosquare',
     icon: DribbbleIcon,
   },
   {
     name: 'Github',
-    link: 'https://github.com/hiriski/coursespace-landing-page',
+    link: 'https://github.com/mutomb/gosquare',
     icon: GitHubIcon,
   },
 ]

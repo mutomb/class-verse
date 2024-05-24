@@ -1,37 +1,30 @@
 import React, {FC, useState} from 'react'
-import Button from '@mui/material/Button'
-import {makeStyles} from '@mui/styles'
 import {create} from './api-enrollment'
-import auth from '../auth/auth-helper'
+import {useAuth} from '../auth'
 import {Redirect} from 'react-router-dom'
-
-const useStyles = makeStyles(theme => ({
-    form: {
-        minWidth: 500
-    }
-}))
+import { ShoppingCart } from '@mui/icons-material'
+import { IconButton} from '@mui/material'
 
 interface EnrollProps{
-  courseId:String
+  courseId:string
 }
 interface ValuesState{
   redirect:Boolean,
-  error:String,
-  enrollmentId:String
+  error:string,
+  enrollmentId:string
 }
 const Enroll: FC<EnrollProps> = ({courseId}) =>{
-  const classes = useStyles()
   const [values, setValues] = useState<ValuesState>({
     enrollmentId: '',
     error: '',
     redirect: false
   })
-  const jwt = auth.isAuthenticated()
+  const {isAuthenticated} = useAuth()
   const clickEnroll = () => {
     create({
       courseId: courseId
     }, {
-      t: jwt.token
+      token: isAuthenticated().token
     }).then((data) => {
       if (data && data.error) {
         setValues({...values, error: data.error})
@@ -46,10 +39,12 @@ const Enroll: FC<EnrollProps> = ({courseId}) =>{
     }
 
   return (
-      <Button variant="contained" color="secondary" onClick={clickEnroll}> Enroll </Button>
+      <IconButton
+        onClick={clickEnroll}
+        color="primary"
+      >
+      <ShoppingCart/>
+    </IconButton>
   )
 }
 export default Enroll;
-/*Enroll.propTypes = {
-  courseId: PropTypes.string.isRequired
-}*/

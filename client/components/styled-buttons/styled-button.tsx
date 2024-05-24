@@ -7,9 +7,10 @@ import { fontFamily } from '../../config/theme/typography'
 
 interface BaseButtonProps extends Pick<ButtonProps, 'onClick' | 'type' | 'startIcon' | 'endIcon'> {
   variant?: 'contained' | 'outlined' | 'text'
-  color?: 'default' | 'primary' | 'secondary' | 'dark' | 'light'
+  color?: 'default' | 'primary' | 'secondary' | 'dark' | 'light' | 'disabled'
   size?: 'small' | 'medium' | 'large'
-  disableHoverEffect?: boolean
+  disableHoverEffect?: boolean,
+  disabled?:boolean
 }
 interface StyledButtonRootProps extends BaseButtonProps {
   theme?: Theme
@@ -152,6 +153,19 @@ const StyledButtonRoot = styled('button', {
     variant === 'text' && {
       color: theme.palette.primary.contrastText,
     }),
+  ...(color === 'disabled' &&
+  variant === 'text' && {
+    color: theme.palette.text.secondary
+  }),
+  ...(color === 'disabled' &&
+  variant === 'outlined' && {
+    color: theme.palette.text.secondary
+  }),
+  ...(color === 'disabled' &&
+  variant === 'contained' && {
+    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.text.secondary,
+  }),
 }))
 
 interface Props extends BaseButtonProps {
@@ -159,9 +173,9 @@ interface Props extends BaseButtonProps {
 }
 
 const StyledButton: FC<Props> = (props: Props) => {
-  const { children, onClick, disableHoverEffect, startIcon, endIcon, ...rest } = props
+  const { children, onClick, disableHoverEffect, startIcon, endIcon, disabled, ...rest } = props
   return (
-    <StyledButtonRoot onClick={onClick} disableHoverEffect={disableHoverEffect} {...rest}>
+    <StyledButtonRoot disabled={disabled} onClick={disabled? ()=>{}: onClick} disableHoverEffect={disableHoverEffect} {...rest}>
       {startIcon && (
         <Box component="span" sx={{ display: 'inherit', mr: 1, ml: -0.5 }}>
           {startIcon}

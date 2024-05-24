@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import IconArrowBack from '@mui/icons-material/ArrowBack'
 import IconArrowForward from '@mui/icons-material/ArrowForward'
 import { IconButton } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 interface SliderArrowArrow {
     onClick?: () => void
@@ -10,11 +11,13 @@ interface SliderArrowArrow {
   }
   const SliderArrow: FC<SliderArrowArrow> = (props) => {
     const { onClick, type, className } = props
+    const {  transitions } = useTheme()
     return (
       <IconButton
         sx={{
           backgroundColor: 'background.paper',
           color: 'primary.main',
+          transition: transitions.create(['background-color']),
           '&:hover': { backgroundColor: 'primary.main', color: 'primary.contrastText' },
           bottom: { xs: '-70px !important', md: '-28px !important' },
           left: 'unset !important',

@@ -1,16 +1,15 @@
 import React, { FC } from 'react'
-//import Image from 'next/image'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import Container from '@mui/material/Container'
-import Typography from '@mui/material/Typography'
+import {Box, Grid, Container, Typography, Slide, Zoom} from '@mui/material'
+import {useTheme} from '@mui/material/styles'
 import { Link as ScrollLink } from 'react-scroll'
 import { StyledButton } from '../styled-buttons'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import CertificateIcon from "../../public/images/certificate.png"
-import HomeHeroIcon from "../../public/images/home-hero.png"
-import HeadLineCurve from "../../public/images/headline-curve.svg"
-import auth from '../auth/auth-helper'
+import {PlayArrow} from '@mui/icons-material'
+import CertificateIcon from "../../public/images/icons/certificate.png"
+import HomeHeroIcon from "../../public/images/home/home-hero.png"
+import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
+import logo from "../../public/logo.svg"
+import {useAuth} from '../auth'
+import { WallPaperYGW } from '../wallpapers/wallpapers'
 
 interface Exp {
   label: string
@@ -38,26 +37,47 @@ const exps: Array<Exp> = [
 const ExpItem: FC<ExpItemProps> = ({ item }) => {
   const { value, label } = item
   return (
-    <Box sx={{ textAlign: 'center', mb: { xs: 1, md: 0 } }}>
-      <Typography
-        sx={{ color: 'secondary.main', mb: { xs: 1, md: 2 }, fontSize: { xs: 34, md: 44 }, fontWeight: 'bold' }}
-      >
-        {value}
-      </Typography>
-      <Typography color="text.secondary" variant="h5">
-        {label}
-      </Typography>
-    </Box>
+    <Zoom timeout={1000} id="zoom-image" appear={true} in={true} color='inherit' unmountOnExit={true}>
+      <Box sx={{ textAlign: 'center', mb: { xs: 1, md: 0 } }}>
+        <Typography
+          sx={{ color: 'secondary.main', mb: { xs: 1, md: 2 }, fontSize: { xs: 34, md: 44 }, fontWeight: 'bold' }}
+        >
+          {value}
+        </Typography>
+        <Typography variant="h5" sx={{color: 'text.secondary'}}>
+          {label}
+        </Typography>
+      </Box>
+    </Zoom>
   )
 }
 
 const HomeHero: FC = () => {
-  if(auth.isAuthenticated().user) return(<></>)
+  const {isAuthenticated} = useAuth()
+  const theme = useTheme()
+  if(isAuthenticated().user) return(<></>)
   return (
-    <Box id="hero" sx={{ backgroundColor: 'background.paper', position: 'relative', pt: 4, pb: { xs: 8, md: 10 } }}>
-      <Container maxWidth="lg">
-        <Grid container spacing={0} sx={{ flexDirection: { xs: 'column', md: 'unset' } }}>
-          <Grid item xs={12} md={7}>
+    <WallPaperYGW variant='linear' primaryColor={theme.palette.background.paper} secondaryColor={theme.palette.background.default} //secondaryColor={theme.palette.mode==='light'? theme.palette.secondary.light: theme.palette.secondary.dark}
+    style={{
+      '&::before': {
+        content: '""',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        backgroundImage: `url(${logo})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+        opacity: 0.5,
+      },
+      '& > div':{
+        position: 'relative'
+      }
+    }}>
+    <Box id="hero" sx={{ position: 'relative', pt: 4, pb: { xs: 8, md: 10 } }}>
+      <Container maxWidth="lg" sx={{px: {xs: 0, sm: 'unset'}}}>
+        <Grid container spacing={0} sx={{ flexDirection: { xs: 'column', sm: 'unset' } }}>
+          <Grid item xs={12} sm={7}>
+          <Slide unmountOnExit={true} timeout={1000} id="slide-description" appear={true} direction="right" in={true} color='inherit'>
             <Box
               sx={{
                 textAlign: { xs: 'center', md: 'left' },
@@ -76,6 +96,7 @@ const HomeHero: FC = () => {
                     letterSpacing: 1.5,
                     fontWeight: 'bold',
                     lineHeight: 1.3,
+                    color: 'text.primary'
                   }}
                 >
                   <Typography
@@ -88,7 +109,7 @@ const HomeHero: FC = () => {
                       backgroundColor: 'unset',
                     }}
                   >
-                    Improve{' '}
+                    Upskill{' '}
                     <Box
                       sx={{
                         position: 'absolute',
@@ -102,7 +123,7 @@ const HomeHero: FC = () => {
                       <img src={HeadLineCurve} alt="Headline curve" />
                     </Box>
                   </Typography>
-                  your{' '}
+                  With{' '}
                   <Typography
                     component="span"
                     sx={{
@@ -111,14 +132,14 @@ const HomeHero: FC = () => {
                       position: 'relative',
                       '& svg': {
                         position: 'absolute',
-                        top: -16,
+                        top: {xs: -10, md: 0},
                         right: -21,
                         width: { xs: 22, md: 30 },
                         height: 'auto',
                       },
                     }}
                   >
-                    Skill
+                    GO<Typography component='sup' sx={{ display: 'inline', position: 'relative', color: 'primary.main', fontWeight: 'inherit', fontSize: { xs: '1.3rem', md: '2.5rem' }}}>2</Typography>
                     <svg version="1.1" viewBox="0 0 3183 3072">
                       <g id="Layer_x0020_1">
                         <path
@@ -137,13 +158,13 @@ const HomeHero: FC = () => {
                     </svg>
                   </Typography>{' '}
                   <br />
-                  with Different Way
+                  Made Uber Easy
                 </Typography>
               </Box>
               <Box sx={{ mb: 4, width: { xs: '100%', md: '70%' } }}>
-                <Typography sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+                <Typography sx={{ color: 'text.primary', lineHeight: 1.6 , fontWeight: 700}}>
                   {
-                    "Let's take an online course to improve your skills in a different way, you can set your own study time according to your learning speed. So you san study comfortable and absorb tge material easily."
+                    "Let's take an online course to improve your skills in a different way, you can set your own study time according to your learning speed. So you san study comfortable and absorb the material easily."
                   }
                 </Typography>
               </Box>
@@ -153,15 +174,16 @@ const HomeHero: FC = () => {
                     Get Started
                   </StyledButton>
                 </ScrollLink>
-                <ScrollLink to="video-section" spy={true} smooth={true} offset={0} duration={350}>
-                  <StyledButton color="primary" size="large" variant="outlined" startIcon={<PlayArrowIcon />}>
+                <ScrollLink to="intro-video" spy={true} smooth={true} offset={0} duration={350}>
+                  <StyledButton color="primary" size="large" variant="outlined" startIcon={<PlayArrow />}>
                     Watch Video
                   </StyledButton>
                 </ScrollLink>
               </Box>
             </Box>
+          </Slide>
           </Grid>
-          <Grid item xs={12} md={5} sx={{ position: 'relative' }}>
+          <Grid item xs={12} sm={5} sx={{ position: 'relative' }}>
             {/* Certificate badge */}
             <Box
               sx={{
@@ -170,12 +192,13 @@ const HomeHero: FC = () => {
                 left: { xs: 0, md: -150 },
                 boxShadow: 1,
                 borderRadius: 3,
-                px: 2,
+                px: {xs: 0, sm: 2},
                 py: 1.4,
                 zIndex: 1,
-                backgroundColor: 'background.paper',
+                backgroundColor: 'inherit',
                 display: 'flex',
                 alignItems: 'flex-start',
+                bgcolor: 'background.default'
               }}
             >
               <Box
@@ -187,12 +210,11 @@ const HomeHero: FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  mr: 2,
+                  mr: {xs: 0, md: 2},
                   '& img': { width: '32px !important', height: 'auto' },
                 }}
               >
                 <Box component='img' src={CertificateIcon} alt="Certificate icon" sx={{width:'100%', height:'auto'}} />
-                {/* <Image src="/images/certificate.png" alt="Certificate icon" width={50} height={50} quality={97} /> */}
               </Box>
               <Box>
                 <Typography
@@ -206,25 +228,27 @@ const HomeHero: FC = () => {
                 </Typography>
               </Box>
             </Box>
-            <Box sx={{ lineHeight: 0}} >
-              <Box component='img' src={HomeHeroIcon} sx={{width:'100%', height:'auto'}} alt="Hero img" />
-              {/* <Image src="/images/home-hero.jpg" width={775} height={787} alt="Hero img" /> */}
-            </Box>
+            <Zoom timeout={1000} id="zoom-image" appear={true} in={true} color='inherit' unmountOnExit={true}>
+              <Box sx={{ lineHeight: 0}} >
+                <Box component='img' src={HomeHeroIcon} sx={{width:'100%', height:'auto'}} alt="Hero img" />
+              </Box>
+            </Zoom>
           </Grid>
         </Grid>
 
         {/* Experience */}
-        <Box sx={{ boxShadow: 2, py: 4, px: 7, borderRadius: 4 }}>
+        <Box sx={{ boxShadow: 2, py: 4, px: {xs: 0, sm: 7}, borderRadius: 4, bgcolor: 'background.default' }}>
           <Grid container spacing={2}>
             {exps.map((item) => (
               <Grid key={item.value} item xs={12} md={4}>
-                <ExpItem item={item} />
+                <ExpItem item={item}/>
               </Grid>
             ))}
           </Grid>
         </Box>
       </Container>
     </Box>
+    </WallPaperYGW>
   )
 }
 

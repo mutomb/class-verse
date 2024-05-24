@@ -1,19 +1,17 @@
 import React, { FC } from 'react'
-import {Link} from 'react-router-dom'
-//import Link from 'next/link'
 import Grid from '@mui/material/Grid'
 import MuiLink from '@mui/material/Link'
 import type { Navigation } from '../../interfaces/navigation'
-import { navigations as headerNavigations } from '../../components/navigation/navigation.data'
-import { FooterSectionTitle } from '../../components/footer'
+import { navigations as headerNavigations } from '../navigation/navigation.data'
+import { FooterSectionTitle } from '.'
 import Box from '@mui/material/Box'
 import { Link as ScrollLink, scroller } from 'react-scroll'
 import { useHistory, useLocation } from 'react-router-dom'
-import auth from '../auth/auth-helper'
+import {useAuth} from '../auth'
 
 const courseMenu: Array<Navigation> = [
   {
-    label: 'UI/UX Design',
+    label: 'Web Development',
     path: '#',
   },
   {
@@ -21,11 +19,7 @@ const courseMenu: Array<Navigation> = [
     path: '#',
   },
   {
-    label: 'Machine Learning',
-    path: '#',
-  },
-  {
-    label: 'Web Development',
+    label: 'ML/AI',
     path: '#',
   },
 ]
@@ -33,64 +27,69 @@ const courseMenu: Array<Navigation> = [
 const pageMenu = headerNavigations
 
 const companyMenu: Array<Navigation> = [
-  { label: 'Contact Us', path: '#' },
-  { label: 'Privacy & Policy', path: '#' },
-  { label: 'Term & Condition', path: '#' },
-  { label: 'FAQ', path: '#' },
+  { label: 'Contact Us', path: 'contact' },
+  { label: 'Privacy & Policy', path: 'privacy' },
+  { label: 'Terms & Conditions', path: "terms-conditions" },
+  { label: 'FAQ', path: 'faq' },
 ]
 
-interface NavigationItemProps {
-  label: string
-  path: string
-}
-
-const NavigationItem: FC<NavigationItemProps> = ({ label, path }) => {
-  return (
-    <Link style={{textDecorationLine:'none'}}  to={path}>
-      <MuiLink
-        component='span'
-        underline="hover"
-        sx={{
-          display: 'block',
-          mb: 1,
-          color: 'primary.contrastText',
-        }}
-      >
-        {label}
-      </MuiLink>
-    </Link>
-  )
-}
 
 const FooterNavigation: FC = () => {
+  const {isAuthenticated} = useAuth()
   const path = useLocation().pathname
   const location = path.split('/')[1]
   const history = useHistory()
+
   const scrollToAnchor = (destination:string) => {
-  scroller.scrollTo(destination, {
-    duration: 1500,
-    delay: 0,
-    smooth: true,
-    offset: -10,
-  })
-}
-const goToHomeAndScroll = async (destination:string) => {
-await history.push('/')
-await scrollToAnchor(destination)
-}
+    scroller.scrollTo(destination, {
+      duration: 1500,
+      delay: 0,
+      smooth: true,
+      offset: -10,
+    })
+  }
+  const goToHomeAndScroll = (destination:string) => {
+    history.push('/')
+    let delayedScroll=setTimeout(()=>{scrollToAnchor(destination), clearTimeout(delayedScroll)},1000)
+  }
+  const goToAboutAndScroll = (destination:string) => {
+    history.push('/about')
+    let delayedScroll=setTimeout(()=>{scrollToAnchor(destination), clearTimeout(delayedScroll)},1000)
+  }
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={4}>
-        <FooterSectionTitle title="Courses" />
+        <FooterSectionTitle title="Popular Categories" />
         {courseMenu.map(({ label, path }, index) => (
-          <NavigationItem key={index + path} label={label} path={/* path */ '#'} />
+        <Box
+          component={ScrollLink}
+          key={index + path}
+          to={path}
+          spy={true}
+          smooth={true}
+          duration={350}
+          // onClick={location===''?()=>scrollToAnchor(destination) : ()=>goToHomeAndScroll(destination)}
+        >
+          <MuiLink
+          underline="hover"
+          component='span'
+          sx={{
+            display: 'block',
+            mb: 1,
+            color: 'primary.contrastText',
+            cursor:'pointer'
+          }}
+          >
+            {label}
+          </MuiLink>
+        </Box>
         ))}
       </Grid>
       <Grid item xs={12} md={4}>
         <FooterSectionTitle title="Menu" />
         {pageMenu.map(({ label, path:destination }, index) => {
-          if (!auth.isAuthenticated().user && ['enrolled-in-courses'].includes(destination)) return null
-          if (auth.isAuthenticated().user && ['hero', 'testimonial'].includes(destination)) return null
+          if (!isAuthenticated().user && ['enrolled-in-courses'].includes(destination)) return null
+          if (isAuthenticated().user && ['hero', 'testimonial'].includes(destination)) return null
           else{
             return(<Box
                 component={ScrollLink}
@@ -99,7 +98,7 @@ await scrollToAnchor(destination)
                 spy={true}
                 smooth={true}
                 duration={350}
-                onClick={location==='/'?()=>scrollToAnchor(destination) : ()=>goToHomeAndScroll(destination)}
+                onClick={location===''?()=>scrollToAnchor(destination) : ()=>goToHomeAndScroll(destination)}
               >
                 <MuiLink
                 underline="hover"
@@ -118,8 +117,29 @@ await scrollToAnchor(destination)
       </Grid>
       <Grid item xs={12} md={4}>
         <FooterSectionTitle title="About" />
-        {companyMenu.map(({ label, path }, index) => (
-          <NavigationItem key={index + path} label={label} path={path} />
+        {companyMenu.map(({ label, path:destination }, index) => (
+        <Box
+          component={ScrollLink}
+          key={index + path}
+          to={path}
+          spy={true}
+          smooth={true}
+          duration={350}
+          onClick={location==='about'?()=>scrollToAnchor(destination) : ()=>goToAboutAndScroll(destination)}
+        >
+          <MuiLink
+          underline="hover"
+          component='span'
+          sx={{
+            display: 'block',
+            mb: 1,
+            color: 'primary.contrastText',
+            cursor:'pointer'
+          }}
+          >
+            {label}
+          </MuiLink>
+        </Box>
         ))}
       </Grid>
     </Grid>

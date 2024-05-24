@@ -1,14 +1,11 @@
 import React, {FC, useState} from 'react'
-import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
-import DeleteIcon from '@mui/icons-material/Delete'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-import auth from '../auth/auth-helper'
+import {MenuItem, Typography, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material'
+import { Delete } from '@mui/icons-material'
+import {useAuth} from '../auth'
 import {remove} from './api-course'
+import { StyledButton } from '../styled-buttons'
+import { useTheme } from '@mui/material/styles'
+import { removeBulk } from '../media/api-media'
 
 interface DeleteCourseProps{
   course:any,
@@ -16,52 +13,78 @@ interface DeleteCourseProps{
 }
 
 const DeleteCourse: FC<DeleteCourseProps> = ({course, onRemove}) => {
+  const {isAuthenticated} = useAuth()
   const [open, setOpen] = useState<boolean>(false)
-  
-  const jwt = auth.isAuthenticated()
+  const {transitions} = useTheme()
   const clickButton = () => {
     setOpen(true)
   }
   const deleteCourse = () => {
-    remove({
-      courseId: course._id
-    }, {t: jwt.token}).then((data) => {
-      if (data.error) {
-        console.log(data.error)
-      } else {
-        setOpen(false)
-        onRemove(course)
-      }
-    })
+    let deleteMediaIds= course.lessons && course.lessons.map(lesson=>lesson.media && lesson.media._id).filter(mediaId=> mediaId)
+    if(deleteMediaIds){
+      removeBulk({deleteMediaIds: deleteMediaIds}, {token: isAuthenticated().token}).then((results) => {
+        console.log(results)    
+        //TODO: Multi-error handling
+        remove({
+          courseId: course._id
+        }, {token: isAuthenticated().token}).then((data) => {
+          if (data.error) {
+            console.log(data.error)
+          } else {
+            setOpen(false)
+            onRemove()
+          }
+        })
+      }).catch(e=>console.log(e))
+    }else{
+      remove({
+        courseId: course._id
+      }, {token: isAuthenticated().token}).then((data) => {
+        if (data.error) {
+          console.log(data.error)
+        } else {
+          setOpen(false)
+          onRemove()
+        }
+      })
+    }
   }
   const handleRequestClose = () => {
     setOpen(false)
   }
-    return (<span>
-      <IconButton aria-label="Delete" onClick={clickButton} color="secondary">
-        <DeleteIcon/>
-      </IconButton>
-
-      <Dialog open={open} TransitionProps={{onExit:handleRequestClose}}>
-        <DialogTitle>{"Delete "+course.name}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Confirm to delete your course {course.name}.
+    return (<>
+      <MenuItem aria-label="Delete" onClick={clickButton} sx={{color: 'red', fontSize: '1rem', transition: transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+        <Delete/> Delete Course
+      </MenuItem>
+      <Dialog transitionDuration={1000} open={open} onClose={handleRequestClose} aria-labelledby="form-dialog-title">
+        <DialogTitle sx={{ textAlign: 'center', borderRadius:1, borderColor:'primary.main'}}>
+          <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: 32, md: 42 }, color: 'text.primary' }}>
+          {"Delete "+course.name}
+          </Typography>        
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: 'center'}}>
+          <DialogContentText variant="body1" component="p" sx={{ fontSize: { xs: 16, md: 21 } }}>
+            Confirm to delete your course {course.name}. Course will be deleted permanently.
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleRequestClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={deleteCourse} color="secondary" autoFocus="autoFocus">
+        <DialogActions
+          sx={{
+            display: 'flex',
+            flexDirection: {xs: 'column', sm:'row'},
+            alignItems: 'center',
+            justifyContent: 'center',
+            '& > button':{ 
+            mx: {xs: 'unset', sm: 1},
+            my: {xs: 1, sm: 'unset'}}
+        }}>
+          <StyledButton disableHoverEffect={false} variant="contained" onClick={handleRequestClose}>
+              Cancel
+          </StyledButton>
+          <StyledButton disableHoverEffect={false} variant="outlined" onClick={deleteCourse}>
             Confirm
-          </Button>
+          </StyledButton>
         </DialogActions>
       </Dialog>
-    </span>)
+    </>)
 }
 export default DeleteCourse;
-/*DeleteCourse.propTypes = {
-  course: PropTypes.object.isRequired,
-  onRemove: PropTypes.func.isRequired
-}*/

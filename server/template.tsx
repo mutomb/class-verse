@@ -1,22 +1,21 @@
 import React from 'react'
-import theme from '../client/config/theme'
 // inject the initial component HTML and CSS into a template to be rendered on the client-side
 import slick from '../node_modules/slick-carousel/slick/slick.css'
 import globals from '../client/styles/globals.css'
 import reactSlick from '../client/styles/react-slick.css'
-
+import favicon from '../client/public/favicon.ico'
 export default (component) => {
     return (
       <html lang="en">
         <head>
           <meta charSet="utf-8" />
-          <title>Funda Gate</title>
+          <title>GO2</title>
           <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
           <meta charSet="utf-8" />
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href={favicon} />
           <meta name="viewport" content="initial-scale=1, width=device-width" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -30,6 +29,7 @@ export default (component) => {
         <body>
           <div id="root">{component}</div>
           <style id="react-slick-server-side"> {reactSlick.toString()} </style> {/*overrides inline SSR generated MUI styles*/}
+          <script id="stripe-js" src="https://js.stripe.com/v3/" async></script>
         </body>
       </html>)
 }

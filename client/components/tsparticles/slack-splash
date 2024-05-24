@@ -1,0 +1,192 @@
+//html
+  <div class="text">
+    <img class="img" src="https://assets.brandfolder.com/pl546j-7le8zk-btwjnu/view@2x.png?v=1586891797" /></div>
+  <div id="tsparticles">
+
+  </div>
+
+  <div class="github">
+    <a class="btn btn-link" href="https://github.com/matteobruni/tsparticles" title="Find more info on GitHub">
+      <img class="img-fluid" id="gh-mark" src="https://cdn.matteobruni.it/images/particles/GitHub-Mark-120px-plus.png" alt="">
+      <span id="gh-project">tsParticles</span>
+    </a>
+    <div>
+      <a class="github-button" href="https://github.com/matteobruni/tsparticles" data-icon="octicon-star" aria-label="Star matteobruni/tsparticles on GitHub">Star</a>
+      <a class="github-button" href="https://github.com/matteobruni/tsparticles/fork" data-icon="octicon-repo-forked" aria-label="Fork matteobruni/tsparticles on GitHub">Fork</a>
+      <a class="github-button" href="https://github.com/matteobruni/tsparticles/releases/tag/v1.15.1" data-icon="octicon-download" aria-label="Download matteobruni/tsparticles on GitHub">Download</a>
+    </div>
+  </div>
+  <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+  
+  //css
+  body {
+  margin: 0;
+}
+
+#tsparticles {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.text {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  width: 300px;
+  top: calc(50% - 100px);
+  left: calc(50% - 150px);
+}
+
+.img {
+  display: inline-block;
+  height: 100px;
+  z-index: 100;
+}
+
+.github {
+  bottom: 10px;
+  right: 10px;
+  position: fixed;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0 12px 6px 12px;
+  border: 1px solid #000;
+}
+
+.github a:hover,
+.github a:link,
+.github a:visited,
+.github a:active {
+  color: #000;
+  text-decoration: none;
+}
+
+.github img {
+  height: 30px;
+}
+
+.github #gh-project {
+  font-size: 20px;
+  padding-left: 5px;
+  font-weight: bold;
+  vertical-align: bottom;
+}
+
+
+//JS
+/* ---- tsParticles config ---- */
+
+tsParticles.load("tsparticles", {
+  fpsLimit: 60,
+  particles: {
+    number: {
+      value: 80,
+      density: {
+        enable: true,
+        value_area: 800
+      }
+    },
+    color: {
+      value: ["#2EB67D", "#ECB22E", "#E01E5B", "#36C5F0"]
+    },
+    shape: {
+      type: ["circle"],
+      stroke: {
+        width: 0,
+        color: "#fff"
+      },
+      polygon: {
+        nb_sides: 5
+      },
+      image: {
+        src: "https://cdn.freebiesupply.com/logos/large/2x/slack-logo-icon.png",
+        width: 100,
+        height: 100
+      }
+    },
+    opacity: {
+      value: 1,
+      random: false,
+      anim: {
+        enable: false,
+        speed: 1,
+        opacity_min: 0.1,
+        sync: false
+      }
+    },
+    size: {
+      value: 8,
+      random: true,
+      anim: {
+        enable: false,
+        speed: 10,
+        size_min: 10,
+        sync: false
+      }
+    },
+    line_linked: {
+      enable: true,
+      distance: 150,
+      color: "#808080",
+      opacity: 0.4,
+      width: 1
+    },
+    move: {
+      enable: true,
+      speed: 5,
+      direction: "none",
+      random: false,
+      straight: false,
+      out_mode: "out",
+      bounce: false,
+      attract: {
+        enable: false,
+        rotateX: 600,
+        rotateY: 1200
+      }
+    }
+  },
+  interactivity: {
+    detect_on: "canvas",
+    events: {
+      onhover: {
+        enable: true,
+        mode: "grab"
+      },
+      onclick: {
+        enable: true,
+        mode: "push"
+      },
+      resize: true
+    },
+    modes: {
+      grab: {
+        distance: 140,
+        line_linked: {
+          opacity: 1
+        }
+      },
+      bubble: {
+        distance: 400,
+        size: 40,
+        duration: 2,
+        opacity: 8,
+        speed: 3
+      },
+      repulse: {
+        distance: 200,
+        duration: 0.4
+      },
+      push: {
+        particles_nb: 4
+      },
+      remove: {
+        particles_nb: 2
+      }
+    }
+  },
+  retina_detect: true
+});

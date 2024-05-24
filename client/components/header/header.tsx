@@ -1,18 +1,17 @@
 import React, { FC, useState } from 'react'
-import { Logo } from '../../components/logo'
-import { Navigation, AuthNavigation } from '../../components/navigation'
+import { Logo } from '../logo'
+import { Navigation, AuthNavigation, ProfileNavigation, SearchNavigation, CartNavigation} from '../navigation'
 import { Menu, Close } from '@mui/icons-material'
 import { ColorModeButton } from '../styled-buttons'
-import { AppBar, Toolbar, Box, Slide, Container, IconButton,useMediaQuery, useTheme, 
-  useScrollTrigger} from '@mui/material'
+import { AppBar, Toolbar, Box, Slide, Container, IconButton,useMediaQuery, useTheme, useScrollTrigger} from '@mui/material'
 import { scroller } from 'react-scroll'
 import { useHistory, useLocation } from 'react-router-dom'
-import auth from '../auth/auth-helper'
+import { cart } from '../cart'
 
 const Header: FC = () => {
   const [visibleMenu, setVisibleMenu] = useState<boolean>(false)
   const { breakpoints } = useTheme()
-  const matchMobileView = useMediaQuery(breakpoints.down('md'))
+  const matchMobileView = useMediaQuery(breakpoints.down('md'), {defaultMatches: true}) /**enables SSR defaultMatches */
   const trigger = useScrollTrigger();
   const path = useLocation().pathname
   const location = path.split('/')[1]
@@ -20,17 +19,6 @@ const Header: FC = () => {
 
   const isActive = (path: string) => {
     return location === path
-  }
-  const isPartActive = (path: string) => {
-    return location.includes(path)
-  }
-
-  const onClickLogo = () => {
-    if (auth.isAuthenticated().user){
-      isActive('/')? scrollToAnchor('enrolled-in-courses') : goToHomeAndScroll('enrolled-in-courses') 
-    }else{
-      isActive('/')? scrollToAnchor('hero') : goToHomeAndScroll('hero')
-    }
   }
 
   const scrollToAnchor = (destination:string) => {
@@ -41,25 +29,32 @@ const Header: FC = () => {
       offset: -10
     })
   }
-  const goToHomeAndScroll = async (destination:string) => {
-    await history.push('/')
-    await scrollToAnchor(destination)
+  const goToHomeAndScroll = (destination:string) => {
+    history.push('/')
+    let delayedScroll=setTimeout(()=>{scrollToAnchor(destination), clearTimeout(delayedScroll)},1000) 
   }
 
-  return (<>
-    <Slide id="app-bar" appear={false} direction="down" in={!trigger} color='inherit'>
-      <AppBar position="sticky" color='inherit' enableColorOnDark={true}>
-       <Toolbar sx={{ backgroundColor: 'inherit', width:'100%' }}>
+  const onClickLogo = () => {
+      isActive("")? scrollToAnchor('search') : goToHomeAndScroll('search')
+  }
+
+  return (
+    <Slide id="app-bar" appear={true} direction="down" in={!trigger || cart.itemTotal()>0} color='inherit'>
+      <AppBar position="sticky" color='inherit' enableColorOnDark={true} sx={{boxShadow: 2}}>
+       <Toolbar sx={{ backgroundColor: 'inherit', width:'100%', px: {xs: 0, sm: 'unset'} }}>
           <Box sx={{ backgroundColor: 'inherit', width:'100%', mx:0 }}>
-            <Container sx={{ py: { xs: 2, md: 3 } }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Container sx={{ py: { xs: 2, md: 2 }, px: {xs: 0, sm: 'unset'}}}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflowX: 'visible' }}>
                 <Logo onClick={onClickLogo}/>
+                <Box sx={{ mx: 'auto', display: { xs: 'inline-flex', md: 'none' } }}>
+                  <CartNavigation />
+                </Box>
                 <Box sx={{ ml: 'auto', display: { xs: 'inline-flex', md: 'none' } }}>
                   <IconButton 
                   sx={{
                     position: 'fixed',
                     top: 20,
-                    right: 20,
+                    right: {xs: 10, sm: 20},
                   }}
                   onClick={() => setVisibleMenu(!visibleMenu)}>
                     <Menu sx={{color: 'primary.main'}} />
@@ -86,9 +81,12 @@ const Header: FC = () => {
                   }}
                 >
                   <Box /> {/* Magic space */}
-                  <Navigation />
-                  <AuthNavigation />
-                  <ColorModeButton/>
+                  <Navigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
+                  <SearchNavigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
+                  <ProfileNavigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
+                  <CartNavigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
+                  <AuthNavigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
+                  <ColorModeButton {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
                   {visibleMenu && matchMobileView && (
                     <IconButton
                       sx={{
@@ -107,9 +105,7 @@ const Header: FC = () => {
           </Box>
         </Toolbar>
       </AppBar>
-    </Slide>
-  </>
-  )
+    </Slide>)
 }
 
 export default Header

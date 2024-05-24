@@ -1,13 +1,14 @@
 import React, {FC, FormEvent, useState} from 'react'
-import {Typography, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, IconButton
+import {Typography, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, MenuItem, Box
 } from '@mui/material'
 import {Delete} from '@mui/icons-material'
-import auth from '../auth/auth-helper'
+import {useAuth} from '../auth'
 import {remove} from './api-user'
 import {Redirect} from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import { Logo } from '../logo';
 import { StyledButton } from '../styled-buttons';
+import { useColorMode } from '../../config/theme/MUItheme-hooks'
 
 interface DeleteUserProps{
   userId:String
@@ -16,8 +17,9 @@ interface DeleteUserProps{
 const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
   const [open, setOpen] = useState<boolean>(false)
   const [redirect, setRedirect] = useState<boolean>(false)
-  const jwt = auth.isAuthenticated()
-  const theme = useTheme();
+  const {clearJWT, isAuthenticated} = useAuth()
+  const {clearPreference} = useColorMode()
+  const {transitions} = useTheme();
 
   const clickButton = () => {
     setOpen(true)
@@ -25,12 +27,11 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
   const deleteAccount = () => { 
     remove({
       userId: userId
-    }, {t: jwt.token}).then((data) => {
+    }, {token: isAuthenticated().token}).then((data) => {
       if (data && data.error) {
         console.log(data.error)
       } else {
-        auth.clearJWT(() => console.log('deleted'))
-        setRedirect(true)
+        clearJWT(() => {clearPreference(); setRedirect(true);})
       }
     })
   }
@@ -43,24 +44,15 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
     return <Redirect to='/'/>
   }
     return (<>
-      <IconButton aria-label="Delete" onClick={clickButton} color="error"
-        sx={{
-          zIndex: 10,
-          boxShadow: 3,
-          transform: 'unset',
-          mr: 1, 
-          ':hover':{
-            transform: 'translateY(-3px)',
-            transition: theme.transitions.create(['transform'])
-          }}}
-      >
-        <Delete/>
-      </IconButton>
-
-      <Dialog open={open}  onClose={(event, reason) => {if(reason === 'backdropClick'){handleClose(event, reason);}}}>
+      <MenuItem sx={{color: 'red', transition: transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+        <Box aria-label="Delete" onClick={clickButton} color="inherit" sx={{fontSize: '1rem', width: '100%'}}>
+          <Delete sx={{mr: 1, verticalAlign: 'text-top'}}/>Delete Account
+        </Box>
+      </MenuItem>
+      <Dialog transitionDuration={1000} open={open}  onClose={(event, reason) => {if(reason === 'backdropClick'){handleClose(event, reason);}}} aria-labelledby="form-dialog-title">
         <DialogTitle sx={{ textAlign: 'center', borderRadius:1, borderColor:'primary.main'}}>
           <Logo />
-          <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: 32, md: 42 } }}>
+          <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: 32, md: 42 }, color: 'text.primary' }}>
               Delete Account
           </Typography>        
         </DialogTitle>
@@ -91,7 +83,4 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
 
 }
 export default DeleteUser;
-/*DeleteUser.propTypes = {
-  userId: PropTypes.string.isRequired
-}*/
 

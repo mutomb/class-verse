@@ -1,64 +1,60 @@
 import React, { FC } from 'react'
-import {ImageList, ImageListItem, ImageListItemBar, Box, useMediaQuery} from '@mui/material'
-import CompletedIcon from '@mui/icons-material/VerifiedUser'
-import InProgressIcon from '@mui/icons-material/DonutLarge'
-import {Link} from 'react-router-dom'
-import MuiLink from '@mui/material/Link'
+import {Grid, Container, IconButton} from '@mui/material'
+import {VerifiedUser, DonutLarge} from '@mui/icons-material'
+import { CourseCardItem } from '../courses'
+import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
-
 
 interface EnrollmentsProps{
   enrollments:Array<any>
 }
 const Enrollments: FC<EnrollmentsProps> = ({enrollments:enrollments}) =>{
-    const { breakpoints } = useTheme()
-    const matchMobileView = useMediaQuery(breakpoints.down('md'))
-    return (<Box>
-        <ImageList rowHeight={120} 
+  const theme = useTheme()
+  const getAction = (enrollment) =>{
+    if(enrollment && enrollment.completed) return (
+      <Link style={{textDecorationLine:'none'}}  to={`/learn/${enrollment._id}`}>
+        <IconButton aria-label={`course-${enrollment._id}`} color="primary" 
           sx={{
-            width: '100%',
-            minHeight: 100,
-            padding: '12px 0 10px'
-          }} 
-          cols={matchMobileView ? 1 : 3}
-          >
-          {enrollments.map((course, i) => (
-            <ImageListItem key={i} sx={{textAlign: 'center'}}>
-              <Link to={"/learn/"+course._id}>
-                <img style={{height: '100%'}} src={'/api/courses/photo/'+course.course._id} 
-                loading="lazy"
-                alt={course.course.name} />
-                </Link>
-              <ImageListItemBar 
-              sx={{
-                backgroundColor: 'rgba(0, 0, 0, 0.85)',
-                textAlign: 'left'
-              }} 
-                title={
-                  <Link style={{textDecorationLine:'none'}}  to={"/learn/"+course._id}>
-                  <MuiLink
-                    component='span'
-                    underline="hover"
-                    sx={{
-                      display: 'block',
-                      mb: 1,
-                      color: 'primary.contrastText',
-                      backgroundColor: 'rgba(0, 0, 0, 0.85)',
-                      textAlign: 'left'
-                    }}
-                  >
-                    {course.course.name}
-                  </MuiLink>
-                </Link>}
-                actionIcon={<div style={{margin: '0 10px'}}>
-                 {course.completed ? (<CompletedIcon sx={{color:"primary.main"}} />)
-                 : (<InProgressIcon sx={{color: 'seondary.main'}} 
-                 aria-label={`info about ${course.course.name}`} />)
-                }</div>}
-              />
-            </ImageListItem>
-          ))}
-        </ImageList>
-    </Box>)
+              zIndex: 10,
+              transform: 'unset',
+              color:"primary.main",
+              '&:hover':{
+                boxShadow: 2,
+                transform: 'translateY(-3px)',
+                transition: theme.transitions.create(['transform'])
+          }}}>
+          <VerifiedUser />
+        </IconButton>
+      </Link>
+    )
+    if(enrollment && !enrollment.completed) return (
+      <Link style={{textDecorationLine:'none'}}  to={`/learn/${enrollment._id}`}>
+        <IconButton aria-label={`course-${enrollment._id}`} color="primary" 
+          sx={{
+              zIndex: 10,
+              transform: 'unset',
+              color:"secondary.main",
+              '&:hover':{
+                boxShadow: 2,
+                transform: 'translateY(-3px)',
+                transition: theme.transitions.create(['transform'])
+          }}}>
+          <DonutLarge />
+        </IconButton>
+      </Link>
+    )
+  }
+    return (<Container maxWidth="lg" sx={{px:{xs:0, sm: 'inherit'}}}>
+              <Grid container spacing={2}>
+                {enrollments.map((enrollment) => {
+                  return (
+                  <Grid item xs={12} sm={6} md={4} key={String(enrollment._id)}>
+                    <CourseCardItem  item={enrollment.course} action={getAction(enrollment)} enrollmentID={enrollment._id}  />
+                  </Grid>
+                  )
+                  })
+                }
+              </Grid>
+       </Container>)
 }
 export default Enrollments;

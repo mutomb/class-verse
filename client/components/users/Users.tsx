@@ -52,19 +52,19 @@ export default function Users() {
 
     return (
       <Paper className={classes.root} elevation={4}>
-        <Typography variant="h6" className={classes.title}>
+        <Typography variant="h6" className={classes.title} sx={{color: 'text.primary'}}>
           All Users
         </Typography>
         <List dense>
          {users.map((item, i) => {
-          return <Link underline="hover" to={"/user/" + item._id} key={i}>
+          return <Link style={{textDecoration: 'none'}} to={"/user/" + item._id} key={i}>
                     <ListItem button>
                       <ListItemAvatar>
                         <Avatar>
                           <Person/>
                         </Avatar>
                       </ListItemAvatar>
-                      <ListItemText primary={item.name}/>
+                      <ListItemText sx={{color: 'text.primary'}} primary={item.name}/>
                       <ListItemSecondaryAction>
                       <IconButton>
                           <ArrowForward/>

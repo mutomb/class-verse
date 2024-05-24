@@ -1,0 +1,5 @@
+export {default as TeacherDashBoardOverview} from './overview'
+export {default as TeacherDashBoardCourses} from './courses'
+export {default as TeacherDashBoardOrders} from './Orders'
+// export {default as TeacherDashBoardChart} from './Chart'
+export {default as TeacherDashBoardDeposits} from './Deposits'

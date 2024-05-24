@@ -1,108 +1,92 @@
 import React from 'react';
 import type { Navigation } from '../../interfaces/navigation'
-import auth from '../auth/auth-helper'
-import {ShoppingCart, People, Person, Settings, Stars, Quiz, Book, Help, BarChart, MonetizationOn, 
-  School, Dashboard, Public, AddCircle, DangerousRounded, PendingActions, GpsFixed, CurrencyExchange
-} from '@mui/icons-material';
+import {People, Person, Stars, Quiz, BarChart, MonetizationOn, School, Dashboard, DangerousRounded, GpsFixed, WorkHistory, Work, LibraryBooks} from '@mui/icons-material';
 
-export const userLinks: Navigation[] = [
+export let userLinks: Navigation[] = [
   {
-    label: 'Profile',
-    path: 'user/' + auth.isAuthenticated().user?._id, // '/user/:userId'
-    icon: <Person />
+    label: 'Personal',
+    path: 'personal', // '/user/:userId/#personal'
+    icon: <Person />,
+    auth: true
   },
   {
-    label: 'Edit Profile',
-    path: 'user/edit/'+ auth.isAuthenticated().user?._id, // '/user/edit/:userId'
-    icon: <Settings />
+    label: 'Experience',
+    path: 'experience', // '/user/:userId/#experience'
+    icon: <WorkHistory />,
+    auth: true
   },
+  {
+    label: 'Company',
+    path: 'company', // '/user/:userId/#company'
+    icon: <Work />,
+    auth: true
+  }
 ]
 
 export const studentLinks: Navigation[] = [
   {
     label: 'Overview',
-    path: 'user/dashboard/' + auth.isAuthenticated().user?._id, // '/user/dashboard/:userId'
-    icon: <Dashboard />
+    path: 'overview', // '/user/courses/#overview'
+    icon: <Dashboard />,
+    auth: true
   },
   {
     label: 'Courses',
-    path: 'learn/courses/'+ auth.isAuthenticated().user?._id, // '/learn/courses/:userId'
-    icon: <Book />
+    path: 'courses', // '/learn/courses/#courses'
+    icon: <LibraryBooks />,
   },
   {
     label: 'Quizzes',
-    path: 'learn/quizzes/'+ auth.isAuthenticated().user?._id, // '/learn/quizzes/:userId'
-    icon: <Quiz />
+    path: 'quizzes', // '/learn/courses/#quizzes'
+    icon: <Quiz />,
   },
   {
     label: 'Exams',
-    path: 'learn/exams/'+ auth.isAuthenticated().user?._id , // '/learn/exams/:userId'
-    icon: <School />
+    path: 'exams', // '/learn/courses/#exams'
+    icon: <School />,
   },
-  {
-    label: 'Certificates',
-    path: 'learn/certificates/'+ auth.isAuthenticated().user?._id, // '/learn/certificates/:userId'
-    icon: <Stars />
-  },
-  {
-    label: 'Nearby',
-    path: 'learn/nearby/'+ auth.isAuthenticated().user?._id , // '/learn/nearby/:userId'
-    icon: <GpsFixed />
-  },
-  {
-    label: 'Forums',
-    path: 'learn/ask', // '/learn/ask/:userId'
-    icon: <Help />
-  },
-  {
-    label: 'Transactions',
-    path: 'learn/transactions/'+ auth.isAuthenticated().user?._id , // '/learn/transactions/:userId'
-    icon: <CurrencyExchange />
-  }
 ]
 
 export const teacherLinks: Navigation[] = [
   {
-    label: 'Statics',
-    path: 'teach/dashboard/' + auth.isAuthenticated().user?._id, // '/teach/dashboard/:userId'
-    icon: <BarChart />
+    label: 'Overview',
+    path: 'overview', // '/teach/courses/#overiew'
+    icon: <BarChart />,
   },
   {
-    label: 'New Course',
-    path: 'teach/course/new', // '/teach/course/new'
-    icon: <AddCircle />
+    label: 'Courses',
+    path: 'courses', // '/teach/courses/#course'
+    icon: <LibraryBooks />,
   },
-  {
-    label: 'Published',
-    path: 'teach/courses/published/'+ auth.isAuthenticated().user?._id, // '/teach/courses/published/:userId'
-    icon: <Public />
-  },
-  {
-    label: 'Private',
-    path: 'teach/courses/private/'+ auth.isAuthenticated().user?._id, // '/teach/courses/private/:userId'
-    icon: <PendingActions />
-  },
-  {
-    label: 'Respond',
-    path: 'teach/respond' , // '/teach/respond',
-    icon: <People />
-  },
-  {
-    label: 'Bids',
-    path: 'teach/bids/'+ auth.isAuthenticated().user?._id , // '/teach/bids/'
-    icon: <ShoppingCart />
-  },
-  {
-    label: 'Transactions',
-    path: 'teach/transactions/'+ auth.isAuthenticated().user?._id , // '/teach/transactions/'
-    icon: <MonetizationOn />
-  }
 ]
 
-export const reportLinks: Navigation[] = [
+export const otherLinks: Navigation[] = [
+  {
+    label: 'Nearby',
+    path: 'nearby', // '/learn/courses/#nearby'
+    icon: <GpsFixed />,
+  },
+  {
+    label: 'Forums',
+    path: 'forums', // '/forums'
+    icon: <People />,
+    auth: true
+  },
+  {
+    label: 'Certificates',
+    path: 'certificates', // '/learn/courses/#certificates'
+    icon: <Stars />,
+  },
+  {
+    label: 'Orders',
+    path: 'orders', // '/orders'
+    icon: <MonetizationOn />,
+    auth: true
+  },
   {
     label: 'Help Center',
-    path: 'report/', // '/report/'
-    icon: <DangerousRounded />
+    path: 'report', // '/reports'
+    icon: <DangerousRounded />,
+    auth: true
   }
 ]

@@ -1,19 +1,16 @@
 import React, { FC, useRef } from 'react'
-//import Image from 'next/image'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
+import {Box, Grid, Container, Typography, IconButton, Slide, Zoom} from '@mui/material'
 import Slider, { Settings } from 'react-slick'
-import Container from '@mui/material/Container'
-import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
 import IconArrowBack from '@mui/icons-material/ArrowBack'
 import IconArrowForward from '@mui/icons-material/ArrowForward'
-import { TestimonialItem } from '../../components/testimonial'
+import {useTheme} from '@mui/material/styles'
+import { TestimonialItem } from '../testimonial'
 import { data } from './testimonial.data'
-import HeadLineCurve from "../../public/images/headline-curve.svg"
-import HomeTestimonialIcon from "../../public/images/home-testimonial.png"
-import auth from '../auth/auth-helper'
+import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
+import HomeTestimonialIcon from "../../public/images/home/home-testimonial.png"
+import logo from '../../public/logo.svg'
+import { WallPaperYGW } from '../wallpapers/wallpapers'
 
 interface SliderArrowArrow {
   onClick?: () => void
@@ -36,7 +33,6 @@ const SliderArrow: FC<SliderArrowArrow> = (props) => {
         boxShadow: 1,
       }}
       disableRipple
-      color="inherit"
       onClick={onClick}
       className={className}
     >
@@ -45,15 +41,15 @@ const SliderArrow: FC<SliderArrowArrow> = (props) => {
   )
 }
 
-const StyledSlickContainer = styled('div')(() => ({
+const StyledSlickContainer = styled('div')(({style}) => ({
   position: 'relative',
-
-  '& .slick-list': { marginLeft: '-30px', marginBottom: '24px' },
+  '& .slick-list': { marginLeft: 0, marginBottom: '24px' },
+  ...style
 }))
 
 const HomeTestimonial: FC = () => {
   const sliderRef = useRef(null)
-
+  const theme = useTheme()
   const sliderConfig: Settings = {
     infinite: true,
     autoplay: true,
@@ -64,52 +60,68 @@ const HomeTestimonial: FC = () => {
     nextArrow: <SliderArrow type="next" />,
   }
   
-  if(auth.isAuthenticated().user) return(<></>)
-
   return (
-    <Box id="testimonial" sx={{ pb: { xs: 6, md: 10 }, backgroundColor: 'background.paper' }}>
-      <Container>
-        <Grid container spacing={5}>
-          <Grid item xs={12} md={6}>
-            <Typography
-              component="h2"
-              sx={{
-                position: 'relative',
-                fontSize: { xs: '2rem', md: '3.5rem' },
-                mt: { xs: 0, md: 7 },
-                mb: 4,
-                lineHeight: 1,
-                fontWeight: 'bold',
-              }}
-            >
-              Testimonial What our{' '}
+    <WallPaperYGW variant='linear' primaryColor={theme.palette.background.paper} secondaryColor={theme.palette.background.default}
+    style={{
+      '&::before': {
+        content: '""',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        backgroundImage: `url(${logo})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+        opacity: 0.5,
+      },
+      '& > div':{
+        position: 'relative'
+      }
+    }}>
+    <Box id="testimonials" sx={{ pb: { xs: 6, md: 10, }}}>
+      <Container sx={{px: {xs: 0, sm: 'unset'}}}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <Slide unmountOnExit={true} timeout={1000} id="slide-heading" appear={true} direction="right" in={true} color='inherit'>
               <Typography
-                component="mark"
+                component="h2"
                 sx={{
                   position: 'relative',
-                  color: 'primary.main',
-                  fontSize: 'inherit',
-                  fontWeight: 'inherit',
-                  backgroundColor: 'unset',
+                  fontSize: { xs: '2rem', md: '3.5rem' },
+                  mt: { xs: 0, md: 7 },
+                  mb: 4,
+                  lineHeight: 1,
+                  fontWeight: 'bold',
+                  color: 'text.primary'
                 }}
               >
-                Students{' '}
-                <Box
+                Testimonial What our{' '}
+                <Typography
+                  component="mark"
                   sx={{
-                    position: 'absolute',
-                    top: { xs: 20, md: 28 },
-                    left: 2,
-                    '& img': { width: { xs: 130, md: 175 }, height: 'auto' },
+                    position: 'relative',
+                    color: 'primary.main',
+                    fontSize: 'inherit',
+                    fontWeight: 'inherit',
+                    backgroundColor: 'unset',
                   }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={HeadLineCurve} alt="Headline curve" />
-                </Box>
+                  Students{' '}
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: { xs: 20, md: 28 },
+                      left: 2,
+                      '& img': { width: { xs: 130, md: 175 }, height: 'auto' },
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={HeadLineCurve} alt="Headline curve" />
+                  </Box>
+                </Typography>
+                Say
               </Typography>
-              Say
-            </Typography>
-
-            <StyledSlickContainer>
+            </Slide>
+            <StyledSlickContainer style={{backgroundColor: theme.palette.background.default, borderRadius: 10,  boxShadow: theme.shadows[5]}}>
               <Slider ref={sliderRef} {...sliderConfig}>
                 {data.map((item, index) => (
                   <TestimonialItem key={String(index)} item={item} />
@@ -117,15 +129,17 @@ const HomeTestimonial: FC = () => {
               </Slider>
             </StyledSlickContainer>
           </Grid>
-          <Grid item xs={12} md={6} sx={{ display: { xs: 'none', md: 'block' } }}>
-            <Box sx={{ width: { xs: '100%', md: '90%' } }}>
-              <Box component='img' src={HomeTestimonialIcon} sx={{width:'100%', height:'auto'}} alt="Testimonial img" />
-              {/* <Image src="/images/home-testimonial.png" width={520} height={540} quality={97} alt="Testimonial img" /> */}
-            </Box>
+          <Grid item xs={12} sm={6}>
+            <Zoom timeout={1000} id="zoom-image" appear={true} in={true} color='inherit' unmountOnExit={true}>
+              <Box sx={{ width: { xs: '100%', md: '90%' } }}>
+                <Box component='img' src={HomeTestimonialIcon} sx={{width:'100%', height:'auto'}} alt="Testimonial img" />
+              </Box>
+            </Zoom>
           </Grid>
         </Grid>
       </Container>
     </Box>
+  </WallPaperYGW>
   )
 }
 

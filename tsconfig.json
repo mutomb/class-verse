@@ -1,4 +1,4 @@
-//This configuration sets the target ECMAScript version to ES6
+//This configuration sets the target ECMAScript version to ES5
 //enables strict mode 
 //ensures ES module interoperability.
 //Enable React Runtime 
@@ -7,7 +7,7 @@
 //noEmitOnError: ensures that the compiler won't produce output files when errors are detected in the TypeScript code
 {  
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES5",
     "strict": true,
     "esModuleInterop": true,
     "jsx": "react",  

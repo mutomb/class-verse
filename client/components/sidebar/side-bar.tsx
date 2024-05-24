@@ -1,124 +1,177 @@
 import React, { FC, FormEvent, useState } from 'react';
-import MuiDrawer from '@mui/material/Drawer';
-import { Toolbar, IconButton, List, ListSubheader, buttonBaseClasses, svgIconClasses } from '@mui/material';
-import {ChevronLeftRounded, ChevronRightRounded} from '@mui/icons-material';
-import { useLocation } from 'react-router-dom'
+import Drawer from '@mui/material/Drawer';
+import { Toolbar, IconButton, List, buttonBaseClasses, svgIconClasses, listSubheaderClasses, ListItem, 
+  ListItemButton, typographyClasses, ListItemText, Link as MuiLink, listItemIconClasses } from '@mui/material';
+import {ChevronLeftRounded, ChevronRightRounded, Lock} from '@mui/icons-material';
+import {useAuth} from '../auth'
 import { useTheme } from '@mui/material/styles'
 import NavigationSide from '../navigation/admin-navigation';
-import { Logo } from '../logo';
+import { Link } from 'react-router-dom'
+import logo from '../../public/logo.svg'
 
 const SideBar: FC = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
   };
-  const handleClose = (event: FormEvent<HTMLFormElement>, reason) => {
+  const handleClose = () => {
     setOpen(false)
   }
-  
   const theme = useTheme();
-  const path = useLocation().pathname
-  const location = path.split('/')[1]
-  const isPartActive = (path: string) => {
-    return location.includes(path)
-  }
-  if(!isPartActive('user')) return null
-  return (<MuiDrawer elevation={6} variant="permanent" open={open}
-            onClose={(event, reason) => {if(reason === 'backdropClick'){handleClose(event, reason);}}}
-            sx={{
-              '& .MuiDrawer-paper': {
-                position: 'fixed',
-                boxShadow:theme.shadows[5], 
-                border: 'none',
-                zIndex: 1099,
-                display: 'flex', 
-                flexDirection: open? 'row-reverse': 'row',
-                justifyContent: open? 'flex-end': 'flex-start',
-                height: open? '100%': 'auto',
-                width: {xs: '100%', sm: '50%', md: '40%', lg: '25%', xl: '20%'},
-                borderTopRightRadius: open? {xs: 100, sm: 150, md: 200, lg: 150, xl:  150}: 0,
-                transition: theme.transitions.create('width', {
-                  easing: theme.transitions.easing.easeIn,
-                  duration: theme.transitions.duration.enteringScreen,
-                }),
-                boxSizing: 'border-box',
-                ...(!open && {
-                  overflowX: 'hidden',
-                  transition: theme.transitions.create('width', {
-                    easing: theme.transitions.easing.easeOut,
-                    duration: theme.transitions.duration.leavingScreen,
-                  }),
-                  width:theme.spacing(7),
-                }),
+  const {isAuthenticated} = useAuth()
+  return (<>
+        <Toolbar
+          sx={{
+            display: open? 'none':'relative',
+            zIndex: 1100,
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 64,
+            boxShadow: theme.shadows[3],
+            p:0,
+            alignSelf: 'center',
+            position: 'fixed',
+            bottom: {xs: '20%', md:'50%'},
+            top: {xs: '80%', md:'50%'},
+            ':hover': {
+                backgroundColor: 'secondary.main',
+                transition: theme.transitions.create(['transform']),
+                transform: 'translateX(3px)'                   
+            },
+            border: '1px solid',
+            borderColor:'primary.contrastText',
+            borderTopRightRadius: 10,
+            borderBottomRightRadius: 10,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            '&::before': {
+              content: '""',
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              backgroundImage: `url(${logo})`,
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'contain',
+              opacity: 0.5,
+            },
+            '& > div':{
+              position: 'relative'
+            }
+          }}
+        >
+          <IconButton onClick={toggleDrawer} 
+          sx={{ border: open? '1px solid': 'none',
+                backgroundColor: open? 'primary.main': 'unset',
+                borderColor: 'primary.contrastText',
+                color: 'primary.contrastText',
+                ':hover': { backgroundColor: open? 'secondary.main': 'unset'}
+              }}>
+            {open? <ChevronLeftRounded /> : <ChevronRightRounded />}
+          </IconButton>
+        </Toolbar>
+        <Drawer elevation={2} open={open} onClose={handleClose} transitionDuration={1000} onClick={handleClose}
+          sx={{
+            '& .MuiDrawer-paper': {
+              backgroundColor: 'background.paper',
+              border: 'none',
+              display: 'flex', 
+              flexDirection:'row',
+              justifyContent:'flex-end',
+              width: {xs: '100%', sm: '50%', md: '40%', lg: '25%', xl: '20%'},
+              borderTopRightRadius: {xs: 100, sm: 150, md: 200, lg: 150, xl:  150},
+              boxSizing: 'border-box',
+              '&::before': {
+                content: '""',
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                top: '50%',
+                backgroundImage: `url(${logo})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                opacity: 0.5,
               },
+              '& > ul':{
+                position: 'relative'
+              }
+            },
+          }}
+        >
+          <List component="nav" sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            backgroundColor: 'initial',
+            pt: 20,
+            textWrap: 'nowrap',
+            [`.${buttonBaseClasses.root}`]:{ 
+              borderTopRightRadius: 10,
+              borderBottomRightRadius: 10,
+            },
+            [`.${buttonBaseClasses.root}:hover`]:{ 
+              backgroundColor: 'secondary.main',
+            },
+            [`.${svgIconClasses.root}`]:{ 
+              color: 'primary.main',
+            },
+            [`.${listSubheaderClasses.root}`]:{ 
+              backgroundColor: 'background.default',
+              width: '100%', 
+              borderTopRightRadius: 10,
+              borderBottomRightRadius: 10,
+            }
+            }}>
+              {!isAuthenticated().user && (
+                <Link to={'/signin'} style={{textDecoration: 'none'}} onClick={handleClose}>
+                  <MuiLink
+                    component='span'
+                    sx={{
+                      display: 'block',
+                      textDecoration: 'none',
+                      mb: 1,
+                      fontSize: { xs: '1rem', md: 'inherit' },
+                      [`& .${typographyClasses.root}`]:{fontWeight: 600},
+                      color: 'text.disabled',
+                      cursor:'pointer',
+                      '&:hover': {
+                        color: 'primary.main',
+                        textDecoration: 'none'
+                      }}}>
+                  <ListItemButton>
+                    <ListItem sx={{width: 40}}>
+                      <Lock />
+                    </ListItem>
+                    <ListItemText sx={{color: 'text.primary'}} primary={'Login for more options'}/>
+                  </ListItemButton>
+                </MuiLink>
+                </Link>)
+              }                
+              {isAuthenticated().user && (<NavigationSide userID={isAuthenticated().user._id}/>)}
+          </List>
+          <Toolbar
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'initial',
+              p:0,
             }}
           >
-            <Toolbar
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: 64,
-                boxShadow: open? 'none': theme.shadows[5],
-                p:0,
-                alignSelf: 'center',
-                position: open? 'unset': 'fixed',
-                bottom: open? 0: {xs: '20%', md:'50%'},
-                top: open? 0: {xs: '80%', md:'50%'},
-                backgroundColor: open? 'inherit': 'primary.main',
-                ':hover': {
-                    backgroundColor: open? 'inherit': 'secondary.main',
-                    ...(!open && { 
-                      transition: theme.transitions.create(['transform']),
-                      transform: 'translateX(3px)'})                    
-                },
-                border: open? 'none': '1px solid',
-                borderColor: open? 'unset': 'primary.contrastText',
-                borderTopRightRadius:open? 0: 10,
-                borderBottomRightRadius:open? 0: 10,
-              }}
-            >
-              <IconButton onClick={toggleDrawer} 
-              sx={{ border: open? '1px solid': 'none',
-                    borderColor: (theme) => open? ( theme.palette.mode === 'dark'? 'primary.contrastText': 'primary.main' ):'unset',
-                    ':hover': { backgroundColor: open? 'secondary.main': 'inherit'}
-                  }}>
-                {open? <ChevronLeftRounded /> : <ChevronRightRounded />}
-              </IconButton>
-            </Toolbar>
-            <List component="nav" sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              pt: 20,
-              textWrap: 'nowrap',
-              transition: theme.transitions.create('display', {
-                easing: theme.transitions.easing.easeIn,
-                duration: theme.transitions.duration.enteringScreen,
-              }),
-              ...(!open && {
-                display: 'none',
-                transition: theme.transitions.create('display', {
-                  easing: theme.transitions.easing.easeOut,
-                  duration: theme.transitions.duration.leavingScreen,
-                })}),
-                [`.${buttonBaseClasses.root}`]:{ 
-                  borderTopRightRadius: 10,
-                  borderBottomRightRadius: 10,
-                },
-                [`.${buttonBaseClasses.root}:hover`]:{ 
-                  backgroundColor: 'secondary.main',
-                },
-                [`.${svgIconClasses.root}`]:{ 
-                  color: 'primary.main',
+            <IconButton onClick={toggleDrawer} 
+            sx={{ border: '1px solid',
+                  backgroundColor: 'primary.main',
+                  borderColor: 'primary.contrastText',
+                  color: 'primary.contrastText',
+                  ':hover': { backgroundColor: 'secondary.main',
+                  transition: theme.transitions.create(['transform']),
+                  transform: 'translateX(-3px)' 
                 }
-              }}>
-                <ListSubheader component="div" inset>
-                  <Logo onClick={handleClose}/>
-                </ListSubheader>
-                <NavigationSide />
-              </List>
-        </MuiDrawer>);
+                }}>
+              {open? <ChevronLeftRounded /> : <ChevronRightRounded />}
+            </IconButton>
+          </Toolbar>
+        </Drawer>
+        </>);
 }
 
 export default SideBar

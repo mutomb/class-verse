@@ -1,4 +1,4 @@
-import React, {MouseEvent} from 'react';
+import React from 'react';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
@@ -6,11 +6,12 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Fade from '@mui/material/Fade';
 import { useTheme } from '@mui/styles';
 import { scroller } from 'react-scroll';
-import auth from '../auth/auth-helper';
+import {useAuth} from '../auth';
 
 export default function ScrollTop() {
   const trigger = useScrollTrigger();
   const theme = useTheme();
+  const {isAuthenticated} = useAuth()
   const scrollToAnchor = (destination:string) => {
     scroller.scrollTo(destination, {
       duration: 1500,
@@ -23,13 +24,12 @@ export default function ScrollTop() {
   return (
     <Fade in={trigger}>
         <Box
-            // onClick={handleClick}
             role="presentation"
-            sx={{ position: 'fixed', bottom: 16, right: 16, zIndex:'999' }}
+            sx={{ position: 'fixed', bottom: 16, right: 16, zIndex: 1099 }}
         >
           <Box
             component='a'
-            onClick={auth.isAuthenticated().user? ()=>scrollToAnchor('enrolled-in-courses'):()=>scrollToAnchor('hero')}
+            onClick={isAuthenticated().user? ()=>scrollToAnchor('enrolled-in-courses'):()=>scrollToAnchor('search')}
           >
             <Fab size="small" aria-label="scroll back to top" variant='extended' 
             sx={{backgroundColor:'primary.main', 

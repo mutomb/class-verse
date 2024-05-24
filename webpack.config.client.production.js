@@ -4,10 +4,10 @@ const CURRENT_WORKING_DIR = process.cwd()
 const config = {
     mode: "production",
     entry: [
-        path.join(CURRENT_WORKING_DIR, 'client/main.js')
+        path.join(CURRENT_WORKING_DIR, 'client', 'main.tsx')
     ],
     output: {
-        path: path.join(CURRENT_WORKING_DIR , '/dist/js'),
+        path: path.join(CURRENT_WORKING_DIR , 'dist','js'),
         filename: 'bundle.js',
         publicPath: "/dist/js/", //static file route path by webpack middleware for serving bundle.js from filesystem
     },
@@ -30,7 +30,7 @@ const config = {
                 }
             },
             {
-                test: /\.(ttf|eot|svg|gif|jpg|png)(\?[\s\S]+)?$/,
+                test: /\.(ttf|eot|svg|gif|jpg|png|ico|pdf)(\?[\s\S]+)?$/,
                 use: [{
                     loader:'file-loader',
                         options: {

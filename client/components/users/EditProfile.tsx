@@ -1,12 +1,18 @@
-import React, {useState, FormEvent, useEffect, ChangeEvent} from 'react';
-import { TextField, Paper, Box, Grid, Typography, Button, FormControlLabel,
-  Switch, IconButton, formControlLabelClasses, formLabelClasses, inputBaseClasses, inputLabelClasses } from '@mui/material';
-import {Error, Delete, Edit} from '@mui/icons-material'
+import React, {useState, FormEvent, useEffect, MouseEvent} from 'react';
+import { TextField, Paper, Box, Grid, Typography, 
+  IconButton, formControlLabelClasses, formLabelClasses, inputLabelClasses, InputAdornment, 
+  MenuItem,
+  iconButtonClasses} from '@mui/material';
+import {Error, Delete, Edit, Visibility, VisibilityOff} from '@mui/icons-material'
 import { fetchImage, read, update } from './api-user'
-import { StyledButton } from '../styled-buttons'
-import { Redirect} from 'react-router-dom'
-import auth from '../auth/auth-helper';
+import { MoreMenuVertButton, StyledButton } from '../styled-buttons'
+import { Link, Redirect} from 'react-router-dom'
+import {useAuth} from '../auth';
 import { useTheme } from '@mui/material/styles'
+import { HashLoader } from '../progress';
+import image from '../../public/images/workspace/1.png'
+import { Parallax } from 'react-parallax';
+import { StyledSnackbar } from '../styled-banners';
 
 interface SignUpProps{
   id: string,
@@ -22,6 +28,7 @@ interface SignUpProps{
   company:any,
   category: string,
   redirectToProfile: boolean,
+  disableSubmit: boolean
 }
 
 export default function EditProfile({ match }) {
@@ -39,9 +46,10 @@ export default function EditProfile({ match }) {
     open: false,
     error: '',
     redirectToProfile: false,
+    disableSubmit: false
   })
   
-  const jwt = auth.isAuthenticated()
+  const {isAuthenticated, updateUser} = useAuth()
   const theme = useTheme();
   const defaultphotoURL ='/api/users/defaultphoto'
   const [localPhoto, setLocalPhoto] = useState({
@@ -60,7 +68,7 @@ export default function EditProfile({ match }) {
     const signal = abortController.signal
     read({
       userId: match.params.userId
-    }, {t: jwt.token}, signal).then((data) => {
+    }, {token: isAuthenticated().token}, signal).then((data) => {
       if (data && data.error) {
         setValues({...values, error: data.error})
       } else {
@@ -73,21 +81,21 @@ export default function EditProfile({ match }) {
     return function cleanup(){
       abortController.abort()
     }
-  }, [match.params.userId])
+  }, [match.params && match.params.userId])
 
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
-    if (values.id) {
-      const userPhotoUrl = `/api/users/photo/${values.id}?${new Date().getTime()}`
-      fetchImage(userPhotoUrl, {t: jwt.token}, signal).then(({data, isDefault}) => {
+    if (match.params.userId) {
+      const userPhotoUrl = `/api/users/photo/${match.params.userId}?${new Date().getTime()}`
+      fetchImage(userPhotoUrl, {token: isAuthenticated().token}, signal).then(({data, isDefault}) => {
         if(data) setLocalPhoto({ data: data, url: URL.createObjectURL(data), isDefault: isDefault });
       })
     }
     return function cleanup(){
       abortController.abort()
     }
-  }, [values.id])
+  }, [match.params && match.params.userId])
 
   useEffect(() => {
     setValues({...values, photo: localPhoto.data})
@@ -96,9 +104,9 @@ export default function EditProfile({ match }) {
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
-    if(values.id && values.company?.id){
-      const companyLogoUrl = `/api/users/${values.id}/company/photo/${values.company.id}?${new Date().getTime()}`
-      fetchImage(companyLogoUrl, {t: jwt.token}, signal).then(({data, isDefault}) => {
+    if(match.params && match.params.userId && values.company && values.company.id){
+      const companyLogoUrl = `/api/users/${match.params.userId}/company/photo/${values.company.id}?${new Date().getTime()}`
+      fetchImage(companyLogoUrl, {token: isAuthenticated().token}, signal).then(({data, isDefault}) => {
         if(data)  setLocalLogo({ data: data, url: URL.createObjectURL(data), isDefault: isDefault })  
       })
     }
@@ -123,21 +131,26 @@ export default function EditProfile({ match }) {
     name === 'companyLogo' && setLocalLogo({ ...localLogo, url: URL.createObjectURL(value), isDefault: false })
   }
 
-  const handleCheck = (event: ChangeEvent<HTMLFormElement>) => {
-    setValues({...values, teacher: event.target.checked})
-  }
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
   const deletePhoto = () => {
-    setLocalPhoto({ data: '', url: '' });
+    setLocalPhoto({ data: '', url: '', isDefault: true });
     values.photo && setValues({ ...values, photo: '' })
   }
 
   const deleteLogo = () => {
-    setLocalLogo({ data: '', url: '' });
+    setLocalLogo({ data: '', url: '', isDefault: true });
     values.teacher && values.company && values.company.logo && setValues({ ...values, company: {...values.company, logo: ''} })
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = () => {
+    setValues({...values, disableSubmit: true})
     if (!(values.name && values.email && values.password)) return;
     let userData = new FormData()
     values.name && userData.append('name', values.name);
@@ -153,98 +166,81 @@ export default function EditProfile({ match }) {
     update({
         userId: match.params.userId
       }, {
-        t: jwt.token
+        token: isAuthenticated().token
       }, userData).then((data) => {
         if (data && data.error) {
-          setValues({...values, error: data.error})
+          setValues({...values, error: data.error, disableSubmit: false})
         } else {
-          auth.updateUser(data, ()=>{
-            setValues({...values, redirectToProfile: true})
-          })
+          updateUser(data, ()=>{})
+          setValues({...values, redirectToProfile: true})
         }
       })
   }
+  const handleClose = () => {
+    setValues({...values, error: ''})
+  }
 
   if (values.redirectToProfile) {
-    return (<Redirect to={'/user/' + values.id}/>)
+    return (<Redirect to={'/user/' + match.params.userId}/>)
   }
 
   return (
-      <Grid container>
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random?online-school-learning)',
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) =>
-              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+    <Parallax bgImage={image}  strength={50} blur={5}
+    renderLayer={()=>(<Box  sx={{ position: 'absolute', opacity: 0.7, bgcolor: 'background.paper', width: '100%', height: '100%'}} />)}
+    >
+      <Grid container sx={{minHeight: '100vh'}} spacing={2}>
+        <Grid item xs={12} sm={8} md={5} component={Paper} sx={{minHeight: '100vh', borderRadius: 4}} elevation={2}>
           <Box
             sx={{
               my: 8,
-              mx: 4,
+              mx: {xs:1, md:4},
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
             }}
           >
             <Box sx={{ textAlign: 'center'}}>
-              <Typography onClick={()=>console.log(localLogo.data)}  variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: '1.5rem', md: '2.5rem' } }}>
+              <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: '1.5rem', sm: '2.5rem' }, color: 'text.primary' }}>
                Update your profile
               </Typography>
             </Box>
             <Box sx={{ position: 'relative', mx: 'auto'}}>
-              <Box sx={{ overflow: 'hidden', borderRadius: '50%', height: 200, mb: 2 }}>
-                <Box component='img' src={localPhoto.url? localPhoto.url : defaultphotoURL} sx={{width: 200, height:'auto'}} alt={'Teacher ' + values.name +" "+ values.surname + ' profile picture'} />
+              <Box sx={{ overflow: 'hidden', borderRadius: '50%', height: {xs: 100, sm: 200}, mb: 2 }}>
+                <Box component='img' src={localPhoto.url? localPhoto.url : defaultphotoURL} sx={{width: {xs: 100, sm: 200}, height:'auto'}} alt={'Teacher ' + values.name +" "+ values.surname + ' profile picture'} />
               </Box>
-              <Box sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: 200, height: 200, borderRadius: '50%',
+              <Box sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: {xs: 100, sm: 200}, height: {xs: 100, sm: 200}, borderRadius: '50%',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', 
                         backgroundColor: 'secondary.main', opacity: 0,
                          ':hover':{
                           opacity: 0.7,
                           transition: 'opacity 0.5s ease'
                         },
+                        '&:hover': {
+                          boxShadow: 2,
+                          [`& .${iconButtonClasses.root}`]: {
+                            backgroundColor: 'primary.main',
+                            color: 'primary.contrastText',
+                            boxShadow: 2,
+                          },
+                        }
                       }}>
                 <input accept="image/*" onChange={handleChange('photo')} style={{display: 'none'}} id="photo-upload-button" type="file" />
-                <label htmlFor="photo-upload-button">
-                <Button aria-label="Edit" color="primary" component="span"
-                                      sx={{
-                                        zIndex: 10,
-                                        boxShadow: 3,
-                                        width: '40px',
-                                        height: '40px',
-                                        minWidth: 0,
-                                        borderRadius:'50%',
-                                        transform: 'unset',
-                                        ':hover':{
-                                          transform: 'translateY(-3px)',
-                                          transition: theme.transitions.create(['transform'])
-                                        }}}>
-                  <Edit/>
-                </Button>
-                </label> 
-                {localPhoto.url && !localPhoto.isDefault && (<IconButton aria-label="Delete"  color="error" onClick={deletePhoto}
-                              sx={{
-                                zIndex: 10,
-                                boxShadow: 3,
-                                transform: 'unset',
-                                mr: 1, 
-                                ':hover':{
-                                  transform: 'translateY(-3px)',
-                                  transition: theme.transitions.create(['transform'])
-                                }}}>
-                            <Delete />
-                          </IconButton>)}
+                <MoreMenuVertButton>
+                  <MenuItem sx={{color: "primary.main", transition: theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+                    <Box component='label' htmlFor="photo-upload-button" style={{width: '100%', color:"inherit", fontSize: '1rem'}}>
+                      <Edit sx={{ml: 1, verticalAlign: 'text-top'}}/> Edit Image
+                    </Box> 
+                  </MenuItem>
+                  {localPhoto.url && !localPhoto.isDefault && 
+                  (<MenuItem sx={{color: 'red', transition: theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+                    <Box aria-label="Delete" onClick={deletePhoto} color="inherit" sx={{fontSize: '1rem', width: '100%'}}>
+                      <Delete /> Delete Image
+                    </Box>
+                  </MenuItem>)}
+                </MoreMenuVertButton>
               </Box>
             </Box>   
-            <Box component="form" onSubmit={handleSubmit} 
+            <Box 
             sx={{ mt: 1,
               [`& .${formControlLabelClasses.asterisk}`]: {display: 'none'},
               [`& .${formLabelClasses.asterisk}`]: {display: 'none'},
@@ -272,7 +268,6 @@ export default function EditProfile({ match }) {
                 label="Surname"
                 name="surname"
                 autoComplete="surname"
-                autoFocus
                 value={values.surname} 
                 onChange={handleChange('surname')}
               />
@@ -284,7 +279,6 @@ export default function EditProfile({ match }) {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                autoFocus
                 value={values.email} 
                 onChange={handleChange('email')}
               />
@@ -299,18 +293,25 @@ export default function EditProfile({ match }) {
                 autoComplete="current-password"
                 value={values.password} 
                 onChange={handleChange('password')}
-              />
-              <Typography variant="subtitle1">
-                I am a Teacher
-              </Typography>
-              <FormControlLabel
-                control={<Switch checked={values.teacher} color='secondary' onChange={handleCheck} />}
-                label={values.teacher? 'Yes' : 'No'}
-              />
+                InputProps={{
+                  endAdornment:(
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{color:'primary.main'}}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>)}}/>
               { values.teacher?(<><TextField
                 margin="dense"
                 multiline
                 minRows="5"
+                maxRows='7'
+                inputProps={{ maxLength: 300 }}
                 type="text"
                 // margin="normal"
                 required
@@ -365,61 +366,67 @@ export default function EditProfile({ match }) {
                               opacity: 0.7,
                               transition: 'opacity 0.5s ease'
                             },
+                            '&:hover': {
+                              boxShadow: 2,
+                              [`& .${iconButtonClasses.root}`]: {
+                                backgroundColor: 'primary.main',
+                                color: 'primary.contrastText',
+                                boxShadow: 2,
+                              },
+                            }
                           }}>
                     <input accept="image/*" onChange={handleChange('companyLogo')} style={{display: 'none'}} id="logo-upload-button" type="file" />
-                    <label htmlFor="logo-upload-button">
-                    <Button aria-label="Edit" color="primary" component="span"
-                                          sx={{
-                                            zIndex: 10,
-                                            boxShadow: 3,
-                                            width: '40px',
-                                            height: '40px',
-                                            minWidth: 0,
-                                            borderRadius:'50%',
-                                            transform: 'unset',
-                                            ':hover':{
-                                              transform: 'translateY(-3px)',
-                                              transition: theme.transitions.create(['transform'])
-                                            }}}>
-                      <Edit/>
-                    </Button>
-                    </label> 
-                    {localLogo.url && !localLogo.isDefault && (<IconButton aria-label="Delete"  color="error" onClick={deleteLogo}
-                                  sx={{
-                                    zIndex: 10,
-                                    boxShadow: 3,
-                                    transform: 'unset',
-                                    mr: 1, 
-                                    ':hover':{
-                                      transform: 'translateY(-3px)',
-                                      transition: theme.transitions.create(['transform'])
-                                    }}}>
-                                <Delete />
-                              </IconButton>)}
+                    <MoreMenuVertButton>
+                      <MenuItem sx={{color: "primary.main", transition: theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+                        <Box component='label' htmlFor="logo-upload-button" style={{width: '100%', color:"inherit", fontSize: '1rem'}}>
+                          <Edit sx={{ml: 1, verticalAlign: 'text-top'}}/> Edit Image
+                        </Box>
+                      </MenuItem>
+                        {localLogo.url && !localLogo.isDefault && 
+                        (<MenuItem sx={{color: 'red', transition: theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+                            <Box aria-label="Delete" onClick={deleteLogo} color="inherit" sx={{fontSize: '1rem', width: '100%'}}>
+                              <Delete /> Delete Image
+                            </Box>
+                          </MenuItem>)}
+                     </MoreMenuVertButton>
                   </Box>
                 </Box> 
 
               </Box>
               </>):null
               }
-              {
-                values.error && (<Typography component="p" color="error">
-                  <Error color="error" sx={{verticalAlign: 'middle'}}/>
-                  Error: {values.error} Retry.</Typography>)
-              }
+              <StyledSnackbar
+              open={values.error? true: false}
+              duration={3000}
+              handleClose={handleClose}
+              icon={<Error/>}
+              heading={"Error"}
+              body={values.error}
+              variant='error'
+              />
               <Box sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  my:2
+                display: 'flex',
+                flexDirection: {xs: 'column', sm:'row'},
+                alignItems: 'center',
+                justifyContent: 'center',
+                '& > button':{ 
+                mx: {xs: 'unset', sm: 1},
+                my: {xs: 1, sm: 'unset'}}
                 }}>
-                <StyledButton type='submit' disableHoverEffect={false} variant="contained">
-                  Save Changes
-                </StyledButton>
+                {values.disableSubmit?(<HashLoader style={{marginTop: '10px'}} size={10}/>):
+                (<StyledButton onClick={handleSubmit} type='button' disableHoverEffect={false} variant="contained">
+                  Save
+                </StyledButton>)}
+                <Link to={ match.params && '/user/' + match.params.userId} style={{textDecoration: 'none'}}>
+                  <StyledButton disableHoverEffect={false} variant="outlined">
+                    Cancel
+                  </StyledButton>
+                </Link>
               </Box>
             </Box>
           </Box>
         </Grid>
       </Grid>
+    </Parallax>
   );
 }

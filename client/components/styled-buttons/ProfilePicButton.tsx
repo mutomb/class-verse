@@ -36,7 +36,7 @@ export default function ( { user }) {
         <Avatar
         component='span' 
         src={userPhotoUrl}
-        alt={user.name? user.name+' profile picture' : 'profile picture'} 
+        alt={user.name?  user.name[0]: ''} 
         sx={{
           fontSize: 15,
           fontWeight: 500,

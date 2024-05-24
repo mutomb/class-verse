@@ -1,0 +1,145 @@
+html
+<!-- tsParticles container -->
+<div id="tsparticles"></div>
+<!-- https://github.com/matteobruni/tsparticles -->
+<div class="github">
+  <a class="btn btn-link" href="https://github.com/matteobruni/tsparticles" title="Find more info on GitHub">
+    <img class="img-fluid" id="gh-mark" src="https://cdn.matteobruni.it/images/particles/GitHub-Mark-120px-plus.png" alt="">
+    <span id="gh-project">tsParticles</span>
+  </a>
+  <div>
+    <a class="github-button" href="https://github.com/matteobruni/tsparticles" data-icon="octicon-star" aria-label="Star matteobruni/tsparticles on GitHub">Star</a>
+    <a class="github-button" href="https://github.com/matteobruni/tsparticles/fork" data-icon="octicon-repo-forked" aria-label="Fork matteobruni/tsparticles on GitHub">Fork</a>
+    <a class="github-button" href="https://github.com/matteobruni/tsparticles/releases/tag/v1.15.1" data-icon="octicon-download" aria-label="Download matteobruni/tsparticles on GitHub">Download</a>
+  </div>
+</div>
+<script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+
+//css
+/* ---- reset ---- */
+body {
+  margin: 0;
+  font: normal 75% Arial, Helvetica, sans-serif;
+}
+canvas {
+  display: block;
+  vertical-align: bottom;
+}
+/* ---- tsparticles container ---- */
+#tsparticles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #0d47a1;
+  background-image: url("");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.github {
+  bottom: 10px;
+  right: 10px;
+  position: fixed;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0 12px 6px 12px;
+  border: 1px solid #000;
+}
+
+.github a:hover,
+.github a:link,
+.github a:visited,
+.github a:active {
+  color: #000;
+  text-decoration: none;
+}
+
+.github img {
+  height: 30px;
+}
+
+.github #gh-project {
+  font-size: 20px;
+  padding-left: 5px;
+  font-weight: bold;
+  vertical-align: bottom;
+}
+
+//JS
+tsParticles.load("tsparticles", {
+  fps_limit: 60,
+  interactivity: {
+    detect_on: "canvas",
+    events: {
+      onclick: { enable: true, mode: "push" },
+      onhover: {
+        enable: true,
+        mode: "attract",
+        parallax: { enable: false, force: 60, smooth: 10 }
+      },
+      resize: true
+    },
+    modes: {
+      push: { quantity: 4 },
+      attract: { distance: 200, duration: 0.4, factor: 5 }
+    }
+  },
+  particles: {
+    color: { value: "#ffffff" },
+    line_linked: {
+      color: "#ffffff",
+      distance: 150,
+      enable: true,
+      opacity: 0.4,
+      width: 1
+    },
+    move: {
+      attract: { enable: false, rotateX: 600, rotateY: 1200 },
+      bounce: false,
+      direction: "none",
+      enable: true,
+      out_mode: "out",
+      random: false,
+      speed: 2,
+      straight: false
+    },
+    number: { density: { enable: true, value_area: 800 }, value: 80 },
+    opacity: {
+      anim: { enable: false, opacity_min: 0.1, speed: 1, sync: false },
+      random: false,
+      value: 0.5
+    },
+    shape: {
+      character: {
+        fill: false,
+        font: "Verdana",
+        style: "",
+        value: "*",
+        weight: "400"
+      },
+      image: {
+        height: 100,
+        replace_color: true,
+        src: "images/github.svg",
+        width: 100
+      },
+      polygon: { nb_sides: 5 },
+      stroke: { color: "#000000", width: 0 },
+      type: "circle"
+    },
+    size: {
+      anim: { enable: false, size_min: 0.1, speed: 40, sync: false },
+      random: true,
+      value: 5
+    }
+  },
+  polygon: {
+    draw: { enable: false, lineColor: "#ffffff", lineWidth: 0.5 },
+    move: { radius: 10 },
+    scale: 1,
+    type: "none",
+    url: ""
+  },
+  retina_detect: true
+});

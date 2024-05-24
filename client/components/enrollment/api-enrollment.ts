@@ -1,11 +1,11 @@
-const create = async (params: { courseId: any }, credentials: { t: any }) => {
+const create = async (params: { courseId: any }, credentials: { token: any }) => {
     try {
         let response = await fetch('/api/enrollment/new/'+params.courseId, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + credentials.t
+            'Authorization': 'Bearer ' + credentials.token
           }
         })
       return await response.json()
@@ -14,13 +14,13 @@ const create = async (params: { courseId: any }, credentials: { t: any }) => {
     }
   }
   
-  const listEnrolled = async (credentials: { t: any }, signal: AbortSignal) => {
+  const listEnrolled = async (credentials: { token: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/enrollment/enrolled', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer ' + credentials.t
+            'Authorization': 'Bearer ' + credentials.token
         },
         signal: signal,
       })
@@ -30,13 +30,13 @@ const create = async (params: { courseId: any }, credentials: { t: any }) => {
     }
   }
 
-  const enrollmentStats = async (params: { courseId: any }, credentials: { t: any }, signal: AbortSignal) => {
+  const enrollmentStats = async (params: { courseId: any }, credentials: { token: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/enrollment/stats/'+params.courseId, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer ' + credentials.t
+            'Authorization': 'Bearer ' + credentials.token
         },
         signal: signal,
       })
@@ -46,7 +46,7 @@ const create = async (params: { courseId: any }, credentials: { t: any }) => {
     }
   }
   
-  const read = async (params: { enrollmentId: any }, credentials: { t: any }, signal: AbortSignal) => {
+  const read = async (params: { enrollmentId: any }, credentials: { token: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/enrollment/' + params.enrollmentId, {
         method: 'GET',
@@ -54,7 +54,7 @@ const create = async (params: { courseId: any }, credentials: { t: any }) => {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + credentials.t
+          'Authorization': 'Bearer ' + credentials.token
         }
       })
       return await response.json()
@@ -63,14 +63,14 @@ const create = async (params: { courseId: any }, credentials: { t: any }) => {
     }
   }
   
-  const complete = async (params: { enrollmentId: any }, credentials: { t: any }, enrollment: {}) => {
+  const complete = async (params: { enrollmentId: any }, credentials: { token: any }, enrollment: {}) => {
     try {
       let response = await fetch('/api/enrollment/complete/' + params.enrollmentId, {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + credentials.t
+          'Authorization': 'Bearer ' + credentials.token
         },
         body: JSON.stringify(enrollment)
       })
@@ -80,14 +80,14 @@ const create = async (params: { courseId: any }, credentials: { t: any }) => {
     }
   }
   
-  const remove = async (params: { enrollmentId: string }, credentials: { t: string }) => {
+  const remove = async (params: { enrollmentId: string }, credentials: { token: string }) => {
     try {
       let response = await fetch('/api/enrollment/' + params.enrollmentId, {
         method: 'DELETE',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + credentials.t
+          'Authorization': 'Bearer ' + credentials.token
         }
       })
       return await response.json()

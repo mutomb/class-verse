@@ -1,81 +1,86 @@
 import React, {FC} from 'react'
-import { makeStyles } from '@mui/styles'
-import ImageList from '@mui/material/ImageList'
-import ImageListItem from '@mui/material/ImageListItem'
-import ImageListItemBar from '@mui/material/ImageListItemBar'
-import {Link} from 'react-router-dom'
-import auth from '../auth/auth-helper'
-import Enroll from '../enrollment/Enroll'
+import {Container, Grid, IconButton} from '@mui/material'
+import { StyledBanner } from '../styled-banners'
+import { DonutLarge, Info, VerifiedUser } from '@mui/icons-material'
+import { CourseCardItem } from '.'
+import { useAuth } from '../auth'
+import { Link } from 'react-router-dom'
+import { AddToCart } from '../cart'
 
-const useStyles = makeStyles(theme => ({
-  title: {
-    padding:`${theme.spacing(3)}px ${theme.spacing(2.5)}px ${theme.spacing(2)}px`,
-    color: theme.palette.openTitle
-  },
-  media: {
-    minHeight: 400
-  },
-  gridList: {
-    width: '100%',
-    minHeight: 200,
-    padding: '16px 0 0px'
-  },
-  tile: {
-    textAlign: 'center',
-    border: '1px solid #cecece',
-    backgroundColor:'#04040c'
-  },
-  image: {
-    height: '100%'
-  },
-  tileBar: {
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
-    textAlign: 'left'
-  },
-  tileTitle: {
-    fontSize:'1.1em',
-    marginBottom:'5px',
-    color:'#fffde7',
-    display:'block'
-  },
-  action:{
-    margin: '0 10px'
-  }
-}))
 
 interface CoursesProps{
   courses:Array<any>,
-  common:Array<any>
+  searched: boolean
+  enrollments:Array<any>
+  columns?: any
 }
 
-const Courses:FC<CoursesProps> = ({courses, common}) =>{
-  const classes = useStyles()
-  const findCommon = (course) => {
-    return !common.find((enrolled)=>{return enrolled.course._id == course._id})
-  }
-    return (
-        <ImageList rowHeight={220} className={classes.gridList} cols={2}>
-          {courses.map((course, i) => {
-            return (
-            findCommon(course) &&
-              <ImageListItem className={classes.tile} key={i} style={{padding:0}}>
-                <Link underline="hover" to={"/course/"+course._id}><img className={classes.image} src={'/api/courses/photo/'+course._id} alt={course.name} /></Link>
-                <ImageListItemBar className={classes.tileBar}
-                  title={<Link underline="hover" to={"/course/"+course._id} className={classes.tileTitle}>{course.name}</Link>}
-                  subtitle={<span>{course.category}</span>}
-                  actionIcon={
-                    <div className={classes.action}>
-                    {auth.isAuthenticated() ? <Enroll courseId={course._id}/> : <Link underline="hover" to="/signin">Sign in to Enroll</Link>}
-                    </div>
-                  }
-                />
-              </ImageListItem>)
-              }
-          )}
-        </ImageList>
-    )
+const Courses:FC<CoursesProps> = ({courses, searched, enrollments, columns}) =>{
+    const {isAuthenticated} = useAuth()
+
+    const isEnrolled = (course) => {
+      return enrollments.find((enrollment)=>{return enrollment.course._id === course._id})
+    }
+
+    const isTeacher = (course) =>{
+      return isAuthenticated().user && isAuthenticated().user._id === course.teacher._id
+    }
+
+    const getAction = (course) =>{
+      if(isTeacher(course) || (isAuthenticated().user && isAuthenticated().user.teacher)) return <></>
+      if(isEnrolled(course) && isEnrolled(course).completed) return (
+        <Link style={{textDecorationLine:'none'}}  to={`/learn/${isEnrolled(course)._id}`}>
+          <IconButton aria-label={`course-${course.name}`} color="primary" 
+            sx={{
+                zIndex: 10,
+                transform: 'unset',
+                color:"primary.main",
+                '&:hover':{
+                  color: 'primary.contrastText',
+                  bgcolor: 'primary.main',
+                  boxShadow: 2,
+                  transform: 'translateY(-3px)',
+                  transition: (theme) => theme.transitions.create(['transform'])
+            }}}>
+            <VerifiedUser />
+          </IconButton>
+        </Link>
+      )
+      if(isEnrolled(course) && !isEnrolled(course).completed) return (
+        <Link style={{textDecorationLine:'none'}}  to={`/learn/${isEnrolled(course)._id}`}>
+          <IconButton aria-label={`course-${course.name}`} color="primary" 
+            sx={{
+                zIndex: 10,
+                transform: 'unset',
+                color:"secondary.main",
+                '&:hover':{
+                  color: 'primary.contrastText',
+                  bgcolor: 'secondary.main',
+                  boxShadow: 2,
+                  transform: 'translateY(-3px)',
+                  transition: (theme) => theme.transitions.create(['transform'])
+            }}}>
+            <DonutLarge />
+          </IconButton>
+        </Link>
+      )
+      return <AddToCart item={course}/>
+    }
+    return (<Container maxWidth="lg" sx={{px:{xs:0, sm: 'inherit'}}}>
+      {courses.length > 0 ?
+        (
+            <Grid container spacing={2}>
+              {courses.map((course, index) => {
+                return (
+                  <Grid key={index} item xs={columns?.xs || 12} sm={columns?.sm || 4} md={columns?.md || 3}>
+                    <CourseCardItem key={String(course._id)} item={course} action={getAction(course)} enrollmentID={isEnrolled(course) && isEnrolled(course)._id}/>
+                  </Grid>
+                ) 
+                
+                })}
+            </Grid>): 
+        (searched? (<StyledBanner  heading={"No Course found!"} body={"Enter a course name in the searchbox."} icon={<Info />} />):<></>)
+      }
+    </Container>)
 }
 export default Courses;
-/*Courses.propTypes = {
-  courses: PropTypes.array.isRequired
-}*/

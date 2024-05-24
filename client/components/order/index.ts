@@ -1,0 +1,6 @@
+// export {default as StudentOrders} from './StudentOrders'
+export {default as Order} from './Order'
+export {default as PlaceOrder} from '../cart/PlaceOrder'
+export {default as CourseOrderEdit} from './CourseOrderEdit'
+export {default as Orders} from './Orders'
+export {default as PaymentForm } from './PaymentForm'

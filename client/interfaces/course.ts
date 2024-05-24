@@ -1,9 +1,11 @@
 export interface Course {
-  id: number | string
-  title: string
+  _id: string
+  name: string
   cover: string
   rating: number
   ratingCount: number
   price: number
+  currency: string
   category: string
+  teacher: any
 }

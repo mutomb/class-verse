@@ -8,11 +8,11 @@ const config = {
     mode: "development",
     devtool: 'eval-source-map',
     entry: [
-        'webpack-hot-middleware/client?reload=true',
-        path.join(CURRENT_WORKING_DIR, 'client/main.js')
+        'webpack-hot-middleware/client?reload=true', /**Send client notifications to update bundle */
+        path.join(CURRENT_WORKING_DIR, 'client', 'main.tsx')
     ],
     output: {
-        path: path.join(CURRENT_WORKING_DIR , '/dist/js'),
+        path: path.join(CURRENT_WORKING_DIR ,'dist','js'),
         filename: 'bundle.js',
         publicPath: '/dist/js/', //Prefix bundle.js with /dist/js in <script> tag, so that to download bundle.js from server at URL /dist/js/bundle.js
     },
@@ -23,6 +23,14 @@ const config = {
     },
     module: {
         rules: [
+            // `.ts` or `.tsx` are parsed using `ts-loader`
+            {
+                test: /\.(ts|tsx)?$/,
+                loader: "ts-loader",
+                options: {
+                    transpileOnly: true
+                }
+            },
             // `js` and `jsx` files are parsed using `babel`
             {
                 test: /\.(js|jsx)?$/,
@@ -36,16 +44,8 @@ const config = {
                   },
                 ]
             },
-            // `.ts` or `.tsx` files are parsed using `ts-loader`
             {
-                test: /\.(ts|tsx)$/,
-                loader: "ts-loader",
-                options: {
-                     transpileOnly: true
-                }
-            },
-            {
-                test: /\.(ttf|eot|svg|gif|jpg|png)(\?[\s\S]+)?$/,
+                test: /\.(ttf|eot|svg|gif|jpg|png|ico|pdf)(\?[\s\S]+)?$/,
                 use: [{
                     loader:'file-loader',
                         options: {
@@ -60,12 +60,12 @@ const config = {
         ]
     },  
     plugins: [
-          new webpack.HotModuleReplacementPlugin(),
+          new webpack.HotModuleReplacementPlugin(), //Enables HMR for on the fly CSS/JS exchange
           new webpack.NoEmitOnErrorsPlugin(),
           new ReactRefreshWebpackPlugin(),
     ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js"],       
+        extensions: [".ts", ".tsx", ".js", ".jsx"],       
     }
 }
 
