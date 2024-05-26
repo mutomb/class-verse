@@ -1,4 +1,9 @@
+//CommonJS module import/require
 const path = require('path')
+const Dotenv = require('dotenv-webpack');
+//ECMA module import
+// import path from 'path'
+// import Dotenv from 'dotenv-webpack'
 const CURRENT_WORKING_DIR = process.cwd()
 
 const config = {
@@ -44,6 +49,9 @@ const config = {
             }
         ]
     },
+    plugins: [
+        new Dotenv()
+    ],
     resolve: {
         extensions: ["*", ".js", ".jsx", ".ts", ".tsx"],
     }

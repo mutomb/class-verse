@@ -1,5 +1,9 @@
+//CommonJS module import/require
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
+//ECMA module import
+// import path from 'path'
+// import nodeExternals from 'webpack-node-externals'
 const CURRENT_WORKING_DIR = process.cwd()
 
 const config = {

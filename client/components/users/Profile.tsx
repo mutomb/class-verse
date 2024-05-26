@@ -11,10 +11,11 @@ import { useTheme } from '@mui/material/styles'
 import { MoreMenuVertButton, StyledButton } from '../styled-buttons'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import stripeButton from '../../public/images/icons/stripeButton.png'
-import config from '../../../server/config/config'
+// import config from '../../../server/config/config'
 import logo from '../../public/logo.svg'
 
 export default function Profile({match}){
+  const stripe_connect_test_client_id = process.env.STRIPE_TEST_CLIENT_ID
   const [user, setUser] = useState({})
   const [redirectToSignin, setRedirectToSignin] = useState<Boolean>(false)
   const {isAuthenticated} = useAuth()
@@ -171,7 +172,7 @@ export default function Profile({match}){
                             ? (<StyledButton variant="contained" disabled={true}>
                                 Stripe connected
                               </StyledButton>)
-                            : (<Box component='a' href={"https://connect.stripe.com/oauth/authorize?response_type=code&client_id="+config.stripe_connect_test_client_id+"&scope=read_write"}>
+                            : (<Box component='a' href={"https://connect.stripe.com/oauth/authorize?response_type=code&client_id="+stripe_connect_test_client_id+"&scope=read_write"}>
                                 <Box sx={{width: {xs: 150, md: 200}, height: 'auto'}} component='img' src={stripeButton}/>
                               </Box>)
                             )

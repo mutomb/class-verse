@@ -57,9 +57,10 @@ app.use(helmet.contentSecurityPolicy({ //Set CSP to ensure no one can inject mal
     defaultSrc: ["'self'"], //sets default source for all types of resources to same origin
     scriptSrc: ["'self'", "*.stripe.com", "'unsafe-inline'", "'unsafe-eval'"], //source for JS scripts to same origin or inline scripts or .stripe.com
     styleSrc: ["'self'","*.googleapis.com", "'unsafe-inline'", "'unsafe-eval'"], //source for styles to same origin or inline styles
-    fontSrc: ["'self'","*.googleapis.com"], //source for fonts to same origin or inline styles
+    fontSrc: ["'self'","*.googleapis.com", "*.gstatic.com"], //source for fonts to same origin or inline styles
     imgSrc: ["'self'", "data:","blob:", "*.amazonaws.com"], //source for images to same origin, blob:*, data:*, and .amazonawz.com
-    mediaSrc: ["'self'", "data:","blob:", "*.amazonaws.com"] //source for video to same origin, blob:*, data:*, and .amazonawz.com
+    mediaSrc: ["'self'", "data:","blob:", "*.amazonaws.com"], //source for video to same origin, blob:*, data:*, and .amazonawz.com
+    frameSrc: ["'self'", "*.stripe.com"], //source for JS scripts to same origin or inline scripts or .stripe.com
   } }));  
     
 app.use(helmet.referrerPolicy({ policy: 'same-origin' })); //set referrer header (URL user is coming from) only when making requests on same host. Stop publishing of internal routing

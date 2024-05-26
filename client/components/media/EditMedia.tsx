@@ -111,7 +111,7 @@ export default function EditMedia({ match }) {
                     },
                   }
             }}>
-            <MoreMenuVertButton>
+            <MoreMenuVertButton style={{mx: 0}}>
               <MenuItem sx={{color: "primary.main", transition: theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
                 <Box component='input' accept="video/*" onChange={handleChange('video')} sx={{display: 'none'}} id="video-upload-button" type="file" />
                 <Box component='label' htmlFor="video-upload-button" style={{width: '100%', color:"inherit", fontSize: '1rem'}}>

@@ -2,7 +2,6 @@ import React, { FC } from "react";
 import { Box, Typography } from "@mui/material";
 import {useTheme} from '@mui/material/styles'
 import file from '../../public/files/privacy_policy_go2.pdf'
-import { Logo } from "../logo";
 import logo from '../../public/logo.svg'
 import { WallPaperYGW } from "../wallpapers/wallpapers";
 

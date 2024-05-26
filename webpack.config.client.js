@@ -1,7 +1,14 @@
+//CommonJS module require
 const path = require('path')
 const webpack = require('webpack')
-const CURRENT_WORKING_DIR = process.cwd()
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const Dotenv = require('dotenv-webpack'); //only expose environment variables that are explicitly referenced in your code to your final bundle
+//ECMA module import
+// import path from 'path'
+// import webpack from 'webpack'
+// import Dotenv from 'dotenv-webpack'
+// import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
+const CURRENT_WORKING_DIR = process.cwd()
 
 const config = {
     name: "browser",
@@ -63,6 +70,7 @@ const config = {
           new webpack.HotModuleReplacementPlugin(), //Enables HMR for on the fly CSS/JS exchange
           new webpack.NoEmitOnErrorsPlugin(),
           new ReactRefreshWebpackPlugin(),
+          new Dotenv()
     ],
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],       

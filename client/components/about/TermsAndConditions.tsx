@@ -1,11 +1,10 @@
 import React, { FC } from "react";
 import { Box, Typography } from "@mui/material";
-import { Logo } from "../logo";
 import { StyledButton } from "../styled-buttons";
-import Copyright from "./Copyright";
 import {useTheme} from '@mui/material/styles'
 import { WallPaperYGW } from '../wallpapers/wallpapers';
 import logo from '../../public/logo.svg'
+import file from '../../public/files/terms_and_conditions_go2.pdf'
 
 interface TCProps{
     updateComplied?: (arg: Boolean)=>void
@@ -30,8 +29,8 @@ const TermsAndConditions: FC<TCProps> = ({updateComplied}) => {
             position: 'relative'
           }
         }}>
-        <Box id="terms-conditions" sx={{ px: {xs: 0, sm: 2}, py: 1.5, boxShadow: 1, borderRadius: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <Box id="terms-conditions" sx={{ width: '100%', px: {xs: 0, sm: 2}, py: 1.5, boxShadow: 1, borderRadius: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Box sx={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
             <Box sx={{ width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}>
               <Typography variant="h6" sx={{mr: 1, fontSize: { xs: '1.2rem', md: '2rem' }, ml: {xs: 1, sm: 'unset'}, mb: 1, color: 'primary.main' }}>
               Terms
@@ -43,31 +42,8 @@ const TermsAndConditions: FC<TCProps> = ({updateComplied}) => {
               Conditions
             </Typography>
             </Box>
+            <Box component='embed' type="application/pdf" src={file} sx={{width: {xs: '100%', md: '90%'}, height:'100vh', borderRadius: 4}}/>
           </Box>
-          <Typography
-          variant="body2" 
-          sx={{ lineHeight: 1.5, color: 'text.primary'}}>
-            <p>Thanks for using this application. We hope you like it. If not, reach out to claim a refund!</p>
-            <p>Thanks to Jeanluc Mutomb, GO<Typography variant="subtitle1" sx={{display: 'inline'}}><sup>2</sup></Typography> group and other contributors for all the help.</p>
-            <p>This software is copyrighted by GO<Typography variant="subtitle1" sx={{display: 'inline'}}><sup>2</sup></Typography>, Inc. The following terms apply to web pages 
-            associated with the GO<Typography variant="subtitle1" sx={{display: 'inline'}}><sup>2</sup></Typography> web app, unless explicitly disclaimed in individual pages:</p>
-            <p>The authors hereby grant permission to use this web application only for educational purposes
-              in accordance with  the licensing terms described here.</p>
-            <p>
-            In no event shall the authors or distributors be liable to any party for direct, indirect, special, 
-            incidental, or consequential damages arising out of the use of this software, its documentation, or 
-            any derivatives thereof, even if the authors have been advised of the possibility of such damage,
-            even if such incident occurs (including, without limitation, for any loss directly or indirectly attributable to our gross 
-            negligence or willful default or that of any other person acting for or controlled by us)  by GO<Typography variant="subtitle1" sx={{display: 'inline'}}><sup>2</sup></Typography>.
-            </p>
-            <p>
-            The authors and distributors specifically disclaim any warranties, including, but not limited to, 
-            the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.  
-            This software is provided on an "as is" basis, and the authors and distributors have no obligation 
-            to provide maintenance, support, updates, enhancements, or modifications.
-            </p>
-          </Typography>
-          <Copyright sx={{ mt: 5 }} />
           <Box>
             {updateComplied && 
             <StyledButton type='button' disableHoverEffect={false} variant="contained" onClick={()=>updateComplied(true) }>

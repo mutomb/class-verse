@@ -43,12 +43,10 @@ const Navigation: FC<Navigation> = ({onClick}) => {
     let delayedScroll=setTimeout(()=>{scrollToAnchor(destination), clearTimeout(delayedScroll)},1000)
   }
   const showMore = (destination: string) => event => {
-    console.log(destination)
     setOpenMore(destination)
     setAnchorEl(event.currentTarget);
   }
   const hideMore = () => {
-    console.log('left')
     setOpenMore('')
     setAnchorEl(null);
   }
@@ -63,8 +61,8 @@ const Navigation: FC<Navigation> = ({onClick}) => {
           key={destination}
           activeClass="current"
           onClick={location===''?()=>scrollToAnchor(destination) : ()=>goToHomeAndScroll(destination)}
-          onMouseEnter={showMore(destination)}
-          onMouseLeave={hideMore}
+          // onMouseEnter={showMore(destination)}
+          // onMouseLeave={hideMore}
           to= {destination}
           spy={true}
           smooth={true}
@@ -110,7 +108,7 @@ const Navigation: FC<Navigation> = ({onClick}) => {
             <img src={HeadLineCurve} alt="Headline curve" />
           </Box>
           {label} {openMore === destination ? <ExpandLess /> : <ExpandMore />}
-          <Menu
+          {/* <Menu
             id="more-vert-menu"
             anchorEl={anchorEl}
             open={openMore === destination}
@@ -130,7 +128,7 @@ const Navigation: FC<Navigation> = ({onClick}) => {
             <MenuItem sx={{color: "primary.main", transition: (theme)=> theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
               More options
             </MenuItem>
-          </Menu>          
+          </Menu>           */}
         </Box>)}
       })}
       { isAuthenticated().user && (<>

@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef, FC} from 'react'
 import { findDOMNode } from 'react-dom'
 import screenfull from 'screenfull'
-import {Box, IconButton, LinearProgress, MenuItem, Slider, Fade, linearProgressClasses, paperClasses, sliderClasses, useMediaQuery} from '@mui/material'
+import {Box, IconButton, LinearProgress, MenuItem, Slider, Fade, linearProgressClasses, paperClasses, sliderClasses, useMediaQuery, iconButtonClasses} from '@mui/material'
 import {PlayArrow, Replay, Pause, SkipNext, VolumeUp, VolumeOff, VolumeMute, Loop, Fullscreen} from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import ReactPlayer from 'react-player'
@@ -133,9 +133,23 @@ const MediaPlayer: FC<MediaPlayerProps> = ({srcUrl, nextUrl, handleAutoplay, han
   }
 
   return (<>
-  <Box sx={{width: '100%'}} ref={widgetRef}>
+  <Box sx={{width: '100%', position: 'relative'}} ref={widgetRef}>
     {videoError && (<Box component='p' sx={{ width: '100%', textAlign: 'center', color: 'red'}}>Video Error. Try again later.</Box>)}
-    <Box onMouseEnter={fullscreen? ()=>{}:showWidget} onTouchStart={fullscreen? ()=>{}:showWidget} 
+    <Fade id="slide-widget" onMouseEnter={showWidget} onMouseLeave={hideWidget} timeout={500} appear={true} in={widget} color='inherit'>
+      <Box component={'div'} id="play-overlay-button"
+        onClick={playPause} onMouseEnter={fullscreen? ()=>{}:showWidget} onTouchStart={fullscreen? ()=>{}:showWidget} 
+        onMouseLeave={fullscreen? ()=>{}:hideWidget} onTouchEnd={fullscreen? hideWidget:()=>{}} 
+        onMouseMove={fullscreen? showWidget:()=>{}} 
+        onMouseUp={fullscreen? hideWidget:()=>{}} 
+        sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: '100%', height: '90%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0)',
+      }}>
+        {playing?
+        <Pause sx={{color: 'primary.main', opacity: 0.4, width: {xs: 50, sm: 100, md: 200}, height: {xs: 50, sm: 100, md: 200}, boxShadow: 2}}/>
+        :<PlayArrow sx={{color: 'primary.main', opacity: 0.4, width: {xs: 50, sm: 100, md: 200}, height: {xs: 50, sm: 100, md: 200}, boxShadow: 2}}/>}
+      </Box>
+    </Fade>
+    <Box onClick={playPause} onMouseEnter={fullscreen? ()=>{}:showWidget} onTouchStart={fullscreen? ()=>{}:showWidget} 
     onMouseLeave={fullscreen? ()=>{}:hideWidget} onTouchEnd={fullscreen? hideWidget:()=>{}} 
     onMouseMove={fullscreen? showWidget:()=>{}} 
     onMouseUp={fullscreen? hideWidget:()=>{}} component='div'  sx={{width: '100%', display: 'flex'}}>

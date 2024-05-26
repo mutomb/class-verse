@@ -238,7 +238,7 @@ export default function EditCourse({match}){
                     },
                   }
             }}>
-            <MoreMenuVertButton>
+            <MoreMenuVertButton style={{mx: 0}}>
               <MenuItem sx={{color: "primary.main", transition: theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
                 <input accept="image/*" onChange={handleChange('cover')} style={{display: 'none'}} id="cover-upload-button" type="file" />
                 <Box component='label' htmlFor="cover-upload-button" style={{width: '100%', color:"inherit", fontSize: '1rem'}}>

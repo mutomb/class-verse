@@ -3,12 +3,12 @@ import { scroller } from 'react-scroll'
 import {useTheme} from '@mui/material/styles'
 import {Box, Container, Grid} from '@mui/material'
 import {StripeProvider} from 'react-stripe-elements'
-import config from '../../../server/config/config'
 import {CartItems, Checkout} from './'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import logo from '../../public/logo.svg'
 
 export default function Cart () {
+  const stripe_test_api_key  = process.env.STRIPE_TEST_PUBLISHABLE
   const [checkout, setCheckout] = useState(false)
   const theme = useTheme()
 
@@ -51,8 +51,8 @@ export default function Cart () {
             </Grid>
             {checkout && 
             (<Grid item id='checkout' xs={ 12} md={6} sx={{pl: {xs: 0, sm: 'inherit'}, pt: {xs: 0, sm: 'inherit'}}}>
-              {/**<StripeProvider stripe={null} apiKey={config.stripe_test_api_key}> Stripe context provider, all stripe UI elments must be used within `StripeProvider` and `Elements` to have access to the Stripe object */}
-              <StripeProvider stripe={null} >
+              {/**  <StripeProvider stripe={null} > */} {/** Stripe context provider, all stripe UI elments must be used within `StripeProvider` and `Elements` to have access to the Stripe object */}
+              <StripeProvider apiKey={stripe_test_api_key}> 
                 <Checkout/>
               </StripeProvider>                
             </Grid>)}

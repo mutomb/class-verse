@@ -225,7 +225,7 @@ export default function EditProfile({ match }) {
                         }
                       }}>
                 <input accept="image/*" onChange={handleChange('photo')} style={{display: 'none'}} id="photo-upload-button" type="file" />
-                <MoreMenuVertButton>
+                <MoreMenuVertButton style={{mx: 0}}>
                   <MenuItem sx={{color: "primary.main", transition: theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
                     <Box component='label' htmlFor="photo-upload-button" style={{width: '100%', color:"inherit", fontSize: '1rem'}}>
                       <Edit sx={{ml: 1, verticalAlign: 'text-top'}}/> Edit Image

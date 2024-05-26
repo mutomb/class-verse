@@ -8,8 +8,8 @@ import formidable from 'formidable'
 import config from '../config/config'
 import { convertToUSD } from '../helpers'
 import stripe from 'stripe'
-// import request from 'request'
 import path from 'path'
+
 const myStripe = new stripe(config.stripe_test_secret_key)
 /** create new user record */
 const create = async (req, res) => {
@@ -209,108 +209,108 @@ const createCookie = async (req, res) => {
 }
 /**Retrieve and attach stripe seller for next handler */
 const stripe_auth = async (req, res, next) => {
-  req.body.stripe_seller = {stripe_user_id: 'stripe_user_id'}
-  next()
-  // try {
-  //   let response = await fetch("https://connect.stripe.com/oauth/token",
-  //   {
-  //     method: 'POST',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //     },
-  //     body: {client_secret:config.stripe_test_secret_key,code:req.body.stripe, grant_type:'authorization_code'}
-  //   })
-  //   response.json().then(data=>{
-  //     if(data.error){
-  //       return res.status('400').json({
-  //         error:data.error_description
-  //       })
-  //     }
-  //     req.body.stripe_seller = data 
-  //     next()
-  //   })
-  // } catch(err) {
-  //     return res.status(400).json({
-  //       error: errorHandler.getErrorMessage(err)
-  //     })
-  // }
-
-  // request({
-  //   url: "https://connect.stripe.com/oauth/token",
-  //   method: "POST",
-  //   json: true,
-  //   body: {client_secret:config.stripe_test_secret_key,code:req.body.stripe, grant_type:'authorization_code'}
-  // }, (error, response, body) => {
-  //   //update user
-  //   if(body.error){
-  //     return res.status('400').json({
-  //       error: body.error_description
-  //     })
-  //   }
-  //   req.body.stripe_seller = body
-  //   next()
-  // })
+  // req.body.stripe_seller = {stripe_user_id: 'stripe_user_id'}
+  // next()
+  try {
+    let response = await fetch("https://connect.stripe.com/oauth/token",
+    {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        client_secret:config.stripe_test_secret_key,
+        code:req.body.stripe, 
+        grant_type:'authorization_code'})
+    })
+    response.json().then(data=>{
+      console.log('stripe_data', data)
+      if(data.error){
+        return res.status('400').json({
+          error:data.error_description
+        })
+      }
+      req.body.stripe_seller = data 
+      next()
+    })
+  } catch(err) {
+      return res.status(400).json({
+        error: errorHandler.getErrorMessage(err)
+      })
+  }
 }
 /**Create or update a stripe stripe customer based on order details and attaches payment ID for next handler */
+//https://docs.stripe.com/api/customers/update
 const stripeCustomer = (req, res, next) => {
-  req.body.order.payment_id = 'payment_id'
-  next()
-  // if(req.profile.stripe_customer){
-  //     //update stripe customer
-  //     myStripe.customers.update(req.profile.stripe_customer, {
-  //         source: req.body.token
-  //     }, (err, customer) => {
-  //       if(err){
-  //         return res.status(400).send({
-  //           error: "Could not update charge details"
-  //         })
-  //       }
-  //       req.body.order.payment_id = customer.id
-  //       next()
-  //     })
-  // }else{
-  //     myStripe.customers.create({
-  //           email: req.profile.email,
-  //           source: req.body.token
-  //     }).then((customer) => {
-  //         User.update({'_id':req.profile._id},
-  //           {'$set': { 'stripe_customer': customer.id }},
-  //           (err, order) => {
-  //             if (err) {
-  //               return res.status(400).send({
-  //                 error: errorHandler.getErrorMessage(err)
-  //               })
-  //             }
-  //             req.body.order.payment_id = customer.id
-  //             next()
-  //           })
-  //     })
-  // }
+  // req.body.order.payment_id = 'payment_id'
+  // next()
+  if(req.profile.stripe_customer){
+      //update stripe customer
+      myStripe.customers.update(
+        req.profile.stripe_customer,
+        {source: req.body.token
+        }).then((customer)=>{
+        console.log('customer', customer )
+        req.body.order.payment_id = customer.id
+        next()
+        }, (error)=>{
+            return res.status(error.code).send({
+              error: error.message
+            })
+        }).catch((err)=>{
+          return res.status(400).send({
+            error: err
+          })
+        })
+  }else{
+      myStripe.customers.create({
+            email: req.profile.email,
+            source: req.body.token
+      }).then((customer) => {
+          User.update({
+            '_id':req.profile._id
+            },
+            {'$set': { 'stripe_customer': customer.id }},
+            (err, user) => {
+              if (err) {
+                return res.status(400).send({
+                  error: errorHandler.getErrorMessage(err)
+                })
+              }
+              req.body.order.payment_id = customer.id
+              next()
+            })
+      }).catch((err)=>{
+        return res.status(400).send({
+          error: err
+        })
+      })
+  }
 }
 
 const createCharge = (req, res, next) => {
-  next()
-  // if(!req.profile.stripe_seller){
-  //   return res.status('400').json({
-  //     error: "Please connect your Stripe account"
-  //   })
-  // }
-  // myStripe.tokens.create({
-  //   customer: req.order.payment_id,
-  // }, {
-  //   stripeAccount: req.profile.stripe_seller.stripe_user_id,
-  // }).then((token) => {
-  //     let amount = convertToUSD(req.body.amount, req.body.currency)**100 //amount in cents
-  //     myStripe.charges.create({
-  //       amount: amount,
-  //       currency: "usd",
-  //       source: token.id,
-  //     }, {
-  //       stripeAccount: req.profile.stripe_seller.stripe_user_id,
-  //     }).then((charge) => {
-  //       next()
-  //     })
-  // })
+  // next()
+  if(!req.profile.stripe_seller){
+    return res.status('400').json({
+      error: "Please connect your Stripe account"
+    })
+  }
+  myStripe.tokens.create({
+    customer: req.order.payment_id,
+  }, {
+    stripeAccount: req.profile.stripe_seller.stripe_user_id,
+  }).then((token) => {
+      let amount = convertToUSD(req.body.amount, req.body.currency)**100 //amount in cents
+      myStripe.charges.create({
+        amount: amount,
+        currency: "usd",
+        source: token.id,
+      }, {
+        stripeAccount: req.profile.stripe_seller.stripe_user_id,
+      }).then((charge) => {
+        next()
+      })
+  })
 }
 
 export default {
