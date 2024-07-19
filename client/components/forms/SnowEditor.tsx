@@ -2,7 +2,10 @@ import React, { FC, EventHandler, CSSProperties } from 'react'
 import { FormControl} from '@mui/material'
 import { SxProps, Theme } from '@mui/material/styles'
 import { DeltaStatic, Sources, StringMap, } from 'quill';
-import ReactQuill, { Value, UnprivilegedEditor, Range } from 'react-quill'
+import { LoadableVisibility } from '../progress';
+const ReactQuill = LoadableVisibility(import('react-quill'))
+// import ReactQuill, { Value, UnprivilegedEditor, Range } from 'react-quill'
+import { Value, UnprivilegedEditor, Range } from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 
 interface Editor{
@@ -31,7 +34,7 @@ interface Editor{
 }
 const Editor: FC<Editor> = ({onChange, modules, value, placeholder, bounds, children, className="", defaultValue, formats, id,
                              onChangeSelection=undefined, onFocus, onBlur, onKeyDown, onKeyPress, onKeyUp, preserveWhitespace, readOnly, scrollingContainer, style, tabIndex, sx}) => {
-
+  if(typeof window ==='undefined') return <></>
   return (
   <FormControl
     aria-label="editor"
