@@ -27,7 +27,7 @@
     "test": "jest"
   },
   "engines": {
-    "node": "13.12.0",
+    "node": "18.18.0",
     "npm": "6.14.4"
   },
   "devDependencies": {
