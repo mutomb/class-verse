@@ -54,7 +54,7 @@ const CircularPercentage: FC<Props>= ({percentage}) => {
               flexDirection: 'column',
             }}
           >
-            <Typography variant="h4" sx={{ color: progress < 30? 'red':progress < 50? 'secondary.main': progress < 60? 'secondary.light': 'secondary.main' }}>
+            <Typography variant="h4" sx={{ color: progress < 30? 'error.main':progress < 50? 'secondary.main': progress < 60? 'secondary.light': 'secondary.main' }}>
               {progress} %
             </Typography>
             <CircularProgress
@@ -73,7 +73,7 @@ const CircularPercentage: FC<Props>= ({percentage}) => {
               value={75}
               size={progress}
               sx={{ transform: 'rotate(96deg) !important', position: 'absolute',
-              color: progress < 30? 'red' :progress < 50? 'secondary.main': progress < 60? 'secondary.light': 'secondary.main'
+              color: progress < 30? 'error.main' :progress < 50? 'secondary.main': progress < 60? 'secondary.light': 'secondary.main'
                }}
             />
           </Box>

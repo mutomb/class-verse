@@ -6,6 +6,8 @@ import {Media, RelatedMedia} from '.'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import { MediaSkeleton } from '../skeletons'
 import logo from '../../public/logo.svg'
+import { StyledSnackbar } from '../styled-banners'
+import { Error } from '@mui/icons-material'
 
 interface PlayMediaProps {
   match: any,
@@ -29,7 +31,7 @@ const PlayMedia: FC<PlayMediaProps>= ({match, data}) => {
           if (data && data.error) {
             if(attempts>=5){ clearInterval(retry)}
             attempts++
-            console.log(data.error)
+             setError(data.error)
           } else {
             setMedia(data)
             clearInterval(retry)
@@ -52,7 +54,7 @@ const PlayMedia: FC<PlayMediaProps>= ({match, data}) => {
         if (data && data.error) {
           if(attempts>=5){ clearInterval(retry)}
           attempts++
-          console.log(data.error)
+           setError(data.error)
           console.log('Retrying, attempt', attempts)
         } else {
           setRelatedMedia(data)
@@ -84,8 +86,8 @@ const PlayMedia: FC<PlayMediaProps>= ({match, data}) => {
       const signal = abortController.signal
       listRelated({
           mediaId: playMedia && playMedia._id}, signal).then((data) => {
-            if (data.error) {
-             console.log(data.error)
+            if (data && data.error) {
+              setError(data.error)
             } else {
               setMedia(playMedia)
               setRelatedMedia(data)
@@ -120,7 +122,7 @@ const PlayMedia: FC<PlayMediaProps>= ({match, data}) => {
           position: 'relative'
         }
       }}>
-        <Box id="teachers" sx={{zIndex: 1000, pt: {xs: 6,md: 8, }, pb: { xs: 8, md: 12}}}>
+        <Box id="specialists" sx={{zIndex: 1000, pt: {xs: 6,md: 8, }, pb: { xs: 8, md: 12}}}>
           <Container maxWidth="lg" sx={{px:{xs:0, sm: 'unset'}}}>
             <Grid container spacing={smMobileView? 2: 4}>
               <Grid item xs={12} sm={relatedMedia && relatedMedia.length > 0? 8: 12}>
@@ -129,7 +131,7 @@ const PlayMedia: FC<PlayMediaProps>= ({match, data}) => {
                 ( <MediaSkeleton />)}
               </Grid>
               <Grid item xs={12} sm={4}>
-              {relatedMedia && relatedMedia.length > 0?
+              {relatedMedia && relatedMedia.length > -1?
               (<>
                 <FormControlLabel
                     control={<Switch checked={autoPlay} color='secondary'  onChange={handleChange} />}
@@ -137,10 +139,19 @@ const PlayMedia: FC<PlayMediaProps>= ({match, data}) => {
                   />
                 <RelatedMedia media={relatedMedia}/>
                 </>):
-              (!relatedMedia && Array.from(new Array(1)).map((item, index) => (<MediaSkeleton key={index} />)))
+              (!relatedMedia && Array.from(new Array(2)).map((item, index) => (<MediaSkeleton key={index} />)))
               }
               </Grid>
             </Grid>
+            <StyledSnackbar
+            open={error? true: false}
+            duration={3000}
+            handleClose={()=>setError('')}
+            icon={<Error/>}
+            heading={"Error"}
+            body={error}
+            variant='error'
+            />
           </Container>
         </Box>
       </WallPaperYGW>

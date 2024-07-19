@@ -31,7 +31,7 @@ const PlaceOrder: FC<PlaceOrderProps> = ({checkoutDetails, stripe}) => {
     create({userId:isAuthenticated().user._id}, {
       token: isAuthenticated().token
     }, checkoutDetails, 'payload.token.id').then((data) => {
-      if (data.error) {
+      if (data && data.error) {
         setValues({...values, error: data.error, disableSubmit: false})
       } else {
         cart.emptyCart(()=> {
@@ -46,7 +46,7 @@ const PlaceOrder: FC<PlaceOrderProps> = ({checkoutDetails, stripe}) => {
         create({userId:isAuthenticated().user._id}, {
           token: isAuthenticated().token
         }, checkoutDetails, payload.token.id).then((data) => {
-          if (data.error) {
+          if (data && data.error) {
             setValues({...values, error: data.error, disableSubmit: false})
           } else {
             cart.emptyCart(()=> {

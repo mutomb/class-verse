@@ -1,4 +1,4 @@
-import React, {FC, useEffect}  from 'react'
+import React, {FC, useEffect, useState}  from 'react'
 import {Card, CardHeader, Typography, List, ListItem, ListItemAvatar, ListItemText, Divider, 
   Link as MuiLink, cardHeaderClasses, Box, listItemClasses, MenuItem} from '@mui/material'
 import {Edit, Visibility, CommentRounded} from '@mui/icons-material'
@@ -22,6 +22,7 @@ interface MediaProps {
 const Media: FC<MediaProps> = ({media, nextUrl, handleAutoplay, variant, style, handleNext, courseId}) => {
   const theme = useTheme()
   const {isAuthenticated} = useAuth()
+  const [expandDescription, setExpandDescription] = useState(false)
   const mediaUrl = media._id? `/api/media/video/${media._id}`: null
   
   useEffect(() => {
@@ -38,7 +39,7 @@ const Media: FC<MediaProps> = ({media, nextUrl, handleAutoplay, variant, style, 
     <Card id='media' sx={{width: '100%', px: {xs: 0, sm:2}, py: 1.5, borderRadius: 4, display: 'flex', 
       flexDirection: 'column', alignItems: 'center', bgcolor:'background.paper',
       [`& .${cardHeaderClasses.content}`]:{flex: {xs: 1, md: 1.7}},
-      [`& .${cardHeaderClasses.title}`]:{fontSize: { xs: '1.5rem', sm: '2.5rem' }, textAlign: 'start'}, 
+      [`& .${cardHeaderClasses.title}`]:{fontSize: { xs: '1.2rem', sm: '1.5rem', md: '2rem' }, textAlign: 'start'}, 
       [`& .${cardHeaderClasses.subheader}`]:{textAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center'},
       [`& .${cardHeaderClasses.action}`]:{flex: {xs: 1, md: 0.3}, width: '100%'},
       ...style
@@ -61,7 +62,7 @@ const Media: FC<MediaProps> = ({media, nextUrl, handleAutoplay, variant, style, 
           (<Box sx={{width: '100%', display: 'flex', flexDirection: {xs: 'column', md: 'row'}, alignItems: 'center', justifyContent: {xs: 'center', md: 'flex-end'}}}>
               <Box sx={{width: {xs: '100%', md: 'initial'},  display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
                 <MoreMenuVertButton>
-                  <MenuItem sx={{color: "primary.main", transition: theme.transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+                  <MenuItem sx={{color: "primary.main", transition: theme.transitions.create(['background-color'], {duration: 500}), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
                     <Link to={courseId? media && `/media/edit/${media._id}/course/${courseId}`: media && `/media/edit/${media._id}`} style={{textDecoration: 'none', color: 'inherit', width: '100%'}}>
                       <Box aria-label="Edit" color="inherit" 
                       sx={{
@@ -69,8 +70,8 @@ const Media: FC<MediaProps> = ({media, nextUrl, handleAutoplay, variant, style, 
                           transform: 'unset',
                           '&:hover':{
                             boxShadow: 2,
-                            transform: 'translateY(-3px)',
-                            transition: theme.transitions.create(['transform'])
+                            transform: 'translateY(-3px) scale(1.1)',
+                            transition: theme.transitions.create(['transform'], {duration: 500})
                           }}}>
                         <Edit sx={{verticalAlign: 'text-top'}}/> Edit Video
                       </Box>
@@ -123,8 +124,14 @@ const Media: FC<MediaProps> = ({media, nextUrl, handleAutoplay, variant, style, 
           <Divider/>
           <Box id="media-body-description-body"
             sx={{display: 'flex',  width:'100%', px: {xs:0, sm: 1}, alignItems: 'center', justifyContent: 'center'}}>
-            <Typography variant="body1" sx={{witdh:'100%', textAlign: 'justify', color: 'text.secondary'}}>
-              {media && media.description}
+            <Typography variant="body1" sx={{witdh:'100%', textAlign: 'justify', color: 'text.secondary', }}>
+              {expandDescription?
+              (<>
+                {media && media.description}{media && media.description && media.description.substring(250).length>0 && <MuiLink component='a' onClick={(event)=>{event.preventDefault(); setExpandDescription(false)}} underline="hover" sx={{ml: 1, color: 'primary.main', cursor: 'pointer'}}>Hide</MuiLink>}
+              </>):
+              (<>
+              {media && media.description && media.description.substring(0, 250)}{media && media.description && media.description.substring(250).length>0 && <MuiLink component='a' onClick={(event)=>{event.preventDefault(); setExpandDescription(true)}} underline="hover" sx={{ml: 1, color: 'primary.main', cursor: 'pointer'}}>Read more</MuiLink>}
+              </>)}
             </Typography>
           </Box>
         </Box>)}

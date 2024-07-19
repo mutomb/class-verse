@@ -15,9 +15,9 @@ const create = async (params, credentials, order, token) => {
     }
 }
 
-const listByTeacher = async (params, credentials, signal) => {
+const listBySpecialist = async (params, credentials, signal) => {
   try {
-    let response = await fetch('/api/orders/teacher/'+params.userId, {
+    let response = await fetch('/api/orders/specialist/'+params.userId, {
       method: 'GET',
       signal: signal,
       headers: {
@@ -132,7 +132,7 @@ const read = async (params, credentials, signal) => {
 
 export {
   create,
-  listByTeacher,
+  listBySpecialist,
   update,
   cancelCourse,
   processCharge,

@@ -3,7 +3,7 @@ import LoadableVisibility from "react-loadable-visibility/react-loadable"
 import { SectionSkeleton } from '../skeletons';
 
 const Loader = ()=> {
-  return (<SectionSkeleton/>)
+  return <SectionSkeleton/>
 }
 
 const Loadable = (component) => (props) => { 
@@ -11,7 +11,7 @@ const Loadable = (component) => (props) => {
     loader: () => component,
     loading: Loader
   });
-  return(<Component {...props}/>);
+  return <Component {...props}/>
 }
 
 export default Loadable;

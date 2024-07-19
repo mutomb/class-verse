@@ -1,6 +1,6 @@
 import React, {useState, FormEvent, MouseEvent} from 'react';
 import { TextField, Link as MuiLink, Box, Grid, Typography, formControlLabelClasses, formLabelClasses, 
-  inputLabelClasses, IconButton, InputAdornment, Container, textFieldClasses, outlinedInputClasses} from '@mui/material';
+  inputLabelClasses, IconButton, InputAdornment, Container, outlinedInputClasses} from '@mui/material';
 import {Error, Visibility, VisibilityOff} from '@mui/icons-material'
 import { Logo } from '../logo';
 import { StyledButton } from '../styled-buttons'
@@ -10,7 +10,6 @@ import {signin} from './api-auth'
 import { scroller } from 'react-scroll'
 import { useTheme } from '@mui/material/styles'
 import { Parallax } from 'react-parallax';
-import image from '../../public/images/workspace/1.png'
 import { useAuth } from '.';
 import { create } from '../setting/api-setting';
 import { useColorMode } from '../../config/theme/MUItheme-hooks';
@@ -18,18 +17,9 @@ import { HashLoader } from '../progress';
 import { StyledSnackbar } from '../styled-banners';
 import { WallPaperYGW } from '../wallpapers/wallpapers';
 import logo from '../../public/logo.svg'
-function Copyright(props: any) {
-  return (
-    <Box component='span' color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <MuiLink color="inherit" href="#">
-       GO<Typography component='h1' variant="subtitle1" sx={{display: 'inline'}}><sup>2</sup></Typography>
-      </MuiLink>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Box>
-  );
-}
+import image from '../../public/images/workspace/1.png'
+import { Copyright } from '../about';
+import { actionTypes, useStateValue } from '../users';
 
 interface Signin{
   email:String,
@@ -49,9 +39,10 @@ export default function SignInSide({location}) {
     disableSubmit: false
   })
   const {isAuthenticated, authenticate} = useAuth();
+  const [{}, dispatch] = useStateValue();
   const {toggleColorMode, mode} = useColorMode()
   const history = useHistory()
-  const handleChange = (name: string) => (event:FormEvent<HTMLFormElement>) => {
+  const handleChange = (name: string) => (event) => {
     setValues({ ...values, [name]: event.target.value })
   }
 
@@ -72,28 +63,28 @@ export default function SignInSide({location}) {
     }
 
     signin(user).then((data) => {
-      if (data.error) {
+      if (data && data.error) {
         setValues({ ...values, error: data.error, disableSubmit: false})
       } else {
         authenticate(data, () =>{
-          if(data.setting){
+          if(data && data.setting){
             toggleColorMode(data.setting.colorMode? data.setting.colorMode: 'system', ()=>{
               setValues({ ...values, error: '', redirectToReferrer: true})
             })
           }else{
              create({userId: data.user && data.user._id}, {token: data && data.token}, {colorMode: mode})
              .then((data) =>{
-              if(data.setting){
+              if(data && data.setting){
                 toggleColorMode(data.setting.colorMode? data.setting.colorMode: 'system', ()=>{
                   setValues({ ...values, error: '', redirectToReferrer: true})
                 })
               }else{
-                data.error && console.log('Preferences not be saved: ', data.error)
                 setValues({ ...values, redirectToReferrer: true}) 
               }
              })
           }
         })
+        dispatch({type: actionTypes.SET_USER, user: data})
       }
     })
   }
@@ -124,35 +115,29 @@ export default function SignInSide({location}) {
   }
   return (
     <Parallax bgImage={image}  strength={50} blur={5}
-    renderLayer={percentage=>(
-      <WallPaperYGW variant='linear' primaryColor={theme.palette.primary.main} secondaryColor={theme.palette.background.paper} 
-      style={{
-        opacity: percentage*0.7, position: 'absolute', width: '100%', height: '100%',
-        '&::before': {
-          content: '""',
-          width: '100%',
-          height: '100%',
-          left: '50%',
-          position: 'absolute',
-          backgroundImage: `url(${logo})`,
-          backgroundRepeat: 'space',
-          backgroundSize: 'contain',
-          opacity: percentage*0.5
-        },
-        '& > div':{
-          position: 'relative'
-        }
-      }}/>
+      renderLayer={percentage=>(
+        <WallPaperYGW variant='linear' primaryColor={theme.palette.primary.main} secondaryColor={theme.palette.background.paper} 
+        style={{
+          opacity: percentage*0.7, position: 'fixed', width: '100%', height: '100%',
+          '&::before': {
+            content: '""',
+            width: '100%',
+            height: '100%',
+            left: '50%',
+            position: 'absolute',
+            backgroundImage: `url(${logo})`,
+            backgroundRepeat: 'space',
+            backgroundSize: 'contain',
+            opacity: percentage*0.5
+          },
+          '& > div':{
+            position: 'relative'
+          }
+        }}/>
     )}>
       <Container 
-        sx={{px: {xs: 0, sm: 'unset'}, bgcolor: theme.palette.mode ==='dark'?`rgba(0,0,0,0.4)`:`rgba(255,255,255,0.4)`, borderRadius: 4, boxShadow: 4,
-        transform: 'unset',
-        maxWidth: 'fit-content !important',
-        '&:hover': {
-          boxShadow: 6,
-          transform: 'translateY(-3px)',
-          transition: (theme) => theme.transitions.create(['box-shadow, transform'], {duration: 1000}),
-        },
+        sx={{px: {xs: 0, sm: 'unset'}, bgcolor: theme.palette.mode ==='dark'?`rgba(0,0,0,0.4)`:`rgba(255,255,255,0.4)`, borderRadius: {xs: 2, sm: 4}, boxShadow: 4,
+        maxWidth: 'fit-content !important', borderLeftColor: 'secondary.main', borderRightColor: 'secondary.main', borderTopColor: 'primary.main', borderBottomColor: 'primary.main', borderStyle: 'solid', borderWidth: {xs: 1, sm: 2},
         }}>
         <Grid container>
           <Grid item xs={12} sx={{minHeight: '100vh'}}>
@@ -163,12 +148,11 @@ export default function SignInSide({location}) {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-              }}
-            >
+              }}>
               <Logo onClick={()=>goToHomeAndScroll('search')} />
               <Box sx={{ textAlign: 'center'}}>
                 <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: '1rem', md: '2rem' }, color: 'text.primary' }}>
-                  Access Your Student or teacher Account
+                  Access Your Client or Specialist Account
                 </Typography>
               </Box>
               <Box component="form" onSubmit={handleSubmit} 
@@ -178,8 +162,6 @@ export default function SignInSide({location}) {
                 [`& .${inputLabelClasses.focused}`]: { 
                   color: theme.palette.mode === 'dark' ? 'secondary.main': 'primary.main',
                 },
-                [`& .${textFieldClasses.root}`]: {bgcolor: 'background.paper', borderRadius: 4},
-                [`& .${textFieldClasses.root}`]: {bgcolor: 'background.paper', borderRadius: 4},
                 [`& .${outlinedInputClasses.root}`]: {bgcolor: 'background.paper', borderRadius: 4},
               }}>
                 <TextField
@@ -246,7 +228,7 @@ export default function SignInSide({location}) {
                         sx={{
                           display: 'block',
                           mb: 1,
-                          color: 'primary',
+                          color: 'primary.main',
                           cursor:'pointer'
                         }}
                       >
@@ -262,7 +244,7 @@ export default function SignInSide({location}) {
                         sx={{
                           display: 'block',
                           mb: 1,
-                          color: 'primary',
+                          color: 'primary.main',
                         }}
                       >
                         {"Don't have an account? Sign Up"}
@@ -270,7 +252,7 @@ export default function SignInSide({location}) {
                     </Link>
                   </Grid>
                 </Grid>
-                <Copyright sx={{ mt: 5 }} />
+                <Copyright {...{ mt: 5 }} />
               </Box>
             </Box>
           </Grid>

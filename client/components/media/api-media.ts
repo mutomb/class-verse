@@ -1,4 +1,5 @@
-import config from '../../../server/config/config'
+const base_url = process.env.NODE_ENV?'onrender_url': process.env.BASEURL
+
 const create = async (params, credentials, media) => {
   try {
     let response = await fetch('/api/media/new/'+ params.userId, {
@@ -48,7 +49,7 @@ const listByUser = async (params) => {
 
 const read = async (params, signal) => {
   try {
-    let response = await fetch(config.serverUrl +'/api/media/' + params.mediaId, {
+    let response = await fetch(base_url +'/api/media/' + params.mediaId, {
     method: 'GET',
     signal: signal
   })
@@ -58,7 +59,7 @@ const read = async (params, signal) => {
   }
 }
 
-const update = async (params, credentials, media) => {
+const update = async (params: { mediaId: any }, credentials: { token: any }, media: FormData) => {
   try {
     let response = await fetch('/api/media/' + params.mediaId, {
     method: 'PUT',

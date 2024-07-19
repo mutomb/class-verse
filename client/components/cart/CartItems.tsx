@@ -92,18 +92,20 @@ const CartItems: FC<CartItemsProps> = ({checkout, setCheckout}) => {
                     sx={{flex: 1.5, ml: {xs: 0, sm: 1, textAlign: 'center'}}}
                     primary={
                       <Typography component='h2' variant="h2" sx={{ mb: 2, height: 56, overflow: 'hidden', fontSize: '1.4rem', fontWeight: 600, color: 'text.primary' }}>
-                        {item.course.name}
+                        {item.course.title}
                       </Typography>
                     } 
                     secondaryTypographyProps={{component: 'div'}}
                     secondary={
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
                           <Box sx={{display: {xs: 'hidden', md: 'unset'}, overflow: "hidden", textOverflow: "ellipsis",textAlign: 'justify', p:1}}>
-                                <Typography variant="body1" sx={{ mb: 2, maxHeight: {xs: 150,  md: 200}}}>{item.course.description}</Typography>
+                              <Typography variant="body1" sx={{width: '100%', mb: 2}}>
+                                {item.course.description && item.course.description.substring(0,250)}{item.course.description && item.course.description.substring(250).length>0 && '...'}
+                              </Typography>
                           </Box>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography variant="h5" sx={{color: 'primary.main'}}>
-                              {'$' + item.course.price}
+                            <Typography variant="h5" sx={{color: 'primary.main', mr: 1}}>
+                              {item.course.currency +" "+ item.course.price}
                             </Typography>
                             <Typography variant="h6" sx={{color: 'text.primary'}}>/ course</Typography>
                           </Box>
@@ -124,14 +126,14 @@ const CartItems: FC<CartItemsProps> = ({checkout, setCheckout}) => {
                 </Box>
                 <Box sx={{width: {xs: '100%', md: 'initial'},  display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
                   <MoreMenuVertButton>
-                    <MenuItem sx={{color: "primary.main", transition: transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+                    <MenuItem sx={{color: "primary.main", transition: transitions.create(['background-color'], {duration: 500}), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
                       <Link style={{textDecoration:'none', color: 'inherit'}} to={"/course/"+item.course._id}> 
                         <IconButton aria-label="Edit" color="inherit" sx={{fontSize: '1rem'}}>
                           <ReadMore sx={{mr: 1, verticalAlign: 'text-top'}}/> View More  
                         </IconButton>
                       </Link>
                     </MenuItem>
-                    <MenuItem sx={{color: "primary.main", transition: transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+                    <MenuItem sx={{color: "primary.main", transition: transitions.create(['background-color'], {duration: 500}), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
                         <IconButton aria-label="Edit" color='error' sx={{fontSize: '1rem'}} onClick={removeItem(i)}>
                           <Delete sx={{mr: 1, verticalAlign: 'text-top'}}/> Remove  
                         </IconButton>
@@ -159,15 +161,10 @@ const CartItems: FC<CartItemsProps> = ({checkout, setCheckout}) => {
                   mx: {xs: 'unset', sm: 1},
                   my: {xs: 1, sm: 'unset'}}
               }}>
-                {(!checkout && isAuthenticated().user) &&
-                  (<StyledButton onClick={openCheckout} type='button' disableHoverEffect={false} variant="contained" color='primary'> 
+                {!checkout &&
+                  (<StyledButton endIcon={isAuthenticated().user? null: <Lock sx={{verticalAlign: 'text-top'}}/>} onClick={openCheckout} type='button' disableHoverEffect={false} variant="contained" color='primary'> 
                     Checkout
                   </StyledButton>)
-                }
-                {!checkout && !isAuthenticated().user &&
-                  (<Link to="/signin" style={{textDecoration: 'none'}}>
-                  <StyledButton type='button' disableHoverEffect={false} variant="contained"> <Lock sx={{verticalAlign: 'text-top'}}/> Checkout</StyledButton>
-                </Link>)
                 }
                 <Link to='/' style={{textDecoration: 'none'}}>
                   <StyledButton variant="outlined">Shop More</StyledButton>

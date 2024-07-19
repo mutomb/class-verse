@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 import {Container, Grid, IconButton} from '@mui/material'
 import { StyledBanner } from '../styled-banners'
 import { DonutLarge, Info, VerifiedUser } from '@mui/icons-material'
@@ -6,7 +6,7 @@ import { CourseCardItem } from '.'
 import { useAuth } from '../auth'
 import { Link } from 'react-router-dom'
 import { AddToCart } from '../cart'
-
+import { scroller } from 'react-scroll';
 
 interface CoursesProps{
   courses:Array<any>,
@@ -22,15 +22,15 @@ const Courses:FC<CoursesProps> = ({courses, searched, enrollments, columns}) =>{
       return enrollments.find((enrollment)=>{return enrollment.course._id === course._id})
     }
 
-    const isTeacher = (course) =>{
-      return isAuthenticated().user && isAuthenticated().user._id === course.teacher._id
+    const isSpecialist = (course) =>{
+      return isAuthenticated().user && isAuthenticated().user._id === course.specialist._id
     }
 
     const getAction = (course) =>{
-      if(isTeacher(course) || (isAuthenticated().user && isAuthenticated().user.teacher)) return <></>
+      if(isSpecialist(course) || (isAuthenticated().user && isAuthenticated().user.specialist)) return <></>
       if(isEnrolled(course) && isEnrolled(course).completed) return (
-        <Link style={{textDecorationLine:'none'}}  to={`/learn/${isEnrolled(course)._id}`}>
-          <IconButton aria-label={`course-${course.name}`} color="primary" 
+        <Link style={{textDecorationLine:'none'}}  to={`/client/${isEnrolled(course)._id}`}>
+          <IconButton aria-label={`course-${course.title}`} color="primary" 
             sx={{
                 zIndex: 10,
                 transform: 'unset',
@@ -39,16 +39,16 @@ const Courses:FC<CoursesProps> = ({courses, searched, enrollments, columns}) =>{
                   color: 'primary.contrastText',
                   bgcolor: 'primary.main',
                   boxShadow: 2,
-                  transform: 'translateY(-3px)',
-                  transition: (theme) => theme.transitions.create(['transform'])
+                  transform: 'translateY(-3px) scale(1.1)',
+                  transition: (theme) => theme.transitions.create(['transform'], {duration: 500})
             }}}>
             <VerifiedUser />
           </IconButton>
         </Link>
       )
       if(isEnrolled(course) && !isEnrolled(course).completed) return (
-        <Link style={{textDecorationLine:'none'}}  to={`/learn/${isEnrolled(course)._id}`}>
-          <IconButton aria-label={`course-${course.name}`} color="primary" 
+        <Link style={{textDecorationLine:'none'}}  to={`/client/${isEnrolled(course)._id}`}>
+          <IconButton aria-label={`course-${course.title}`} color="primary" 
             sx={{
                 zIndex: 10,
                 transform: 'unset',
@@ -57,8 +57,8 @@ const Courses:FC<CoursesProps> = ({courses, searched, enrollments, columns}) =>{
                   color: 'primary.contrastText',
                   bgcolor: 'secondary.main',
                   boxShadow: 2,
-                  transform: 'translateY(-3px)',
-                  transition: (theme) => theme.transitions.create(['transform'])
+                  transform: 'translateY(-3px) scale(1.1)',
+                  transition: (theme) => theme.transitions.create(['transform'], {duration: 500})
             }}}>
             <DonutLarge />
           </IconButton>
@@ -66,7 +66,16 @@ const Courses:FC<CoursesProps> = ({courses, searched, enrollments, columns}) =>{
       )
       return <AddToCart item={course}/>
     }
-    return (<Container maxWidth="lg" sx={{px:{xs:0, sm: 'inherit'}}}>
+    useEffect(() => {
+      scroller.scrollTo('searched-courses', {
+        duration: 1500,
+        delay: 100,
+        smooth: true,
+        offset: -50
+      })
+      
+    }, [])
+    return (<Container id='searched-courses' maxWidth="lg" sx={{px:{xs:0, sm: 'inherit'}}}>
       {courses.length > 0 ?
         (
             <Grid container spacing={2}>

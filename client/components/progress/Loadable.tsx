@@ -21,19 +21,12 @@ function Loading() {
   //     timer && clearInterval(timer);
   //   };
   // }, []);
-  const Loader = React.forwardRef(function (props, ref) {
-    return (
-      <div ref={ref} {...props}>
-        Fade
-      </div>
-    );
-  });
 
   return ( 
     <Box sx={{ width: '100%', position:'relative', color: 'secondary.main',
     // [`& .${linearProgressClasses.bar1Buffer}`]:{bgcolor: 'primary.main'},
     // [`& .${linearProgressClasses.bar2Buffer}`]:{bgcolor: 'secondary.main'},
-    // [`& .${linearProgressClasses.dashed}`]:{bgcolor: 'red'},
+    // [`& .${linearProgressClasses.dashed}`]:{bgcolor: 'error.main'},
     }}>
       <LinearProgress  variant='indeterminate' sx={{height: '7px'}}/>
       {/* <LinearProgress  variant="buffer" value={progress} valueBuffer={10} sx={{height: '7px'}}/> */}

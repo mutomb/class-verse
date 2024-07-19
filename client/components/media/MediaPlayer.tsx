@@ -1,20 +1,25 @@
 import React, {useState, useEffect, useRef, FC} from 'react'
 import { findDOMNode } from 'react-dom'
 import screenfull from 'screenfull'
-import {Box, IconButton, LinearProgress, MenuItem, Slider, Fade, linearProgressClasses, paperClasses, sliderClasses, useMediaQuery, iconButtonClasses} from '@mui/material'
+import {Box, IconButton, LinearProgress, MenuItem, Slider, Fade, linearProgressClasses, paperClasses, sliderClasses, useMediaQuery, iconButtonClasses, Typography, svgIconClasses} from '@mui/material'
 import {PlayArrow, Replay, Pause, SkipNext, VolumeUp, VolumeOff, VolumeMute, Loop, Fullscreen} from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import ReactPlayer from 'react-player'
 import {useTheme} from '@mui/material/styles'
 import { MoreMenuVertButton } from '../styled-buttons'
 interface MediaPlayerProps {
-  srcUrl: string,
+  srcUrl?: string,
+  srcObj?: any,
   nextUrl?: string,
   handleAutoplay?: (cb)=>void,
-  handleNext?: (cb) => void
+  handleNext?: (cb) => void,
+  variant?: 'streaming' | 'rtc',
+  getDuration?: (duration: number) => void,
+  coverImageUrl?: string,
+  getPlayPause?: (cb)=>void
 }
 
-const MediaPlayer: FC<MediaPlayerProps> = ({srcUrl, nextUrl, handleAutoplay, handleNext}) => {
+const MediaPlayer: FC<MediaPlayerProps> = ({srcUrl, srcObj, nextUrl, handleAutoplay, handleNext, variant, getDuration, coverImageUrl, getPlayPause}) => {
   const theme = useTheme();
   const matchMobileView = useMediaQuery(theme.breakpoints.down('md'), {defaultMatches: true})
   const [playing, setPlaying] = useState(false)
@@ -90,6 +95,8 @@ const MediaPlayer: FC<MediaPlayerProps> = ({srcUrl, nextUrl, handleAutoplay, han
   }
   const onDuration = (duration) => {
     setDuration(duration)
+    getDuration && getDuration(duration)
+    getPlayPause && getPlayPause(playPause)
   }
   const onSeekMouseDown = event => {
     setSeeking(true)
@@ -131,234 +138,267 @@ const MediaPlayer: FC<MediaPlayerProps> = ({srcUrl, nextUrl, handleAutoplay, han
   const hideWidget = () => {
     setWidget(false)
   }
-
   return (<>
   <Box sx={{width: '100%', position: 'relative'}} ref={widgetRef}>
-    {videoError && (<Box component='p' sx={{ width: '100%', textAlign: 'center', color: 'red'}}>Video Error. Try again later.</Box>)}
-    <Fade id="slide-widget" onMouseEnter={showWidget} onMouseLeave={hideWidget} timeout={500} appear={true} in={widget} color='inherit'>
-      <Box component={'div'} id="play-overlay-button"
-        onClick={playPause} onMouseEnter={fullscreen? ()=>{}:showWidget} onTouchStart={fullscreen? ()=>{}:showWidget} 
-        onMouseLeave={fullscreen? ()=>{}:hideWidget} onTouchEnd={fullscreen? hideWidget:()=>{}} 
-        onMouseMove={fullscreen? showWidget:()=>{}} 
-        onMouseUp={fullscreen? hideWidget:()=>{}} 
-        sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: '100%', height: '90%',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0)',
+    {videoError && (<Box component='p' sx={{ width: '100%', textAlign: 'center', color: 'error.main'}}>Video Error. Try again later.</Box>)}
+    {coverImageUrl && !playing?
+    (<Box sx={{flex:1, position: 'relative', mx: 'auto', width: '100%', height: {xs: 300, md: 400}, boxShadow: 2, borderRadius: {xs: 2, sm: 4},
+        '&:hover': {
+          boxShadow: 2,
+          [`& .${svgIconClasses.root}`]: {
+            backgroundColor: 'primary.main',
+            color: 'primary.contrastText',
+            boxShadow: 2,
+            transition: theme.transitions.create(['background-color', 'color', 'box-shadow'], {duration: 500})
+          },
+        } 
       }}>
-        {playing?
-        <Pause sx={{color: 'primary.main', opacity: 0.4, width: {xs: 50, sm: 100, md: 200}, height: {xs: 50, sm: 100, md: 200}, boxShadow: 2}}/>
-        :<PlayArrow sx={{color: 'primary.main', opacity: 0.4, width: {xs: 50, sm: 100, md: 200}, height: {xs: 50, sm: 100, md: 200}, boxShadow: 2}}/>}
-      </Box>
-    </Fade>
-    <Box onClick={playPause} onMouseEnter={fullscreen? ()=>{}:showWidget} onTouchStart={fullscreen? ()=>{}:showWidget} 
-    onMouseLeave={fullscreen? ()=>{}:hideWidget} onTouchEnd={fullscreen? hideWidget:()=>{}} 
-    onMouseMove={fullscreen? showWidget:()=>{}} 
-    onMouseUp={fullscreen? hideWidget:()=>{}} component='div'  sx={{width: '100%', display: 'flex'}}>
-      <ReactPlayer
-        ref={ref}
-        width={'100%'}
-        height={fullscreen?'100vh':'inherit'}
-        // height={fullscreen ? 'inherit':'inherit'}
-        // style={fullscreen ? {position:'relative', height: '80%'} : {maxHeight: '500px'}}
-        url={srcUrl}
-        playing={playing}
-        loop={loop}
-        playbackRate={playbackRate}
-        volume={volume}
-        muted={muted}
-        onEnded={onEnded}
-        onError={showVideoError}
-        onProgress={onProgress}
-        onDuration={onDuration}
-        />
-        <br/>
-    </Box>
-    <Fade id="slide-widget" onMouseEnter={showWidget} onMouseLeave={hideWidget} timeout={500} appear={true} in={widget} color='inherit'>
-      <Box sx={{position: 'relative', bgcolor: 'background.default', ...(fullscreen && {position: 'absolute', bottom:10, width: '100%', bgcolor: 'rgba(0, 0, 0, 0.5)'}), 
-        [`& .${linearProgressClasses.bar1Buffer}`]:{bgcolor: 'primary.main'},
-        [`& .${linearProgressClasses.bar2Buffer}`]:{bgcolor: 'secondary.main'},
-        [`& .${linearProgressClasses.dashed}`]:{bgcolor: 'red'},
-        [`& .${sliderClasses.root}`]:{py: 0},
-        }}>
-        <Box id='progress-bar'>
-          <LinearProgress  variant="buffer" value={values.played*100} valueBuffer={values.loaded*100} 
-          sx={{width: '100%', position: 'absolute', top: 0}}/>
-          <Slider
-              aria-label="duration-input-range"
-              size="small"
-              value={values.played*100}
-              min={0}
-              // step={1}
-              max={100}
-              onMouseDown={onSeekMouseDown}
-              onChange={(_, value) => onSeekChange(value as number)}
-              onMouseUp={onSeekMouseUp}
-              sx={{
-                verticalAlign: 'middle',
-                position: 'absolute',
-                width: '100%',
-                top: 0,
-                zIndex: 1099,
-                height: 4,
-                '-webkit-appearance': 'none',
-                backgroundColor: 'rgba(0,0,0,0)', 
-                [`& .${sliderClasses.rail}`]: {
-                  opacity: 0,
-                },
-                [`& .${sliderClasses.track}`]: {
-                  opacity: 0,
-                },
-                [`& .${sliderClasses.thumb}`]: {
-                  color: 'primary.main',
-                  width: 8,
-                  height: 8,
-                  transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
-                  '&::before': {
-                    boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
-                  },
-                  '&:hover, &.Mui-focusVisible': {
-                    boxShadow: 5
-                  },
-                  '&.Mui-active': {
-                    width: 20,
-                    height: 20,
-                  },
-                },
-              }}
-            />
+        <Box sx={{position: 'absolute', overflow: 'hidden', width: '100%', display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
+          <Box component='img' src={coverImageUrl} sx={{width: 'auto', height: {xs: 300, md: 400}, borderRadius: {xs: 2, sm: 4}}} />
         </Box>
-        <Box id='widget' sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap-reverse'}}>
-          <Box id='widgetbuttons' sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-          <IconButton sx={{color: 'primary.main', '& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}} onClick={playPause}>
-            {playing ? <Pause/>: (values.ended ? <Replay/> : <PlayArrow />)}
-          </IconButton>
-          {!handleNext? 
-            nextUrl?(
-              <Link to={nextUrl} style={{color: 'inherit', textDecoration: 'none', verticalAlign: 'middle'}}>
-                <IconButton disabled={!nextUrl} sx={{color: 'primary.main'}}>
-                  <SkipNext sx={{'& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}}/>
-                </IconButton>
-              </Link>):
-              (<IconButton disabled={!nextUrl} sx={{color: 'primary.main'}}>
-                  <SkipNext sx={{'& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}}/>
-                </IconButton>): 
-          (<IconButton onClick={handleSkip} sx={{color: 'primary.main'}}>
-              <SkipNext sx={{'& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}}/>
-            </IconButton>)
-          }
-          {matchMobileView? (
-          <MoreMenuVertButton
-            transformOrigin={{vertical: 200, horizontal: 2}} 
-            icon={
-              <Box component='span' sx={{color: 'primary.main', '& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}} onClick={toggleMuted}>
-                {volume > 0 && !muted && <VolumeUp /> || muted && <VolumeOff /> || volume==0 && <VolumeMute />}
-              </Box>
-            } 
-            style={{[`& .${paperClasses.root}`]: {bgcolor: 'rgba(0,0,0,0)', p:0}}}>
-            <MenuItem sx={{height: 200, backgroundColor: 'rgba(0,0,0,0)', width: '100%', p: 0}}>
-              <Slider
-                orientation="vertical"
-                aria-label="volume-input-range"
+        <Box id="course-image-overlay" 
+            onClick={playPause} 
+            sx={{zIndex: 1, position: 'relative', top: 0, right: 0, width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around', 
+                backgroundColor: 'rgba(0,0,0,0)', borderRadius: {xs: 2, sm: 4},
+          }}>
+            <PlayArrow sx={{color: 'primary.main', bgcolor: 'rgba(255,255,255,7)', borderRadius: '50%', opacity: 0.6, width: {xs: 80, sm: 100, md: 200}, height: {xs: 80, sm: 100, md: 200}, boxShadow: 2}}/>
+            <Typography component='h2' variant='h2' sx={{textAlign: 'center', color: 'primary.contrastText', bgcolor:'rgba(18,124,113,0.4)', fontSize: {xs: '1rem', sm: '1.2rem', md: '1.5rem'}}}>
+              Preview this course
+            </Typography>
+        </Box>
+      </Box>): 
+      (<>
+      <Fade id="slide-widget" onMouseEnter={showWidget} onMouseLeave={hideWidget} timeout={500} appear={true} in={widget} color='inherit'>
+        <Box component={'div'} id="play-overlay-button"
+          onClick={playPause} onMouseEnter={fullscreen? undefined:showWidget} onTouchStart={fullscreen? undefined:showWidget} 
+          onMouseLeave={fullscreen? undefined:hideWidget} onTouchEnd={fullscreen? hideWidget:undefined} 
+          onMouseMove={fullscreen? showWidget:undefined} 
+          onMouseUp={fullscreen? hideWidget:undefined} 
+          sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: '100%', height: '90%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0)',
+        }}>
+          {playing?
+          <Pause sx={{color: 'primary.main', opacity: 0.4, width: {xs: 50, sm: 100, md: 200}, height: {xs: 50, sm: 100, md: 200}, boxShadow: 2}}/>
+          :<PlayArrow sx={{color: 'primary.main', opacity: 0.4, width: {xs: 50, sm: 100, md: 200}, height: {xs: 50, sm: 100, md: 200}, boxShadow: 2}}/>}
+        </Box>
+      </Fade>
+      <Box onClick={playPause} onMouseEnter={fullscreen? undefined:showWidget} onTouchStart={fullscreen? undefined:showWidget} 
+      onMouseLeave={fullscreen? undefined:hideWidget} onTouchEnd={fullscreen? hideWidget:undefined} 
+      onMouseMove={fullscreen? showWidget:undefined} 
+      onMouseUp={fullscreen? hideWidget:undefined} component='div'  sx={{width: '100%', display: 'flex'}}>
+        <ReactPlayer
+          ref={ref}
+          width={'100%'}
+          height={fullscreen?'100vh':'inherit'}
+          // height={fullscreen ? 'inherit':'inherit'}
+          // style={fullscreen ? {position:'relative', height: '80%'} : {maxHeight: '500px'}}
+          url={srcUrl || [{src: srcObj}]}
+          playing={playing}
+          loop={loop}
+          playbackRate={playbackRate}
+          volume={volume}
+          muted={muted}
+          onEnded={onEnded}
+          onError={showVideoError}
+          onProgress={onProgress}
+          onDuration={onDuration}
+          />
+          <br/>
+      </Box>
+      <Fade id="slide-widget" onMouseEnter={showWidget} onMouseLeave={hideWidget} timeout={500} appear={true} in={widget} color='inherit'>
+        <Box sx={{position: 'relative', bgcolor: 'background.default', ...(fullscreen && {position: 'absolute', bottom:10, width: '100%', bgcolor: 'rgba(0, 0, 0, 0.5)'}), 
+          [`& .${linearProgressClasses.bar1Buffer}`]:{bgcolor: 'primary.main'},
+          [`& .${linearProgressClasses.bar2Buffer}`]:{bgcolor: 'secondary.main'},
+          [`& .${linearProgressClasses.dashed}`]:{bgcolor: 'error.main'},
+          [`& .${sliderClasses.root}`]:{py: 0},
+          }}>
+          {variant !=='rtc' &&
+          (<Box id='progress-bar'>
+            <LinearProgress  variant="buffer" value={values.played*100} valueBuffer={values.loaded*100} 
+            sx={{width: '100%', position: 'absolute', top: 0}}/>
+            <Slider
+                aria-label="duration-input-range"
                 size="small"
-                value={muted? 0: volume*100}
+                value={values.played*100}
                 min={0}
                 // step={1}
                 max={100}
-                onChange={(_, value) => changeVolume(value as number)}
+                onMouseDown={onSeekMouseDown}
+                onChange={(_, value) => onSeekChange(value as number)}
+                onMouseUp={onSeekMouseUp}
                 sx={{
-                backgroundColor: 'rgba(0,0,0,0)',
-                '-webkit-appearance': 'none',
-                verticalAlign: 'middle',
-                width: 6,
-                [`& .${sliderClasses.rail}`]: {
-                  opacity: 0.3,
-                  color: 'primary.main'
-                },
-                [`& .${sliderClasses.track}`]: {
-                  color: 'primary.main'
-                },
-                [`& .${sliderClasses.thumb}`]: {
-                  color: 'primary.main',
-                  width: 8,
-                  height: 8,
-                  transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
-                  '&::before': {
-                    boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
+                  verticalAlign: 'middle',
+                  position: 'absolute',
+                  width: '100%',
+                  top: 0,
+                  zIndex: 1099,
+                  height: 4,
+                  '-webkit-appearance': 'none',
+                  backgroundColor: 'rgba(0,0,0,0)', 
+                  [`& .${sliderClasses.rail}`]: {
+                    opacity: 0,
                   },
-                  '&:hover, &.Mui-focusVisible': {
-                    boxShadow: 5
+                  [`& .${sliderClasses.track}`]: {
+                    opacity: 0,
                   },
-                  '&.Mui-active': {
-                    width: 20,
-                    height: 20,
+                  [`& .${sliderClasses.thumb}`]: {
+                    color: 'primary.main',
+                    width: 8,
+                    height: 8,
+                    transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+                    '&::before': {
+                      boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
+                    },
+                    '&:hover, &.Mui-focusVisible': {
+                      boxShadow: 5
+                    },
+                    '&.Mui-active': {
+                      width: 20,
+                      height: 20,
+                    },
                   },
-                },
-                '& > svg':{width: {xs: 16, md: 24}, height: 'auto'}
                 }}
               />
-            </MenuItem>
-          </MoreMenuVertButton>):
-          (<>
-          <IconButton sx={{color: 'primary.main', '& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}} onClick={toggleMuted}>
-            {volume > 0 && !muted && <VolumeUp /> || muted && <VolumeOff /> || volume==0 && <VolumeMute />}
-          </IconButton>
-          <Slider
-              aria-label="volume-input-range"
-              size="small"
-              value={muted? 0: volume*100}
-              min={0}
-              // step={1}
-              max={100}
-              onChange={(_, value) => changeVolume(value as number)}
-              sx={{
-                width: 200,
-                '-webkit-appearance': 'none',
-                backgroundColor: 'rgba(0,0,0,0)',
-                height: 6,
-                verticalAlign: 'middle', 
-                [`& .${sliderClasses.rail}`]: {
-                  opacity: 0.3,
-                  color: 'primary.main'
-                },
-                [`& .${sliderClasses.track}`]: {
-                  color: 'primary.main'
-                },
-                [`& .${sliderClasses.thumb}`]: {
-                  color: 'primary.main',
-                  width: 8,
-                  height: 8,
-                  transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
-                  '&::before': {
-                    boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
-                  },
-                  '&:hover, &.Mui-focusVisible': {
-                    boxShadow: 5
-                  },
-                  '&.Mui-active': {
-                    width: 20,
-                    height: 20,
-                  },
-                },
-              }}
-            />
-          </>)}
-          <IconButton sx={{color: loop? 'primary.main': 'text.disabled'}} onClick={onLoop}>
-            <Loop sx={{width: {xs: 16, md: 24}, height: 'auto'}}/>
-          </IconButton>
-          <IconButton sx={{color: 'primary.main'}} onClick={onClickFullscreen}>
-            <Fullscreen sx={{width: {xs: 16, md: 24}, height: 'auto'}} />
-          </IconButton>
-          </Box>
-          <Box id='widget-duration' sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around', fontSize: {xs: '0.7rem' ,sm:'1rem'}, color: 'primary.main'}}>
-            <Box component='time' dateTime={`P${Math.round(duration * values.played)}S`}>
-              {format(duration * values.played)}
-            </Box> / 
-            <Box component='time' dateTime={`P${Math.round(duration)}S`}>
-              {format(duration)}
+          </Box>)}
+          <Box id='widget' sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap-reverse'}}>
+            <Box id='widgetbuttons' sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              { variant! =='rtc' &&
+              (<>
+              <IconButton sx={{color: 'primary.main', '& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}} onClick={playPause}>
+                {playing ? <Pause/>: (values.ended ? <Replay/> : <PlayArrow />)}
+              </IconButton>
+              {!handleNext? 
+                nextUrl?(
+                  <Link to={nextUrl} style={{color: 'inherit', textDecoration: 'none', verticalAlign: 'middle'}}>
+                    <IconButton disabled={!nextUrl} sx={{color: 'primary.main'}}>
+                      <SkipNext sx={{'& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}}/>
+                    </IconButton>
+                  </Link>):
+                  (<IconButton disabled={!nextUrl} sx={{color: 'primary.main'}}>
+                      <SkipNext sx={{'& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}}/>
+                    </IconButton>): 
+              (<IconButton onClick={handleSkip} sx={{color: 'primary.main'}}>
+                  <SkipNext sx={{'& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}}/>
+                </IconButton>)
+              }
+              </>)}
+              {matchMobileView? (
+              <MoreMenuVertButton
+                transformOrigin={{vertical: 200, horizontal: 2}} 
+                icon={
+                  <Box component='span' sx={{color: 'primary.main', '& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}} onClick={toggleMuted}>
+                    {volume > 0 && !muted && <VolumeUp /> || muted && <VolumeOff /> || volume==0 && <VolumeMute />}
+                  </Box>
+                } 
+                style={{[`& .${paperClasses.root}`]: {bgcolor: 'rgba(0,0,0,0)', p:0}}}>
+                <MenuItem sx={{height: 200, backgroundColor: 'rgba(0,0,0,0)', width: '100%', p: 0}}>
+                  <Slider
+                    orientation="vertical"
+                    aria-label="volume-input-range"
+                    size="small"
+                    value={muted? 0: volume*100}
+                    min={0}
+                    // step={1}
+                    max={100}
+                    onChange={(_, value) => changeVolume(value as number)}
+                    sx={{
+                    backgroundColor: 'rgba(0,0,0,0)',
+                    '-webkit-appearance': 'none',
+                    verticalAlign: 'middle',
+                    width: 6,
+                    [`& .${sliderClasses.rail}`]: {
+                      opacity: 0.3,
+                      color: 'primary.main'
+                    },
+                    [`& .${sliderClasses.track}`]: {
+                      color: 'primary.main'
+                    },
+                    [`& .${sliderClasses.thumb}`]: {
+                      color: 'primary.main',
+                      width: 8,
+                      height: 8,
+                      transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+                      '&::before': {
+                        boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
+                      },
+                      '&:hover, &.Mui-focusVisible': {
+                        boxShadow: 5
+                      },
+                      '&.Mui-active': {
+                        width: 20,
+                        height: 20,
+                      },
+                    },
+                    '& > svg':{width: {xs: 16, md: 24}, height: 'auto'}
+                    }}
+                  />
+                </MenuItem>
+              </MoreMenuVertButton>):
+              (<>
+              <IconButton sx={{color: 'primary.main', '& > svg':{width: {xs: 16, md: 24}, height: 'auto'}}} onClick={toggleMuted}>
+                {volume > 0 && !muted && <VolumeUp /> || muted && <VolumeOff /> || volume==0 && <VolumeMute />}
+              </IconButton>
+              <Slider
+                  aria-label="volume-input-range"
+                  size="small"
+                  value={muted? 0: volume*100}
+                  min={0}
+                  // step={1}
+                  max={100}
+                  onChange={(_, value) => changeVolume(value as number)}
+                  sx={{
+                    width: 200,
+                    '-webkit-appearance': 'none',
+                    backgroundColor: 'rgba(0,0,0,0)',
+                    height: 6,
+                    verticalAlign: 'middle', 
+                    [`& .${sliderClasses.rail}`]: {
+                      opacity: 0.3,
+                      color: 'primary.main'
+                    },
+                    [`& .${sliderClasses.track}`]: {
+                      color: 'primary.main'
+                    },
+                    [`& .${sliderClasses.thumb}`]: {
+                      color: 'primary.main',
+                      width: 8,
+                      height: 8,
+                      transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+                      '&::before': {
+                        boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
+                      },
+                      '&:hover, &.Mui-focusVisible': {
+                        boxShadow: 5
+                      },
+                      '&.Mui-active': {
+                        width: 20,
+                        height: 20,
+                      },
+                    },
+                  }}
+                />
+              </>)}
+              { variant !=='rtc' &&
+              (<IconButton sx={{color: loop? 'primary.main': 'text.disabled'}} onClick={onLoop}>
+                <Loop sx={{width: {xs: 16, md: 24}, height: 'auto'}}/>
+              </IconButton>)}
+              <IconButton sx={{color: 'primary.main'}} onClick={onClickFullscreen}>
+                <Fullscreen sx={{width: {xs: 16, md: 24}, height: 'auto'}} />
+              </IconButton>
             </Box>
+            { variant !=='rtc' &&
+            (<Box id='widget-duration' sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around', fontSize: {xs: '0.7rem' ,sm:'1rem'}, color: 'primary.main'}}>
+              <Box component='time' dateTime={`P${Math.round(duration * values.played)}S`}>
+                {format(duration * values.played)}
+              </Box> / 
+              <Box component='time' dateTime={`P${Math.round(duration)}S`}>
+                {format(duration)}
+              </Box>
+            </Box>)}
           </Box>
         </Box>
-      </Box>
-    </Fade>
+      </Fade>
+      </>)}
   </Box>
   </>)
 }

@@ -18,7 +18,6 @@ const PlayMedia: FC<PlayMediaProps>= ({data, relatedData, showPlaylist, courseId
   let [relatedMedia=relatedData, setRelatedMedia] = useState()
   const [autoPlay, setAutoPlay] = useState(false)
   const theme = useTheme()
-  const [error, setError] = useState('')
   const smMobileView = useMediaQuery(theme.breakpoints.down('md'), {defaultMatches: true})
 
   const handleChange = (event) => {
@@ -69,7 +68,7 @@ const PlayMedia: FC<PlayMediaProps>= ({data, relatedData, showPlaylist, courseId
           position: 'relative'
         }
       }}>
-        <Box id="teachers" sx={{zIndex: 1000, pt: {xs: 6,md: 8, }, pb: { xs: 8, md: 12}}}>
+        <Box id="specialists" sx={{zIndex: 1000, pt: {xs: 6,md: 8, }, pb: { xs: 8, md: 12}}}>
           <Container maxWidth="lg" sx={{px:{xs:0, sm: 'unset'}}}>
             <Grid container spacing={smMobileView? 2: 4}>
               <Grid item xs={12} sm={8}>
@@ -78,7 +77,7 @@ const PlayMedia: FC<PlayMediaProps>= ({data, relatedData, showPlaylist, courseId
                 ( <MediaSkeleton />)}
               </Grid>
               <Grid item xs={12} sm={4}>
-              {relatedMedia && relatedMedia.length > 0?
+              {relatedMedia && relatedMedia.length > -1?
               (<>
                 <FormControlLabel
                     control={<Switch checked={autoPlay} color='secondary'  onChange={handleChange} />}
@@ -86,7 +85,7 @@ const PlayMedia: FC<PlayMediaProps>= ({data, relatedData, showPlaylist, courseId
                   />
                 <RelatedMedia showPlaylist={showPlaylist} media={relatedMedia}/>
                 </>):
-              (!relatedMedia && Array.from(new Array(1)).map((item, index) => (<MediaSkeleton key={index} />)))
+              (!relatedMedia && Array.from(new Array(2)).map((item, index) => (<MediaSkeleton key={index} />)))
               }
               </Grid>
             </Grid>

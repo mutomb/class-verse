@@ -23,7 +23,7 @@ const BorderLinearProgress = styled(LinearProgress, {
       backgroundColor: theme.palette.secondary.main,
     }),
     ...(order === 3 && {
-      backgroundColor: 'red',
+      backgroundColor: 'error.main',
     }),
   },
 }))

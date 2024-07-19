@@ -7,6 +7,11 @@ const MediaSchema = new mongoose.Schema({
   description: String,
   genre: String,
   views: {type: Number, default: 0},
+  duration: {type: Number},
+  cover: {
+    data: Buffer,
+    contentType: String
+  },
   postedBy: {type: mongoose.Schema.ObjectId, ref: 'User'},
   created: {
     type: Date,

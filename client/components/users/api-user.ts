@@ -1,12 +1,11 @@
-const create = async (user: { name: String; surname: String; email: String; password: String } ) => {
+const create = async (user: FormData ) => {
   try {
       let response = await fetch('/api/users/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(user)
+        body: user
       })
     return await response.json()
   } catch(err) {
@@ -14,21 +13,87 @@ const create = async (user: { name: String; surname: String; email: String; pass
   }
 }
 
-const list = async (signal: AbortSignal) => {
+const createAnonymous = async (user: FormData ) => {
+  try {
+      let response = await fetch('/api/anonymous', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+        },
+        body: user
+      })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+const list = async (signal: AbortSignal, credentials: {token: string}) => {
   try {
     let response = await fetch('/api/users/', {
       method: 'GET',
       signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
     })
     return await response.json()
   } catch(err) {
     console.log(err)
   }
 }
-
-const read = async (params: { userId: any; }, credentials: { token: any; }, signal: AbortSignal) => {
+const listByCourse = async (signal: AbortSignal, credentials: {token: string}, params:{courseId: string}) => {
   try {
-    let response = await fetch('/api/users/' + params.userId, {
+    let response = await fetch('/api/enrollment/clientsSpecialist/'+params.courseId, {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+const listAnonymous = async (signal: AbortSignal, credentials: {token: string}) => {
+  try {
+    let response = await fetch('/api/anonymous', {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+const listPending = async (signal: AbortSignal, credentials: { token: string },) => {
+  try {
+    let response = await fetch('/api/users/pending/resume_qualification', {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+const listSpecialists = async (signal: AbortSignal, credentials: { token: string },) => {
+  try {
+    let response = await fetch(credentials.token? '/api/users/specialists_auth': '/api/users/specialists', {
       method: 'GET',
       signal: signal,
       headers: {
@@ -43,8 +108,88 @@ const read = async (params: { userId: any; }, credentials: { token: any; }, sign
   }
 }
 
-const update = async (params: { userId: any; }, credentials: { token: any; }, 
-  user: FormData) => {
+const listApprovedSpecialists = async (signal: AbortSignal, credentials: { token: string },) => {
+  try {
+    let response = await fetch(credentials.token? '/api/users/approved/specialists_auth': '/api/users/approved/specialists', {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+const listClients = async (signal: AbortSignal, credentials: { token: string },) => {
+  try {
+    let response = await fetch(credentials.token? '/api/users/clients_auth': '/api/users/clients', {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+const listAdmins = async (signal: AbortSignal, credentials: { token: string },) => {
+  try {
+    let response = await fetch(credentials.token? '/api/users/admins_auth': '/api/users/admins', {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+const read = async (params: { userId: string }, credentials: { token: string }, signal: AbortSignal) => {
+  try {
+    let response = await fetch(credentials.token? '/api/users_auth/' + params.userId:'/api/users/' + params.userId, {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+const readAnonymous = async (params: { userId: string }, credentials: { token: string }, signal: AbortSignal) => {
+  try {
+    let response = await fetch('/api/anonymous/' + params.userId, {
+      method: 'GET',
+      signal: signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+const update = async (params: { userId: string }, credentials: { token: string }, user: FormData) => {
   try {
     let response = await fetch('/api/users/' + params.userId, {
       method: 'PUT',
@@ -60,7 +205,22 @@ const update = async (params: { userId: any; }, credentials: { token: any; },
   }
 }
 
-const remove = async (params: { userId: any; }, credentials: { token: any; }) => {
+const updateAnonymous = async (params: { anonymousId: string }, anonymous: FormData) => {
+  try {
+    let response = await fetch('/api/anonymous/' + params.anonymousId, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: anonymous
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+const remove = async (params: { userId: string }, credentials: { token: string }) => {
   try {
     let response = await fetch('/api/users/' + params.userId, {
       method: 'DELETE',
@@ -75,8 +235,23 @@ const remove = async (params: { userId: any; }, credentials: { token: any; }) =>
     console.log(err)
   }
 }
+const removeAnonymous = async (params: { userId: string }, credentials: { token: string }) => {
+  try {
+    let response = await fetch('/api/anonymous/' + params.userId, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.token
+      }
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
 
-const fetchImage = async (url: string, credentials: { token: any; }, signal: AbortSignal) => {
+const fetchImage = async (url: string, credentials: { token: string }, signal: AbortSignal) => {
   try {
     let response = await fetch(url, {
       method: 'GET',
@@ -85,14 +260,14 @@ const fetchImage = async (url: string, credentials: { token: any; }, signal: Abo
         'Authorization': 'Bearer ' + credentials.token
       }
     })
-    const isDefault = eval(response.headers.get('defaultphoto'))
+    const isDefault = eval(response.headers.get('defaultPhoto'))
     return {data: await response.blob(), isDefault: isDefault === null? false: isDefault}
   } catch(err) {
       console.log(err)
   }
 }
 
-const createCookie = async (params: { userId: any; }, credentials: { token: any; }, signal: AbortSignal) => {
+const createCookie = async (params: { userId: string }, credentials: { token: string }, signal: AbortSignal) => {
   try {
     let response = await fetch(`/api/users/${params.userId}/createcookie/`, {
       method: 'GET',
@@ -109,17 +284,16 @@ const createCookie = async (params: { userId: any; }, credentials: { token: any;
   }
 }
 
-const stripeUpdate = async (params, credentials, auth_code, signal) => {
+const stripeUpdate = async (params: { userId: string }, credentials: { token: string }, sellerData: FormData, signal: AbortSignal) => {
   try {
     let response = await fetch ('/api/stripe_auth/'+params.userId, {
       method: 'PUT',
       signal: signal,
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + credentials.token
       },
-      body: JSON.stringify({stripe: auth_code})
+      body: sellerData
     })
     return await response.json()
   } catch(err) {
@@ -127,30 +301,22 @@ const stripeUpdate = async (params, credentials, auth_code, signal) => {
   }
 }
 
-// const checkAuth0Status = async () => {
-//   try {
-//     let response = await fetch('/oidc/checkAuth0Status/', {
-//       method: 'GET',
-//       headers: {
-//         'Accept': 'application/json',
-//         'Content-Type': 'application/json'
-//       }
-//     })
-//     return await response.json()
-//   } catch(err) {
-//     console.log(err)
-//   }
-// }
-
-
 export {
-  create,
+  create, createAnonymous,
   list,
+  listByCourse,
+  listPending,
+  listApprovedSpecialists,
+  listSpecialists,
+  listClients,
+  listAdmins,
+  listAnonymous,
   read,
-  update,
+  readAnonymous,
+  update, updateAnonymous,
   remove,
+  removeAnonymous,
   fetchImage,
   createCookie,
-  // checkAuth0Status,
   stripeUpdate
 }

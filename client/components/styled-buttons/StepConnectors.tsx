@@ -1,8 +1,9 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
-import {Check, Description, VideoLabel} from '@mui/icons-material';
+import {CheckOutlined, Description, VideoLabel} from '@mui/icons-material';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
+import { Box, Zoom } from '@mui/material';
 
 export const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -34,19 +35,22 @@ const QontoStepIconRoot = styled('div')<{ ownerState: { active?: boolean } }>(
     height: 22,
     alignItems: 'center',
     ...(ownerState.active && {
-      color: '#784af4',
+      color: theme.palette.secondary.main,
     }),
     '& .QontoStepIcon-completedIcon': {
-      color: '#784af4',
+      color: theme.palette.primary.main,
       zIndex: 1,
       fontSize: 18,
     },
     '& .QontoStepIcon-circle': {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      backgroundColor: 'currentColor',
+      borderLeftColor: theme.palette.secondary.main,
+      borderRightColor: theme.palette.secondary.main,
+      borderTopColor: theme.palette.primary.main,
+      borderBottomColor: theme.palette.primary.main,
+      borderStyle: 'solid',
+      borderWidth: {xs: 1, sm: 2}
     },
+    transition: theme.transitions.create(['color', 'width', 'zIndex', 'font-size', 'border-radius', 'background-color'], {duration: 1000})
   }),
 );
 
@@ -56,9 +60,11 @@ export const QontoStepIcon = (props: StepIconProps) => {
   return (
     <QontoStepIconRoot ownerState={{ active }} className={className}>
       {completed ? (
-        <Check className="QontoStepIcon-completedIcon" />
+        <Zoom timeout={1000} appear={true} in={true} color='inherit' unmountOnExit={false}>
+          <CheckOutlined className="QontoStepIcon-completedIcon" sx={{bgcolor: 'rgba(0,0,0,0.2)', borderRadius: '50%', width: {xs: 15, sm: 30, md: 40}, height: {xs: 15, sm: 30, md: 40}}}/>
+        </Zoom>
       ) : (
-        <div className="QontoStepIcon-circle" />
+        <Box component='div' className="QontoStepIcon-circle" sx={{width: {xs: 15, sm: 30, md: 40}, height: {xs: 15, sm: 30, md: 40}, transform: 'rotate(-45deg)'}}/>
       )}
     </QontoStepIconRoot>
   );
@@ -88,6 +94,7 @@ export const StepIconConnector = styled(StepConnector)(({ theme }) => ({
       theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
     borderRadius: 1,
   },
+  transition: theme.transitions.create(['top', 'background-image', 'height', 'border', 'border-radius', 'background-color'], {duration: 1000})
 }));
 
 const StepIconRoot = styled('div')<{
@@ -109,6 +116,7 @@ const StepIconRoot = styled('div')<{
   ...(ownerState.completed && {
     backgroundImage: `linear-gradient( 95deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 50%, ${theme.palette.primary.dark} 100%)`,
   }),
+  transition: theme.transitions.create(['background-image', 'box-shadow'], {duration: 1000})
 }));
 
 export const StepIcon = (props: StepIconProps) => {

@@ -6,4 +6,5 @@ export { default as MyCourses } from './MyCourses'
 export { default as NewCourse } from './NewCourse'
 export { default as NewLesson } from './NewLesson'
 export { default as Courses } from './Courses'
+export {useCourse, CourseContext, CourseProvider} from './Course-hooks'
 

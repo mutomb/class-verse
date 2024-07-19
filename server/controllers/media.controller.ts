@@ -21,29 +21,44 @@ const create = (req, res) => {
       }
       let media = new Media(fields)
       media.postedBy= req.profile
+      if(files.cover && files.cover.path && files.cover.type){
+        media.cover = {data: fs.readFileSync(files.cover.path), contentType: files.cover.type}
+      }
       if(files.video){
         let writestream = gridfs.openUploadStream(media._id, {
           contentType: files.video.type || 'binary/octet-stream'})
         fs.createReadStream(files.video.path).pipe(writestream)
       }
-      if(fields.lesson && fields.course) {
+      if(fields.lesson && fields.course) { /** for lessons */
         try {
           let course = await Course.findById(fields.course)
           course.lessons.id(fields.lesson).media = media
           await course.save()
         } catch (err) {
             return res.status(400).json({
-              error: errorHandler.getErrorMessage(err)
+              error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
+            })
+        }
+      }
+      if(!fields.lesson && fields.course) { /** for  course preview */
+        try {
+          let course = await Course.findById(fields.course)
+          course.media = media
+          await course.save()
+        } catch (err) {
+            return res.status(400).json({
+              error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
             })
         }
       }
       try {
         let result = await media.save()
+        result.cover = undefined
         res.status(200).json(result)
       }
       catch (err){
           return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
+            error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
           })
       }
     })
@@ -52,19 +67,20 @@ const create = (req, res) => {
 const mediaByID = async (req, res, next, id) => {
   try{
   let media = await Media.findById(id).populate('postedBy', '_id name').exec()
-    if (!media)
+    if (!media){
       return res.status('400').json({
         error: "Media not found"
       })
-      req.media = media
-      let files = await gridfs.find({filename:media._id}).toArray()
-        if (!files[0]) {
-          return res.status(404).send({
-            error: 'No video found'
-          })
-        }     
-        req.file = files[0]
-        next()
+    }
+    req.media = media
+    let files = await gridfs.find({filename:media._id}).toArray()
+      if (!files[0]) {
+        return res.status(404).send({
+          error: 'No video found'
+        })
+      }     
+      req.file = files[0]
+      next()
     }catch(err) {
       return res.status(404).send({
         error: 'Could not retrieve media file'
@@ -113,6 +129,15 @@ const video = (req, res) => {
   }
 }
 
+const photo = (req, res, next) => {
+  if(req.media.cover.data && req.media.cover.contentType){
+    res.set("Content-Type", req.media.cover.contentType)
+    return res.send(req.media.cover.data)
+  }
+  return res.status(400).json({
+    error: 'Media cover image not found'
+  })
+}
 const listPopular = async (req, res) => {
   try{
     let media = await Media.find({}).limit(9)
@@ -122,7 +147,7 @@ const listPopular = async (req, res) => {
     res.json(media)
   } catch(err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -130,11 +155,11 @@ const listPopular = async (req, res) => {
 const listAdmin = async (req, res) => {
   try{
     let admin = await User.findOne({'role': 'admin'}).exec()
-    let media = await Media.find({'postedBy': admin._id}).populate('postedBy', '_id name').exec()
+    let media = await Media.find({'postedBy': admin._id}).populate('postedBy', '_id name').select('-cover').exec()
     res.json(media)
   } catch(err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -143,18 +168,24 @@ const listByUser = async (req, res) => {
   try{
     let media = await Media.find({postedBy: req.profile._id})
       .populate('postedBy', '_id name')
+      .select('-cover')
       .sort('-created')
       .exec()
     res.json(media)
   } catch(err){
       return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
       })
   }
 }
 
 const read = (req, res) => {
-  return res.json(req.media)
+  let media=req.media
+  if(media){
+    media.cover = undefined
+    return res.json(media)
+  }
+  res.status(400).json({error: 'Could not Read Media. Try again later.'})
 }
 
 const incrementViews = async (req, res, next) => {
@@ -163,7 +194,7 @@ const incrementViews = async (req, res, next) => {
     next()
   } catch(err){
       return res.status(400).json({
-          error: errorHandler.getErrorMessage(err)
+          error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
       })
   }
 }
@@ -171,6 +202,7 @@ const incrementViews = async (req, res, next) => {
 const update = async (req, res) => {
   let form = new formidable.IncomingForm()
   form.keepExtensions = true
+  console.log('passed')
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
@@ -178,8 +210,17 @@ const update = async (req, res) => {
       })
     }
     let media = req.media
+    console.log('req.media', media)
     media = extend(media, fields)
+    console.log('media', media)
     media.updated = Date.now()
+    if(files.cover && files.cover.path && files.cover.type){
+      media.cover = {data: fs.readFileSync(files.cover.path), contentType: files.cover.type}
+    }else{
+      if(fields.cover && media.cover && (fields.cover === null || fields.cover === 'null')){
+        media = await Media.findByIdAndUpdate({_id: media._id}, {cover: null}, {new: true}).exec()
+      }
+    }
     if(files.video){
       gridfs.delete(req.file._id) /**Delete all fs files and chunks, then upload new ones but using previous mediaID filename*/
       let writestream = gridfs.openUploadStream(media._id, {
@@ -187,19 +228,21 @@ const update = async (req, res) => {
       fs.createReadStream(files.video.path).pipe(writestream)
     }
     try {
-      let result = await media.save()
-      res.status(200).json(result)
+      await media.save()
+      media.cover.cover = undefined
+      console.log('result', media)
+      res.status(200).json(media)
     }
     catch (err){
       return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
       })
     }
   })
 }
 
 const isPoster = (req, res, next) => {
-  let isPoster = req.media && req.auth && req.media.postedBy._id == req.auth._id
+  let isPoster = (req.media && req.auth && req.media.postedBy._id == req.auth._id) || (req.auth && req.auth.role === 'admin')
   if(!isPoster){
     return res.status('403').json({
       error: "User is not authorized"
@@ -221,24 +264,27 @@ const remove = async (req, res) => {
             course.lessons[i].media=null
           }
         }
+        if(course.media && String(course.media._id) === String(req.media._id)){
+          course.media=null
+        }
         await course.save()
       } catch (err) {
           return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
+            error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
           })
       }
     }
     res.json(deletedMedia)
   } catch(err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
 
 const listRelated = async (req, res) => {
   try {
-    let media = await Media.find({ "_id": { "$ne": req.media }, $or: [{"genre": req.media.genre},{"postedBy": req.media.postedBy},  {"title": {'$regex': /req.media.title/, '$options': "i"}} ]})
+    let media = await Media.find({ "_id": { "$ne": req.media }, $or: [{"genre": req.media.genre},{"postedBy": req.media.postedBy},  {"title": {'$regex': req.media.title, '$options': "i"}} ]})
       .limit(4)
       .sort('-views')
       .populate('postedBy', '_id name')
@@ -246,7 +292,7 @@ const listRelated = async (req, res) => {
     res.json(media)
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -255,6 +301,7 @@ export default {
   create,
   mediaByID,
   video,
+  photo,
   listPopular,
   listByUser,
   read,

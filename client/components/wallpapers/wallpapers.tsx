@@ -7,12 +7,14 @@ interface WallpaperProps{
  primaryColor: string,
  secondaryColor: string,
  style?: any
- id?: string
+ overlayStyle?: any,
+ id?: string,
+ ref?: any,
 }
-const WallPaperYGW: FC<WallpaperProps> = ({children, variant, primaryColor, secondaryColor, style, id}) =>{
+const WallPaperYGW: FC<WallpaperProps> = ({children, variant, primaryColor, secondaryColor, style, id,ref, overlayStyle}) =>{
   return (
       <Box 
-      id={id}        //   content: '""',
+      id={id} ref={ref}       //   content: '""',
       //   width: '140%',
       //   height: '140%',
       //   position: 'absolute',
@@ -53,7 +55,9 @@ const WallPaperYGW: FC<WallpaperProps> = ({children, variant, primaryColor, seco
         //   transform: 'rotate(30deg)',
         // },
       }}>
+      <Box sx={{m:0, p:0, width: '100%', height: '100%', bgcolor: (theme) => theme.palette.mode ==='dark'?`rgba(0,0,0,0.7)`:`rgba(255,255,255,0.7)`, boxShadow: 4, zIndex: 4, ...overlayStyle}}>
       {children}
+      </Box>
       </Box>
   )
 }

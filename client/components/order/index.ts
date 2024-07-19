@@ -1,4 +1,4 @@
-// export {default as StudentOrders} from './StudentOrders'
+// export {default as ClientOrders} from './ClientOrders'
 export {default as Order} from './Order'
 export {default as PlaceOrder} from '../cart/PlaceOrder'
 export {default as CourseOrderEdit} from './CourseOrderEdit'

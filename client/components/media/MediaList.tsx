@@ -39,8 +39,8 @@ const MediaList: FC<MediaListProps> = ({media, cols}) => {
                 boxShadow: 2,
               },
               boxShadow: theme.shadows[10],
-              transform: 'translateY(-3px)',
-              transition: (theme) => theme.transitions.create(['box-shadow, transform'], {duration: 1000}),
+              transform: 'translateY(-3px) scale(1.1)',
+              transition: (theme) => theme.transitions.create(['box-shadow, transform'], {duration: 500}),
             },
           }}>
           <Link to={"/media/"+tile._id} style={{textDecoration: 'none'}}>

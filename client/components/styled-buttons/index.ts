@@ -11,6 +11,10 @@ export {default as MoreMenuVertButton } from './more-menu-vert'
 export {default as CartButton } from './CartButton'
 export {default as NotificationButton } from './NotificationButton'
 export {QontoConnector, QontoStepIcon, StepIconConnector, StepIcon } from './StepConnectors'
+export {default as StyledRating } from './StyledRating'
+export {default as Pagination } from './pagination'
+export {default as ChipsArray } from './chips'
+
 
 
 

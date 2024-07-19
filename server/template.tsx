@@ -9,7 +9,7 @@ export default (component) => {
       <html lang="en">
         <head>
           <meta charSet="utf-8" />
-          <title>GO2</title>
+          <title>GoSquare.com</title>
           <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"

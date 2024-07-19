@@ -1,26 +1,46 @@
-import React, { FC } from 'react'
-import { MenuItem, Select } from '@mui/material'
+import React, { FC, } from 'react'
+import { MenuItem, Select, Typography, menuItemClasses, paperClasses} from '@mui/material'
+import { SxProps, Theme} from '@mui/material/styles'
+
 import { useTheme } from '@mui/material/styles'
 
 interface SelectButton {
     options: any[]
     value: any
-    handleChange: ()=> void,
-    label: string,
-    styles?: any,
+    handleChange: (arg?: any)=> void,
+    label?: string,
+    styles?: SxProps<Theme>,
+    menuStyle?: SxProps<Theme>,
+    variant?: 'outlined' | 'standard'
   }
-  const SelectButton: FC<SelectButton> = ({options, value, handleChange, label, styles}) => {
+  const SelectButton: FC<SelectButton> = ({options, value, handleChange, label, styles, variant='standard', menuStyle}) => {
     const { transitions } = useTheme()
 
     return (<>
       <Select
-          labelId={`select-${label}-label`}
+          {...(label && {labelId:`select-${label}-label`, label:label})}
           id={`select-${label}`}
-          variant="standard"
+          variant={variant}
           value={value}
           onChange={handleChange}
           autoWidth
           displayEmpty
+          MenuProps={{
+            sx:{
+              [`& .${paperClasses.root}`]:{
+              borderLeftColor: 'secondary.main', borderRightColor: 'secondary.main', borderTopColor: 'primary.main', borderBottomColor: 'primary.main', borderStyle: 'solid', borderWidth: {xs: 1, sm: 2},
+              bgcolor: (theme)=> theme.palette.mode ==='dark'?`rgba(0,0,0,0.7)`:`rgba(255,255,255,0.7)`, px:0,
+              ...menuStyle
+              },
+              [`& .${menuItemClasses.root}`]:{
+                px: {xs: 1, md: 2},
+                ':hover':{
+                  bgcolor: 'primary.main',
+                  color: 'primary.contrastText',
+                },
+              },
+            }
+          }}
           sx={{
             my: '0 !important',
             px: 1,
@@ -35,32 +55,31 @@ interface SelectButton {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            WebkitTapHighlightColor: 'transparent',
+            WebkitTapHighlightColor: 'unset',
             verticalAlign: 'middle',
             outline: 'none !important',
             transform: 'unset',
-            transition: transitions.create(['transform']),
-            bgcolor: 'primary.dark',
-            ':hover':{
-              bgcolor: 'primary.dark',
-            },
+            transition: transitions.create(['transform'], {duration: 500}),
+            bgcolor: 'primary.main',
             '::before':{
-              border: 'none !important'
+              border: 'none !important',
             },
             ...styles
           }}
           renderValue={(selected) => {
-            if (selected.length === 0 && options.length === 0) {
+            if (selected && selected.length === 0 && options.length === 0) {
               return ''
             }
-            if (selected.length === 0 && options.length>0) {
+            if (selected && selected.length === 0 && options.length>0) {
               return options[0]
             } 
             return selected
           }}>
-          {options.map(option => (
+          {options && options.map(option => (
             <MenuItem key={option} value={option} sx={{transition: transitions.create(['background-color']), ':hover':{bgcolor: 'primary.main'}}}>
+              <Typography variant="inherit">
               {option}
+              </Typography>
             </MenuItem>
           ))}
       </Select>

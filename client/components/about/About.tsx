@@ -1,16 +1,18 @@
 import React from 'react'
-import {AboutFAQ, TermsAndConditions, PrivacyAndPolicy, TeamProfile} from '.'
-// import {LoadableVisibility } from '../progress'
-// const AboutFAQ = LoadableVisibility(import('./FAQ'));
+import {TeamProfile as AboutTeamProfile, TeamContact as AboutTeamContact} from '.'
+import {LoadableVisibility } from '../progress'
+const LazyAboutFAQ = LoadableVisibility(import('./FAQ'));
+const LazyAboutTermsAndConditions = LoadableVisibility(import('./TermsAndConditions'));
+const LazyAboutPrivacyPolicy = LoadableVisibility(import('./PrivacyAndPolicy'));
 
   export default function About(){
     return(
       <>
-        <TeamProfile />
-        <AboutFAQ />
-        <TermsAndConditions />
-        <PrivacyAndPolicy/>
-        {/* <HomeFeature id="features" /> */}
+        <AboutTeamContact />
+        <AboutTeamProfile />
+        <LazyAboutFAQ />
+        <LazyAboutTermsAndConditions />
+        <LazyAboutPrivacyPolicy/>
       </>
     )
 }

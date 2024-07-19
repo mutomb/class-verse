@@ -10,7 +10,7 @@ export default function PaymentForm() {
             id="cardName"
             label="Name on card"
             fullWidth
-            autoComplete="cc-name"
+            autoComplete="name"
             variant="standard"
           />
         </Grid>
@@ -20,7 +20,7 @@ export default function PaymentForm() {
             id="cardNumber"
             label="Card number"
             fullWidth
-            autoComplete="cc-number"
+            autoComplete="name"
             variant="standard"
           />
         </Grid>
@@ -30,7 +30,7 @@ export default function PaymentForm() {
             id="expDate"
             label="Expiry date"
             fullWidth
-            autoComplete="cc-exp"
+            autoComplete="name"
             variant="standard"
           />
         </Grid>
@@ -41,7 +41,7 @@ export default function PaymentForm() {
             label="CVV"
             helperText="Last three digits on signature strip"
             fullWidth
-            autoComplete="cc-csc"
+            autoComplete="name"
             variant="standard"
           />
         </Grid>

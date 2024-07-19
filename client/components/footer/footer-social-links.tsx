@@ -60,8 +60,11 @@ const SocialLinkItem: FC<SocialLinkItemProps> = ({ item }) => (
         height: 36,
         borderRadius: '50%',
         color: 'inherit',
+        transform: 'unset',
         '&:hover': {
           backgroundColor: 'secondary.main',
+          transform: 'scale(1.3) translateY(-3px))',
+          transition: (theme)=>theme.transitions.create(['background-color', 'transform'], {duration: 500})
         },
         '& img': {
           fill: 'currentColor',

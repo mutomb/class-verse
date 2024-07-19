@@ -12,6 +12,11 @@ const paletteDark: PaletteOptions = {
     secondary: grey[200],
     disabled: grey[300],
   },
+  error: {
+    light: '#ff6d75',
+    main: '#f7111e',
+    dark: '#b70e18',
+  }
 }
 
 export default paletteDark

@@ -2,18 +2,21 @@ import React, { FC, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {Box, Grid, Container, Typography, Slide} from '@mui/material'
 import {useTheme} from '@mui/material/styles'
-import { AddBox } from '@mui/icons-material'
+import { AddBox, Error } from '@mui/icons-material'
 import {useAuth} from '../auth'
 import { Media } from '../media'
 import { listAdmin } from '../media/api-media'
 import { StyledButton } from '../styled-buttons'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import logo from '../../public/logo.svg'
+import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
+import { StyledSnackbar } from '../styled-banners'
 
 const HomeIntroVideo: FC = () => {
   const [media, setMedia] = useState([])
   const {isAuthenticated} = useAuth()
   const theme = useTheme()
+  const [error, setError] = useState('')
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
@@ -23,7 +26,7 @@ const HomeIntroVideo: FC = () => {
         if (data && data.error) {
           if(attempts>=5){ clearInterval(retry)}
           attempts++
-          console.log(data.error)
+           setError(data.error)
         } else {
           setMedia(data)
           clearInterval(retry)
@@ -34,7 +37,7 @@ const HomeIntroVideo: FC = () => {
       abortController.abort()
     }
   }, [])
-  
+
   return (
     <WallPaperYGW variant='linear' primaryColor={theme.palette.background.default} secondaryColor={theme.palette.background.paper}
     style={{
@@ -53,16 +56,9 @@ const HomeIntroVideo: FC = () => {
         position: 'relative'
       }
     }}>
-      <Box id="intro-video" sx={{zIndex: 1000, py: { xs: 10, md: 14 }}}>
-        <Container 
-        sx={{px: {xs: 0, sm: 'unset'}, bgcolor: `rgba(0,0,0,0.4)`, borderRadius: 4, boxShadow: 4,
-        transform: 'unset',
-        '&:hover': {
-          boxShadow: 6,
-          transform: 'translateY(-3px)',
-          transition: (theme) => theme.transitions.create(['box-shadow, transform'], {duration: 1000}),
-        },
-        }}>
+      <Box id="intro-video">
+        <Container maxWidth={false}
+        sx={{px: 0, py: 8}}>
           <Grid container spacing={3} sx={{display: 'flex', flexDirection: { xs: 'column-reverse', sm: 'row'}}}>
             <Grid id="video" item xs={12} sm={7} sx={{pt: '0px !important'}}>
             {isAuthenticated().user && isAuthenticated().user.role === 'admin' &&(
@@ -75,20 +71,41 @@ const HomeIntroVideo: FC = () => {
             </Grid>
             <Grid id="heading" item xs={12} sm={5}>
               <Slide unmountOnExit={true} timeout={1000} id="slide-description" appear={true} direction="left" in={true} color='inherit'>
-                <Typography
-                  component="h2"
-                  sx={{
-                    position: 'relative',
-                    fontSize: { xs: '2rem', md: '3.5rem' },
-                    ml: { xs: 0, md: 4 },
-                    mt: 2,
-                    mb: 3,
-                    lineHeight: 1,
-                    fontWeight: 'bold',
-                    color: 'text.primary',
-                  }}>
-                  Watch Intro
-                </Typography>
+              <Typography
+                    component="h2"
+                    sx={{
+                      position: 'relative',
+                      fontSize: { xs: '2rem', md: '3.5rem' },
+                      mt: { xs: 0, md: 7 },
+                      mb: 4,
+                      lineHeight: 1,
+                      fontWeight: 'bold',
+                      color: 'text.primary'
+                    }}>
+                    Quick{' '}
+                    <Typography
+                      component="mark"
+                      sx={{
+                        position: 'relative',
+                        color: 'primary.main',
+                        fontSize: 'inherit',
+                        fontWeight: 'inherit',
+                        backgroundColor: 'unset',
+                      }}>
+                      Guide{' '}
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: { xs: 20, md: 28 },
+                          left: 2,
+                          '& img': { width: { xs: 80, md: 150 }, height: 'auto' },
+                        }}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={HeadLineCurve} alt="Headline curve" />
+                      </Box>
+                    </Typography>
+                  </Typography> 
               </Slide>
               <Slide unmountOnExit={true} timeout={1000} id="slide-description1" appear={true} direction="left" in={true} color='inherit'>
                 <Box component='span' sx={{ color: 'primary.dark', fontSize: '1.2rem', fontWeight: 600, mb: 2, ml: { xs: 0, md: 4 } }}>
@@ -104,6 +121,15 @@ const HomeIntroVideo: FC = () => {
               </Slide>
             </Grid>
           </Grid>
+          <StyledSnackbar
+            open={error? true: false}
+            duration={3000}
+            handleClose={()=>setError('')}
+            icon={<Error/>}
+            heading={"Error"}
+            body={error}
+            variant='error'
+            />
         </Container>
       </Box>
     </WallPaperYGW>

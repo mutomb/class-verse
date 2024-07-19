@@ -1,22 +1,28 @@
 import React, { FC, useState } from 'react'
 import { Logo } from '../logo'
-import { Navigation, AuthNavigation, ProfileNavigation, SearchNavigation, CartNavigation} from '../navigation'
+import { Navigation, AuthNavigation, SearchNavigation, CartNavigation} from '../navigation'
 import { Menu, Close } from '@mui/icons-material'
 import { ColorModeButton } from '../styled-buttons'
-import { AppBar, Toolbar, Box, Slide, Container, IconButton,useMediaQuery, useTheme, useScrollTrigger} from '@mui/material'
+import { AppBar, Toolbar, Box, Slide, Container, IconButton,useMediaQuery, useScrollTrigger, boxClasses, ListSubheader, buttonBaseClasses} from '@mui/material'
+import { useTheme} from '@mui/material/styles'
 import { scroller } from 'react-scroll'
 import { useHistory, useLocation } from 'react-router-dom'
 import { cart } from '../cart'
+import { SideBar } from '../sidebar'
+import { useAuth } from '../auth'
+import { useColorMode } from '../../config/theme/MUItheme-hooks'
 
 const Header: FC = () => {
   const [visibleMenu, setVisibleMenu] = useState<boolean>(false)
   const { breakpoints } = useTheme()
-  const matchMobileView = useMediaQuery(breakpoints.down('md'), {defaultMatches: true}) /**enables SSR defaultMatches */
+  const xsMobileView = useMediaQuery(breakpoints.down('sm'), {defaultMatches: true}) /**enables SSR defaultMatches */
+  const smMobileView = useMediaQuery(breakpoints.between('sm', 1073), {defaultMatches: true})
   const trigger = useScrollTrigger();
   const path = useLocation().pathname
   const location = path.split('/')[1]
   const history = useHistory()
-
+  const {isAuthenticated} = useAuth()
+  
   const isActive = (path: string) => {
     return location === path
   }
@@ -37,75 +43,75 @@ const Header: FC = () => {
   const onClickLogo = () => {
       isActive("")? scrollToAnchor('search') : goToHomeAndScroll('search')
   }
+  const toggleVisibleMenu = () => {
+    setVisibleMenu(!visibleMenu)
+  }
+  
 
-  return (
-    <Slide id="app-bar" appear={true} direction="down" in={!trigger || cart.itemTotal()>0} color='inherit'>
-      <AppBar position="sticky" color='inherit' enableColorOnDark={true} sx={{boxShadow: 2}}>
-       <Toolbar sx={{ backgroundColor: 'inherit', width:'100%', px: {xs: 0, sm: 'unset'} }}>
-          <Box sx={{ backgroundColor: 'inherit', width:'100%', mx:0 }}>
-            <Container sx={{ py: { xs: 2, md: 2 }, px: {xs: 0, sm: 'unset'}}}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflowX: 'visible' }}>
+  return (<>
+    <Slide id="app-bar" color='inherit' appear={true} direction="down" in={!trigger}>
+      <AppBar position={(cart.itemTotal()>0 || isActive('chat'))?'static': "sticky"} enableColorOnDark={true} sx={{boxShadow: 2}}>
+       <Toolbar sx={{ width:'100%', px: {xs: 0, sm: 'unset'} }}>
+          <Box sx={{ width:'100%', mx:0,bgcolor: 'background.paper', zIndex: 1099 }}>
+            <Container maxWidth={false} sx={{ py: { xs: 2, md: 2 }, px: {xs: 0, sm: 'unset'}}}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Logo onClick={onClickLogo}/>
-                <Box sx={{ mx: 'auto', display: { xs: 'inline-flex', md: 'none' } }}>
+                <Box sx={{display: { xs: 'inline-flex', sm: 'none' }}} /> {/* Magic space */}
+                <Box sx={{ mx: 'auto', display: { xs: 'flex', sm: 'none' } }}>
                   <CartNavigation />
-                </Box>
-                <Box sx={{ ml: 'auto', display: { xs: 'inline-flex', md: 'none' } }}>
-                  <IconButton 
-                  sx={{
-                    position: 'fixed',
-                    top: 20,
-                    right: {xs: 10, sm: 20},
-                  }}
-                  onClick={() => setVisibleMenu(!visibleMenu)}>
-                    <Menu sx={{color: 'primary.main'}} />
-                  </IconButton>
                 </Box>
                 <Box
                   sx={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexDirection: { xs: 'column', md: 'row' },
-
-                    transition: (theme) => theme.transitions.create(['top']),
-                    ...(matchMobileView && {
-                      py: 6,
-                      backgroundColor: 'background.paper',
-                      zIndex: 'appBar',
-                      position: 'fixed',
-                      height: { xs: '100vh', md: 'auto' },
-                      top: visibleMenu ? 0 : '-120vh',
-                      left: 0,
-                    }),
-                  }}
-                >
+                    width: {xs: 'unset', sm:'100%'}, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', ...(smMobileView && {[`& a.${boxClasses.root}`]: {fontSize: '1rem' }}) }}>
                   <Box /> {/* Magic space */}
-                  <Navigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
-                  <SearchNavigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
-                  <ProfileNavigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
-                  <CartNavigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
-                  <AuthNavigation {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
-                  <ColorModeButton {...( matchMobileView && {onClick: () => setVisibleMenu(false)})} />
-                  {visibleMenu && matchMobileView && (
-                    <IconButton
-                      sx={{
-                        position: 'fixed',
-                        top: 20,
-                        right: 20,
-                      }}
-                      onClick={() => setVisibleMenu(!visibleMenu)}
-                    >
+                  {!xsMobileView  && 
+                  (<>
+                  <Navigation />
+                  <SearchNavigation />
+                  <CartNavigation />
+                  {!smMobileView  && !(isAuthenticated().user && isAuthenticated().user.role==='admin') &&
+                    (<>
+                    <AuthNavigation />
+                    <ColorModeButton />
+                    </>)}
+                  </>)}
+                  {(smMobileView || xsMobileView || isAuthenticated().user) && 
+                  (visibleMenu?
+                    (<IconButton onClick={toggleVisibleMenu}>
                       <Close sx={{color: 'primary.main'}} />
                     </IconButton>
-                  )}
+                    ):
+                    (<Box sx={{ml: {md: 4}, display: 'inline-flex' }}>
+                      <IconButton onClick={toggleVisibleMenu}>
+                        <Menu sx={{color: 'primary.main'}} />
+                      </IconButton>
+                    </Box>))}
                 </Box>
               </Box>
             </Container>
           </Box>
         </Toolbar>
       </AppBar>
-    </Slide>)
+    </Slide>
+    {(smMobileView || xsMobileView || isAuthenticated().user) &&
+    (<SideBar open={visibleMenu} toggleDrawer={toggleVisibleMenu}>
+        <ListSubheader component="div" inset>
+          Navigation
+        </ListSubheader>
+        <Box sx={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 1, 
+        [`.${buttonBaseClasses.root}`]:{ borderRadius: '50% !important'}, [`.${buttonBaseClasses.root}:hover`]:{ backgroundColor: 'transparent !important'},}}>
+          <ColorModeButton />
+        </Box>
+        <Box sx={{[`.${buttonBaseClasses.root}`]:{ borderRadius: '50% !important'}, [`.${buttonBaseClasses.root}:hover`]:{ backgroundColor: 'background.paper'},}}>
+         <AuthNavigation orientation='column' onClick={()=>setVisibleMenu(false)} />
+        </Box>
+        {xsMobileView &&
+        (<>
+        <SearchNavigation onClick={()=>setVisibleMenu(false)} variant='column'/>
+        <Navigation orientation='column' onClick={()=>setVisibleMenu(false)} />
+        </>)}
+    </SideBar>)}
+    </>)
 }
 
 export default Header

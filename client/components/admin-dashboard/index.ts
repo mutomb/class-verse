@@ -1,0 +1,7 @@
+export {default as AdminDashBoardOverview} from './overview'
+export {default as Users} from './pending-users'
+export {default as AdminDashBoardPendingCourses} from './pending-courses'
+export {default as AdminDashBoardPendingUsers} from './pending-users'
+export {default as AdminDashBoardOrders} from './Orders'
+// export {default as AdminDashBoardChart} from './Chart'
+export {default as AdminDashBoardTotalCourses} from './TotalCourses'

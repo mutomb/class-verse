@@ -2,13 +2,14 @@ import React, {useState, useEffect} from 'react'
 import {Box, Container, Grid, Typography} from '@mui/material'
 import {useTheme} from '@mui/material/styles'
 import {useAuth} from '../auth'
-import {listByTeacher} from '../courses/api-course'
+import {listBySpecialist} from '../courses/api-course'
 import {Info} from '@mui/icons-material'
 import {Redirect} from 'react-router-dom'
 import Courses from '../courses/Courses'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import { StyledBanner } from '../styled-banners'
 import logo from '../../public/logo.svg'
+import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
 
 export default function TeachingCourses(){
     const {isAuthenticated} = useAuth()
@@ -19,8 +20,8 @@ export default function TeachingCourses(){
     useEffect(() => {
         const abortController = new AbortController()
         const signal = abortController.signal
-        if (!isAuthenticated().user) return function cleanup(){}
-        listByTeacher({
+        if (!isAuthenticated().user || (isAuthenticated().user && !isAuthenticated().user.specialist)) return function cleanup(){ setRedirectToSignin(true)}
+        listBySpecialist({
           userId: isAuthenticated().user && isAuthenticated().user._id
         }, {token: isAuthenticated().token}, signal).then((data) => {
           if (data && data.error) {
@@ -37,9 +38,9 @@ export default function TeachingCourses(){
     if (redirectToSignin) {
         return <Redirect to='/signin'/>
     }
-    
+
     return (<>
-    {isAuthenticated().user && isAuthenticated().user.teacher && (
+    {isAuthenticated().user && isAuthenticated().user.specialist && (
     <WallPaperYGW primaryColor={theme.palette.background.paper} secondaryColor={theme.palette.background.default}
     style={{
       '&::before': {
@@ -56,7 +57,7 @@ export default function TeachingCourses(){
       '& > div':{
         position: 'relative'
       }
-    }}>
+    }} overlayStyle={{bgcolor: theme.palette.mode==='dark'? 'rgba(33, 33, 33, 0.7)': 'rgba(242, 245, 245, 0.7)'}}>
     <Box id="teaching-in-courses" sx={{ pt: { xs: 6, md: 8, }, pb: 14}} >
         <Container maxWidth="lg" sx={{px:{xs: 0, sm: 'unset'}}}>
         <Grid container spacing={2}>
@@ -70,9 +71,43 @@ export default function TeachingCourses(){
                 justifyContent: { xs: 'center', md: 'flex-start' },
                 }}
             >
-                <Typography variant="h1" sx={{ mt: { xs: 0, md: -5 }, fontSize: { xs: 30, md: 48 }, color: 'text.primary' }}>
-                Teaching Courses
+              <Typography
+                component="h2"
+                sx={{
+                  position: 'relative',
+                  fontSize: { xs: '2rem', md: '3.5rem' },
+                  mt: { xs: 0, md: 7 },
+                  mb: 4,
+                  lineHeight: 1,
+                  fontWeight: 'bold',
+                  color: 'text.primary'
+                }}
+              >
+                Teaching{' '}
+                <Typography
+                  component="mark"
+                  sx={{
+                    position: 'relative',
+                    color: 'primary.main',
+                    fontSize: 'inherit',
+                    fontWeight: 'inherit',
+                    backgroundColor: 'unset',
+                  }}
+                >
+                  Courses{' '}
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: { xs: 20, md: 28 },
+                      left: 2,
+                      '& img': { width: { xs: 100, md: 200 }, height: 'auto' },
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={HeadLineCurve} alt="Headline curve" />
+                  </Box>
                 </Typography>
+              </Typography>  
             </Box>
             </Grid>
             <Grid item xs={12} md={9}>

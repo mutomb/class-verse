@@ -2,13 +2,14 @@ import React, {useState} from 'react'
 import { scroller } from 'react-scroll'
 import {useTheme} from '@mui/material/styles'
 import {Box, Container, Grid} from '@mui/material'
-import {StripeProvider} from 'react-stripe-elements'
-import {CartItems, Checkout} from './'
+// import {StripeProvider} from 'react-stripe-elements'
+import {CartItems, /*Checkout*/} from './'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import logo from '../../public/logo.svg'
+import {Redirect} from 'react-router-dom'
 
 export default function Cart () {
-  const stripe_test_api_key  = process.env.STRIPE_TEST_PUBLISHABLE
+  // const stripe_test_api_key  = process.env.STRIPE_TEST_PUBLISHABLE
   const [checkout, setCheckout] = useState(false)
   const theme = useTheme()
 
@@ -23,11 +24,12 @@ export default function Cart () {
       }); clearTimeout(scrollToCheckout)
     }, 1000)
   }
-
+    if(checkout){
+      return <Redirect to='/checkout' />
+    }
     return (
     <WallPaperYGW variant='radial' primaryColor={theme.palette.background.paper} secondaryColor={theme.palette.background.default}
     style={{
-      minHeight: '100vh',
       '&::before': {
         content: '""',
         width: '100%',
@@ -42,20 +44,20 @@ export default function Cart () {
       '& > div':{
         position: 'relative'
       }
-    }}>
+    }} overlayStyle={{minHeight: '100vh',}}>
       <Box id="shopping-cart" sx={{pt: {xs: 6, md: 8}, pb: 14, }}>
         <Container maxWidth="lg" sx={{px: {xs: 0, sm: 'inherit'}}}>
           <Grid container spacing={2}>
             <Grid item id='items' xs={ 12} md={6} sx={{pl: {xs: 0, sm: 'inherit'}, pt: {xs: 0, sm: 'inherit'}}}>  
               <CartItems checkout={checkout} setCheckout={showCheckout}/>
             </Grid>
-            {checkout && 
+            {/**  <StripeProvider stripe={null} > */} {/** Stripe context provider, all stripe UI elments must be used within `StripeProvider` and `Elements` to have access to the Stripe object */}
+            {/* {checkout && 
             (<Grid item id='checkout' xs={ 12} md={6} sx={{pl: {xs: 0, sm: 'inherit'}, pt: {xs: 0, sm: 'inherit'}}}>
-              {/**  <StripeProvider stripe={null} > */} {/** Stripe context provider, all stripe UI elments must be used within `StripeProvider` and `Elements` to have access to the Stripe object */}
               <StripeProvider apiKey={stripe_test_api_key}> 
                 <Checkout/>
               </StripeProvider>                
-            </Grid>)}
+            </Grid>)} */}
           </Grid>
         </Container>
       </Box>

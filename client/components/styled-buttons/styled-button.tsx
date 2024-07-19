@@ -1,16 +1,17 @@
 import React, { FC, ReactNode } from 'react'
 import Box from '@mui/material/Box'
-import { Theme } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { Theme, useMediaQuery } from '@mui/material'
+import { styled, useTheme } from '@mui/material/styles'
 import { ButtonProps } from '@mui/material/Button'
 import { fontFamily } from '../../config/theme/typography'
 
 interface BaseButtonProps extends Pick<ButtonProps, 'onClick' | 'type' | 'startIcon' | 'endIcon'> {
   variant?: 'contained' | 'outlined' | 'text'
-  color?: 'default' | 'primary' | 'secondary' | 'dark' | 'light' | 'disabled'
+  color?: 'default' | 'primary' | 'secondary' | 'dark' | 'light' | 'disabled' | 'error'
   size?: 'small' | 'medium' | 'large'
   disableHoverEffect?: boolean,
-  disabled?:boolean
+  disabled?:boolean,
+  style?: any
 }
 interface StyledButtonRootProps extends BaseButtonProps {
   theme?: Theme
@@ -19,16 +20,15 @@ interface StyledButtonRootProps extends BaseButtonProps {
 const StyledButtonRoot = styled('button', {
   shouldForwardProp: (prop) =>
     prop !== 'variant' && prop !== 'color' && prop !== 'size' && prop !== 'disableHoverEffect',
-})<StyledButtonRootProps>(({ theme, color, variant, size, disableHoverEffect }) => ({
+})<StyledButtonRootProps>(({ theme, color, variant, size, disableHoverEffect, style }) => ({
   fontFamily,
   cursor: 'pointer',
   minWidth: 40,
-  fontSize: 14,
+  fontSize: {xs: 12, md: 14},
   fontWeight: 500,
   lineHeight: 1.5,
   letterSpacing: 1,
   borderRadius: Number(theme.shape.borderRadius) * 3,
-
   display: 'inline-flex',
   alignItems: 'center',
   userSelect: 'none',
@@ -40,17 +40,17 @@ const StyledButtonRoot = styled('button', {
   WebkitTapHighlightColor: 'transparent',
   verticalAlign: 'middle',
   outline: 'none !important',
-  transition: theme.transitions.create(['transform']),
+  transition: theme.transitions.create(['transform'], {duration: 500}),
 
   // hover
   '&:hover': {
     ...(!disableHoverEffect && {
-      transform: 'translateY(-3px)',
+      transform: 'translateY(-3px) scale(1.03)',
     }),
   },
 
   '& svg': {
-    fontSize: 20,
+    fontSize: {xs: 18, sm:20},
   },
 
   // sizes and variants
@@ -65,7 +65,7 @@ const StyledButtonRoot = styled('button', {
   ...(size === 'large' &&
     variant === 'outlined' && {
       padding: '10px 18px',
-      fontSize: 15,
+      fontSize: {xs: 12, sm: 15},
     }),
 
   ...(size === 'small' &&
@@ -79,7 +79,7 @@ const StyledButtonRoot = styled('button', {
   ...(size === 'large' &&
     variant !== 'outlined' && {
       padding: '12px 20px',
-      fontSize: 15,
+      fontSize: {xs: 12, sm: 15},
     }),
 
   // variants
@@ -136,7 +136,11 @@ const StyledButtonRoot = styled('button', {
       border: `2px solid #313d56`,
       color: `#313d56`,
     }),
-
+  ...(color === 'error' &&
+    variant === 'outlined' && {
+      border: `2px solid ${theme.palette.error.dark}`,
+      color: theme.palette.error.dark,
+    }),    
   ...(color === 'primary' &&
     variant === 'text' && {
       color: theme.palette.primary.main,
@@ -161,11 +165,21 @@ const StyledButtonRoot = styled('button', {
   variant === 'outlined' && {
     color: theme.palette.text.secondary
   }),
+  ...(color === 'error' &&
+  variant === 'outlined' && {
+    color: theme.palette.error.dark
+  }),
   ...(color === 'disabled' &&
   variant === 'contained' && {
     color: theme.palette.primary.contrastText,
     backgroundColor: theme.palette.text.secondary,
   }),
+  ...(color === 'error' &&
+  variant === 'contained' && {
+    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.error.dark,
+  }),
+  ...style
 }))
 
 interface Props extends BaseButtonProps {
@@ -173,9 +187,14 @@ interface Props extends BaseButtonProps {
 }
 
 const StyledButton: FC<Props> = (props: Props) => {
-  const { children, onClick, disableHoverEffect, startIcon, endIcon, disabled, ...rest } = props
+  const { children, onClick, disableHoverEffect, startIcon, endIcon, disabled, size, ...rest } = props
+  const theme = useTheme()
+  const xsMobileView = useMediaQuery(theme.breakpoints.down('sm'), {defaultMatches: true})
+  const smMobileView = useMediaQuery(theme.breakpoints.down('md'), {defaultMatches: true})
+  const mdMobileView = useMediaQuery(theme.breakpoints.down('lg'), {defaultMatches: true})
+
   return (
-    <StyledButtonRoot disabled={disabled} onClick={disabled? ()=>{}: onClick} disableHoverEffect={disableHoverEffect} {...rest}>
+    <StyledButtonRoot size={size || (xsMobileView || smMobileView)? 'small': mdMobileView? 'medium': 'large' } disabled={disabled} onClick={disabled? undefined: onClick} disableHoverEffect={disableHoverEffect} {...rest}>
       {startIcon && (
         <Box component="span" sx={{ display: 'inherit', mr: 1, ml: -0.5 }}>
           {startIcon}
@@ -194,7 +213,6 @@ const StyledButton: FC<Props> = (props: Props) => {
 StyledButton.defaultProps = {
   color: 'primary',
   variant: 'contained',
-  size: 'medium',
   disableHoverEffect: false,
 }
 

@@ -1,10 +1,10 @@
 import React, {useState, MouseEvent, FC, ReactNode} from 'react';
 import { useTheme } from '@mui/styles';
-import { IconButton, Menu } from '@mui/material';
+import { IconButton, Menu, SxProps, Theme } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
 interface MoreMenuVertProps{
   children: ReactNode
-  style?: any,
+  style?: SxProps<Theme> | undefined,
   icon?: any,
   transformOrigin?: {vertical: number, horizontal: number }
 }
@@ -29,11 +29,10 @@ const MoreMenuVert: FC<MoreMenuVertProps> = ({children, style, icon, transformOr
     sx={{
       zIndex: 10,
       transform: 'unset',
-      mr: {xs:1, md:5}, 
       ':hover':{
         boxShadow: 2,
-        transform: 'translateY(-3px)',
-        transition: theme.transitions.create(['transform'])
+        transform: 'translateY(-3px) scale(1.1)',
+        transition: theme.transitions.create(['transform'], {duration: 500})
       },
       ...style
       }}>
@@ -44,7 +43,6 @@ const MoreMenuVert: FC<MoreMenuVertProps> = ({children, style, icon, transformOr
       anchorEl={anchorEl}
       open={open}
       onClose={handleClose}
-      sx={{...style}}
       MenuListProps={{
         'aria-labelledby': 'more-vert-menu-button',
         component: 'div'

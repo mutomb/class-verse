@@ -5,7 +5,7 @@ import errorHandler from '../helpers/dbErrorHandler'
 const create = async (req, res) => {
   let newEnrollment = {
     course: req.course,
-    student: req.auth,
+    client: req.auth,
   }
   newEnrollment.lessonStatus = req.course.lessons.map((lesson)=>{
     return {lesson: lesson, complete:false}
@@ -16,21 +16,22 @@ const create = async (req, res) => {
       if(!err){
         try {
           await Course.findOneAndUpdate({_id: enrollment.course}, {$inc: {"totalEnrolled": 1}}, {new: true}).exec()
+          req.io.sockets.emit(`users-${req.course._id}`, req.auth._id);
           return res.status(200).json(enrollment)
         }catch (err){
           return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
+            error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
           })
         }
       } else{
           return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
+            error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
           })
         }
     })
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -40,13 +41,23 @@ const create = async (req, res) => {
  */
 const enrollmentByID = async (req, res, next, id) => {
   try {
-    let enrollment = await Enrollment.findById(id)
-                                    .populate({path: 'course', populate:{ path: 'teacher'}})
-                                    .populate('student', '_id name')
-    if (!enrollment)
+    let enrollment = await Enrollment.findById(id).populate({path: 'course', populate:{ path: 'specialist media lessons.media lessons.article'}}).populate('client', '_id name')
+    console.log('enrollment', enrollment)
+    if (!enrollment){
       return res.status('400').json({
         error: "Enrollment not found"
       })
+    }
+    if(enrollment.course && enrollment.course.lessons){
+      for(let i=0; i<enrollment.course.lessons.length; i++){
+        if(enrollment.course.lessons[i].media){
+          enrollment.course.lessons[i].media.postedBy = enrollment.course.specialist
+        }
+      }
+    }
+    if(enrollment.course && enrollment.course.media){
+      enrollment.course.media.postedBy = enrollment.course.specialist
+    }
     req.enrollment = enrollment
     next()
   } catch (err) {
@@ -57,7 +68,13 @@ const enrollmentByID = async (req, res, next, id) => {
 }
 
 const read = (req, res) => {
-  return res.json(req.enrollment)
+  let enrollment = req.enrollment
+  if(enrollment){
+    return res.json(enrollment)
+  }
+  return res.status('400').json({
+    error: "Could not Read enrollment"
+  })
 }
 
 const complete = async (req, res) => {
@@ -72,7 +89,7 @@ const complete = async (req, res) => {
       res.json(enrollment)
     } catch (err) {
       return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
       })
     }
 }
@@ -84,14 +101,14 @@ const remove = async (req, res) => {
     res.json(deletedEnrollment)
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
 
-const isStudent = (req, res, next) => {
-  const isStudent = req.auth && req.auth._id == req.enrollment.student._id
-  if (!isStudent) {
+const isClient = (req, res, next) => {
+  const isClient = req.auth && req.auth._id == req.enrollment.client._id
+  if (!isClient) {
     return res.status('403').json({
       error: "User is not enrolled"
     })
@@ -101,12 +118,12 @@ const isStudent = (req, res, next) => {
 
 const listEnrolled = async (req, res) => {
   try {
-    let enrollments = await Enrollment.find({student: req.auth._id}).sort({'completed': 1}).populate('course', '_id name category price currency description')
+    let enrollments = await Enrollment.find({client: req.auth._id}).sort({'completed': 1}).populate('course', '_id title subtitle level category price currency description totalEnrolled')
     res.json(enrollments)
   } catch (err) {
     console.log(err)
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -114,7 +131,7 @@ const listEnrolled = async (req, res) => {
 
 const findEnrollment = async (req, res, next) => {
   try {
-    let enrollments = await Enrollment.find({course:req.course._id, student: req.auth._id})
+    let enrollments = await Enrollment.find({course:req.course._id, client: req.auth._id})
     if(enrollments.length == 0){
       next()
     }else{
@@ -122,7 +139,7 @@ const findEnrollment = async (req, res, next) => {
     }
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -135,7 +152,18 @@ const enrollmentStats = async (req, res) => {
       res.json(stats)
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
+    })
+  }
+} 
+
+const listClientsAndSpecialist = async (req, res) => {
+  try {
+    let users = await Enrollment.find({course:req.course._id}).populate('client', '_id name surname specialist').populate({path: 'course', populate:{ path: 'specialist'}})
+      res.json(users)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 } 
@@ -148,8 +176,9 @@ export default {
   read,
   remove,
   complete,
-  isStudent,
+  isClient,
   listEnrolled,
   findEnrollment,
-  enrollmentStats
+  enrollmentStats,
+  listClientsAndSpecialist
 }

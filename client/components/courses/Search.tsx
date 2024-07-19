@@ -1,45 +1,50 @@
-import React, {FormEvent, useEffect, useState} from 'react'
+import React, {ChangeEvent, useEffect, useState} from 'react'
 import {Divider, InputBase, Box, FormControl, inputBaseClasses, selectClasses, IconButton, useMediaQuery} from '@mui/material'
-import { SelectChangeEvent} from '@mui/material/Select'
-import {Search as SearchIcon} from '@mui/icons-material'
+import {Error, Search as SearchIcon} from '@mui/icons-material'
 import { useTheme } from '@mui/material/styles'
 import {list} from './api-course'
 import Courses from './Courses'
-import { ClearAdornment, SelectButton } from '../styled-buttons'
-import MenuIcon from '@mui/icons-material/Menu';
+import { ClearAdornment, Pagination, SelectButton } from '../styled-buttons'
 import { listEnrolled } from '../enrollment/api-enrollment'
 import {useAuth} from '../auth'
 import logo from '../../public/logo.svg'
+import { StyledSnackbar } from '../styled-banners'
+import { WallPaperYGW } from '../wallpapers/wallpapers'
 
 export default function Search({categories}) {
-  const { transitions, breakpoints } = useTheme()
+  const { transitions, breakpoints, palette } = useTheme()
   const matchMobileView = useMediaQuery(breakpoints.down('md'), {defaultMatches: true})
   const {isAuthenticated} = useAuth()
   const [values, setValues] = useState({
       category: '',
       search: '',
-      results: [],
-      searched: false
+      results: {},
+      searched: false,
+      error: ''
   })
   const [enrollments, setEnrollments] = useState([])
  
-  const handleChange = (name: string) => (event:FormEvent<HTMLFormElement> | SelectChangeEvent) => {
+  const handleChange = (name: string) => (event) => {
     setValues({
       ...values, [name]: event.target.value,
     })
   }
- 
+
   const handleClear = () => {
     setValues({...values, search: ''})
   }
 
-  const search = () => {
+  const handlePageChange = (event: ChangeEvent<unknown>, page: number) => {
+    search(page)
+  }
+  
+  const search = (page?: number) => {
     const abortController = new AbortController()
     const signal = abortController.signal
     if(values.search){
-      list({search: values.search, category: values.category}, signal).then((data) => {
-        if (data.error) {
-          console.log(data.error)
+      list({search: values.search, category: values.category, page}, signal).then((data) => {
+        if (data && data.error) {
+          setValues({...values, error: data.error})
         } else {
           setValues({...values, results: data, searched:true})
         }
@@ -52,17 +57,20 @@ export default function Search({categories}) {
       search()
     }
   }
+  const handleClose = () =>{
+    setValues({...values, error: ''})
+  }
   useEffect(() => {
-    if (!isAuthenticated().user) return function cleanup(){}
     const abortController = new AbortController()
     const signal = abortController.signal
-    listEnrolled({token: isAuthenticated().token}, signal).then((data) => {
+    if(isAuthenticated().user){
+      listEnrolled({token: isAuthenticated().token}, signal).then((data) => {
         if (data && data.error) {
-        console.log(data.error)
+        setValues({...values, error: data.error})
         } else {
         setEnrollments(data)
-        }
-    })
+    }
+  })}
     return function cleanup(){
         abortController.abort()
     }
@@ -84,9 +92,9 @@ export default function Search({categories}) {
               flexDirection: 'row',
               justifyContent: 'center',
           }}> 
-            <IconButton disableRipple sx={{ p: '10px', backgroundColor: 'background.paper', borderRadius: 0, height: 48, ':hover':{backgroundColor: 'background.paper'} }} aria-label="menu">
+            {/* <IconButton disableRipple sx={{ p: '10px', backgroundColor: 'background.paper', borderRadius: 0, height: 48, ':hover':{backgroundColor: 'background.paper'} }} aria-label="menu">
               <MenuIcon sx={{ ':hover':{color: 'primary.main'}}} />
-            </IconButton>
+            </IconButton> */}
             <FormControl fullWidth
             sx={{
               flex:1,
@@ -98,22 +106,25 @@ export default function Search({categories}) {
               mr:0,
               my:0,
               [`& .${inputBaseClasses.focused}`]: {
-                transition: transitions.create(['border-color']),
+                transition: transitions.create(['border-color', 'border'], {duration: 1000}),
                 border: '1px solid',
                 borderColor: 'primary.main',
               },
               [`& .${inputBaseClasses.root}:hover`]:{
-                transition: transitions.create(['border-color']),
+                transition: transitions.create(['border-color', 'border'], {duration: 1000}),
                 border: '1px solid',
                 borderColor: 'primary.main',
-              }
+              },
+              '&:hover':{
+                [`& .${selectClasses.icon}`]: {color: 'primary.main'}, [`& .${selectClasses.root}`]: {color: 'primary.main'},
+              },
             }}>
               <InputBase
                 value={values.search}
                 id="search"
                 onKeyDown={enterKey}
                 onChange={handleChange('search')}
-                placeholder="Enter the Course Name"
+                placeholder="Enter course, specialist or category name"
                 endAdornment={<ClearAdornment position='end'  value={values.search} handleClick={handleClear}/>}
                 sx={{
                   borderTopRightRadius: {xs: 3, md: 0},
@@ -126,7 +137,7 @@ export default function Search({categories}) {
                 }}
               />
             </FormControl>
-            <IconButton disableRipple onClick={search} type="button" sx={{ p: '10px', backgroundColor: 'background.paper', borderRadius: 0, height: 48, ':hover':{backgroundColor: 'background.paper'} }} aria-label="search">
+            <IconButton disableRipple onClick={()=>search} type="button" sx={{ p: '10px', backgroundColor: 'background.paper', borderRadius: 0, height: 48, ':hover':{backgroundColor: 'background.paper'} }} aria-label="search">
               <SearchIcon  sx={{ ':hover':{color: 'primary.main'}}}/>
             </IconButton>
             <Box sx={{ height: 48, backgroundColor: 'background.paper', display: matchMobileView? 'none':'flex', alignItems: 'center', justifyContent: 'center'}}>
@@ -144,38 +155,56 @@ export default function Search({categories}) {
               my: {xs: 2, md: 0},
               mr: { xs: 0, md: 0 },
               // mb: { xs: 2, md: 2 },
-              [`& .${selectClasses.icon}`]: {color: 'primary.contrastText'}
+              
             }}>
             <SelectButton options={categories} value={values.category} handleChange={handleChange('category')} label='Categories' 
             styles={{
               borderTopRightRadius: 3,
               borderBottomRightRadius: 3,
               borderTopLeftRadius: {xs: 3, md: 0},
-              borderBottomLeftRadius: {xs: 3, md: 0}
+              borderBottomLeftRadius: {xs: 3, md: 0},
+              [`& .${selectClasses.icon}`]: {color: 'primary.contrastText'},
+              '&:hover':{color: 'primary.main', bgcolor: 'primary.contrastText',
+                [`& .${selectClasses.icon}`]: {color: 'primary.main'}, [`& .${selectClasses.root}`]: {color: 'primary.main'},
+              },
             }}
             />
           </FormControl>
           <Divider sx={{my:1}}/>
         </Box>
-        <Box id='search-results' 
-        sx={{mt:{xs: 1, md: 4}, width: '100%', bgcolor: 'background.default',
-          '&::before': {
-            content: '""',
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            left: {xs: 'unset', md: '50%'},
-            backgroundImage: `url(${logo})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'contain',
-            opacity: 0.5,
-          },
-          '& > div':{
-            position: 'relative'
+        <WallPaperYGW id='search-results' variant='linear' primaryColor={palette.background.paper} secondaryColor={palette.background.default}
+          style={{
+            '&::before': {
+              content: '""',
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              backgroundImage: `url(${logo})`,
+              backgroundRepeat: 'repeat',
+              backgroundSize: 'contain',
+              opacity: 0.5,
+            },
+            '& > div':{
+              position: 'relative'
+            }
+          }}>
+          {values.results && values.results.courses &&  enrollments && 
+          (<Courses courses={values.results.courses} searched={values.searched} enrollments={enrollments}/>)
           }
-        }}>
-          <Courses courses={values.results} searched={values.searched} enrollments={enrollments}/>
-        </Box>  
+          {values.results && values.results.count && values.results.page && 
+          (<Box sx={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4}}>
+            <Pagination size={matchMobileView? 'small': 'medium'} shape='circular' variant='outlined' onChange={handlePageChange} page={Number(values.results.page)} count={Number(values.results.count)} siblingCount={1}/>
+          </Box>)}
+        </WallPaperYGW>  
+        <StyledSnackbar
+        open={values.error? true: false}
+        duration={3000}
+        handleClose={handleClose}
+        icon={<Error/>}
+        heading={"Error"}
+        body={values.error}
+        variant='error'
+        />
       </Box>  
     )
 }

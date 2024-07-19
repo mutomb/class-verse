@@ -17,7 +17,7 @@ const NotifyButton: FC<NotifyButtonProps> = ({ onClick, className, variant }) =>
       disabled={variant === 'disabled'? true: false}
       size='small'
       sx={{
-        backgroundColor: 'background.paper', color: 'primary.main', transition: transitions.create(['background-color']),
+        backgroundColor: 'background.paper', color: 'primary.main', transition: transitions.create(['background-color'], {duration: 500}),
         '&:hover': { backgroundColor: 'primary.main', color: 'primary.contrastText' }, [`& .${badgeClasses.badge}`]:{bgcolor: 'secondary.main'},
         zIndex: 10,
         boxShadow: 1,
@@ -27,7 +27,7 @@ const NotifyButton: FC<NotifyButtonProps> = ({ onClick, className, variant }) =>
       className={className}
     >
       {variant === 'badge' &&
-      (<Badge invisible={false} badgeContent={5}>
+      (<Badge invisible={false} badgeContent={0}>
         <Notifications/>
       </Badge>)
       }

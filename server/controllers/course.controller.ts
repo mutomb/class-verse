@@ -1,4 +1,4 @@
-import {Course, Media} from '../models'
+import {Course} from '../models'
 import extend from 'lodash/extend'
 import fs from 'fs'
 import errorHandler from '../helpers/dbErrorHandler'
@@ -15,18 +15,33 @@ const create = (req, res) => {
         error: "Image could not be uploaded"
       })
     }
-    let course = new Course(fields)
-    course.teacher= req.profile
-    if(files.cover){
-      course.cover.data = fs.readFileSync(files.cover.path)
-      course.cover.contentType = files.cover.type
+    let course = new Course({...fields, rating: {avg_rating: 0, count: 0}})
+    course.specialist= req.profile
+    if(fields.programming_languages){
+      course.programming_languages = JSON.parse(fields.programming_languages)
+    }
+    if(fields.technologies){
+      course.technologies = JSON.parse(fields.technologies)
+    }
+    if(fields.sections){
+      course.sections = JSON.parse(fields.sections)
+    }
+    if(fields.requirements){
+      course.requirements = JSON.parse(fields.requirements)
+    }
+    if(fields.audiences){
+      course.audiences = JSON.parse(fields.audiences)
+    }
+    if(files.cover && files.cover.path && files.cover.type){
+      course.cover = {data: fs.readFileSync(files.cover.path), contentType: files.cover.type}
     }
     try {
-      let result = await course.save()
-      res.json(result)
+      await course.save()
+      course.cover = undefined
+      res.json(course)
     }catch (err){
       return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
       })
     }
   })
@@ -37,18 +52,22 @@ const create = (req, res) => {
  */
 const courseByID = async (req, res, next, id) => {
   try {
-    let course = await Course.findById(id).populate('teacher', '_id name').populate('lessons.media').exec()
-    if(course && course.lessons){
-      for(let i=0; i<course.lessons.length; i++){
-        if(course.lessons[i].media){
-          course.lessons[i].media.postedBy = course.teacher
-        }
-      }
-    }
-    if (!course)
+    let course = await Course.findById(id).populate('specialist', '_id name').populate('lessons.media').populate('media').populate('lessons.article', '_id postedBy').exec()
+    if (!course){
       return res.status('400').json({
         error: "Course not found"
       })
+    }
+    if(course && course.lessons){
+      for(let i=0; i<course.lessons.length; i++){
+        if(course.lessons[i].media){
+          course.lessons[i].media.postedBy = course.specialist
+        }
+      }
+    }
+    if(course && course.media){
+      course.media.postedBy = course.specialist
+    }
     req.course = course
     next()
   } catch (err) {
@@ -59,8 +78,13 @@ const courseByID = async (req, res, next, id) => {
 }
 
 const read = (req, res) => {
-  req.course.cover = undefined
-  return res.json(req.course)
+  let course = req.course
+  if(course){course.cover = undefined
+    return res.json(course)
+  }
+  return res.status('400').json({
+    error: "Could not Read course"
+  })
 }
 
 const update = async (req, res) => {
@@ -69,7 +93,7 @@ const update = async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: "Photo could not be uploaded"
+        error: "Course could not be updated"
       })
     }
     let course = req.course
@@ -77,51 +101,91 @@ const update = async (req, res) => {
     if(fields.lessons){
       course.lessons = JSON.parse(fields.lessons)
     }
+    if(fields.programming_languages){
+      course.programming_languages = JSON.parse(fields.programming_languages)
+    }
+    if(fields.technologies){
+      course.technologies = JSON.parse(fields.technologies)
+    }
+    if(fields.sections){
+      course.sections = JSON.parse(fields.sections)
+    }
+    if(fields.requirements){
+      course.requirements = JSON.parse(fields.requirements)
+    }
+    if(fields.audiences){
+      course.audiences = JSON.parse(fields.audiences)
+    }
     course.updated = Date.now()
-    if(files.cover){
-      course.cover.data = fs.readFileSync(files.cover.path)
-      course.cover.contentType = files.cover.type
+    if(files.cover && files.cover.path && files.cover.type){
+      course.cover = {data: fs.readFileSync(files.cover.path), contentType: files.cover.type}
+    }else{
+      if(fields.cover && course.cover && (fields.cover === null || fields.cover === 'null')){
+        course = await Course.findByIdAndUpdate({_id: course._id}, {cover: null}, {new: true}).exec()
+      }
     }
     try {
       await course.save()
+      course.cover = undefined
+      if(fields.status === 'Pending approval'){
+        req.io.sockets.emit('course pending approval admin')
+      }
       res.json(course)
     } catch (err) {
       return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
       })
     }
   })
 }
 
 const newLesson = async (req, res) => {
-  try {
-    let lesson = req.body.lesson
-    let result = await Course.findByIdAndUpdate(req.course._id, {$push: {lessons: lesson}, updated: Date.now()}, {new: true})
-                            .populate('teacher', '_id name')
-                            .exec()
-    res.json(result)
-  } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    })
-  }
+  let form = new formidable.IncomingForm()
+  form.keepExtensions = true
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Lesson could not be added"
+      })
+    }
+    try {
+      let lesson = {}
+      for (let key of Object.keys(fields)){
+        lesson[key] = fields[key]
+      }
+      if(Object.keys(lesson).length>0){
+        let result = await Course.findByIdAndUpdate(req.course._id, {$push: {lessons: lesson}, updated: Date.now()}, {new: true})
+        .select('-cover').populate('specialist', '_id name').populate('lessons.media').populate('media').populate('lessons.article', '_id postedBy')
+        .exec()
+        return res.json(result)
+      }
+      return res.status(400).json({
+        error: 'Lesson could not be saved.'
+      })
+    } catch (err) {
+      return res.status(400).json({
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
+      })
+    }
+  })
 }
 
 const remove = async (req, res) => {
   try {
     let course = req.course
     let deleteCourse = await course.remove()
+    deleteCourse.cover=undefined
     res.json(deleteCourse)
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
 
-const isTeacher = (req, res, next) => {
-    const isTeacher = req.course && req.auth && req.course.teacher._id == req.auth._id
-    if(!isTeacher){
+const isSpecialist = (req, res, next) => {
+    const isSpecialist = (req.course && req.auth && req.course.specialist._id == req.auth._id) || (req.auth && req.auth.role === 'admin')
+    if(!isSpecialist){
       return res.status('403').json({
         error: "User is not authorized"
       })
@@ -129,15 +193,15 @@ const isTeacher = (req, res, next) => {
     next()
 }
 
-const listByTeacher = (req, res) => {
-  Course.find({teacher: req.profile._id}, (err, courses) => {
+const listBySpecialist = (req, res) => {
+  Course.find({specialist: req.profile._id}, (err, courses) => {
     if (err) {
       return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
       })
     }
     res.json(courses)
-  }).select('-cover').sort('-created').populate('teacher', '_id name')
+  }).select('-cover -lessons.content -media -article').sort('-created').populate('specialist', '_id name')
 }
 
 const listCategories = async (req, res) => {
@@ -146,7 +210,7 @@ const listCategories = async (req, res) => {
     res.json(['All', ...categories])
   } catch (err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -155,26 +219,44 @@ const listCurrencies = async (req, res) => {
 }
 
 const listPublished = async (req, res) => {
-  const query = {}
-  if(req.query.search) query.name = {'$regex': req.query.search, '$options': "i"}
+  let query = {published: true, status: 'Approved'}
+  if(req.query.search){
+    query.$or=[] 
+    query.$or.push({title : {'$regex': req.query.search, '$options': "i"} }) 
+    query.$or.push({subtitle : {'$regex': req.query.search, '$options': "i"}  })
+    query.$or.push({category : {'$regex': req.query.search, '$options': "i"}  })
+    query.$or.push({language : {'$regex': req.query.search, '$options': "i"}  })
+    query.$or.push({technologies : {'$regex': req.query.search, '$options': "i"}  })
+    query.$or.push({sections : {'$regex': req.query.search, '$options': "i"}  })
+    query.$or.push({requirements : {'$regex': req.query.search, '$options': "i"}  })
+    query.$or.push({audiences : {'$regex': req.query.search, '$options': "i"} })
+    query.$or.push({description : {'$regex': req.query.search, '$options': "i"} })
+     
+  }
   if(req.query.category && req.query.category != 'All') query.category =  req.query.category
+  const { page = 1, limit = 10 } = req.query;
   try {
-    let courses = await Course.find({...query, published: true}).sort({'created': -1}).populate('teacher', '_id name').select('-cover').exec()
-    res.json(courses)
+    const courses = await Course.find(query).limit(limit*1).skip((page - 1)*limit).sort({'created': -1}).populate('specialist', '_id name').select('-cover -lessons.content -media -article').exec()
+    const allCoursesCount = await Course.find(query).countDocuments();
+    res.json({
+      courses: courses,
+      count: Math.ceil(allCoursesCount/limit),
+      page: page,
+    });
   }catch (err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
 
 const listPopular = async (req, res) => {
   try {
-    let courses = await Course.find({published: true}).sort('-totalEnrolled').limit(10).populate('teacher', '_id name').select('-cover').exec()
+    let courses = await Course.find({published: true, status: 'Approved'}).sort('-totalEnrolled').limit(10).populate('specialist', '_id name').select('-cover -lessons.content -media -article').exec()
     res.json(courses)
   }catch (err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -190,6 +272,16 @@ const defaultPhoto = (req, res) => {
   return res.sendFile(path.resolve(process.cwd()+defaultCourseCover))
 }
 
+const listPendingApproval = async (req, res) => {
+  try {
+    let courses = await Course.find({published: true, status: { "$ne": 'Approved'}}).sort({'created': -1}).populate('specialist', '_id name').select('-cover -lessons.content -media -article').exec()
+    res.json(courses)
+  }catch (err){
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
+    })
+  }
+}
 
 export default {
   create,
@@ -198,12 +290,13 @@ export default {
   listCategories,
   remove,
   update,
-  isTeacher,
-  listByTeacher,
+  isSpecialist,
+  listBySpecialist,
   photo,
   defaultPhoto,
   newLesson,
   listPublished,
   listPopular,
-  listCurrencies
+  listCurrencies,
+  listPendingApproval
 }

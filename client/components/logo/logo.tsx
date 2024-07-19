@@ -21,7 +21,7 @@ const Logo: FC<Props> = ({ onClick, variant, style }) => {
         alignItems: 'center',
         justifyContent: 'center',
         px: { xs: 0, md: 3 },
-        mb: { xs: 3, md: 0 },
+        mb: 0,
         fontSize: { xs: '1.2rem', md: 'inherit' },
         '& > span': { display: 'block' },
         ...style
@@ -32,7 +32,7 @@ const Logo: FC<Props> = ({ onClick, variant, style }) => {
         position: 'absolute',
         top: 8,
         left:{xs: 10, md: 35},
-        transform: 'rotate(3deg)',
+        transform: 'rotate(3deg) scale(1.1)',
         '& img': { width: 22, height: 'auto' },
         display:'flex',
         alignItems: 'flex-start',

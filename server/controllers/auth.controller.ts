@@ -20,9 +20,10 @@ const signin = async (req, res) => {
         error: "Email and password don't match."
       })
     }
-    /**generate random JWT token signed with user ID and SECRET payload */
+    /**generate random JWT token signed with user ID and role payloads, and server-side SECRET */
     const token = jwt.sign({
-      _id: user._id
+      _id: user._id,
+      role: user.role,
     }, config.jwtSecret)
     
     const setting = await Setting.findOne({
@@ -34,8 +35,15 @@ const signin = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        teacher: user.teacher,
-        role: user.role
+        specialist: user.specialist,
+        role: user.role,
+        stripe_seller: user.stripe_seller,
+        stripe_customer: user.stripe_customer,
+        shopify_seller: user.shopify_seller,
+        shopify_customer: user.shopify_customer,
+        paypal_seller: user.paypal_seller,
+        paypal_customer: user.paypal_customer,
+        active_plan: user.active_plan
       },
       setting: setting || undefined
     })
@@ -62,8 +70,16 @@ const requireSignin = expressJwt({
 })
 
 const hasAuthorization = (req, res, next) => {
-  const authorized = req.profile && req.auth && req.profile._id == req.auth._id
+  const authorized = (req.profile && req.auth && req.profile._id == req.auth._id) || (req.auth && req.auth.role === 'admin')
   if (!(authorized)) {
+    return res.redirect(403, '/error/403/')
+  }
+  next()
+}
+
+const isAdmin = (req, res, next) => {
+  const isAdmin = req.auth && req.auth.role === 'admin'
+  if (!(isAdmin)) {
     return res.redirect(403, '/error/403/')
   }
   next()
@@ -90,18 +106,11 @@ const cookieAuth = async (req, res, next) => {
         next()
 }
 
-// const checkAuth0Status = (req, res, next) => {
-//     return res.status('200').json({
-//       user: req.oidc.user,
-//       status: req.oidc.isAuthenticated()
-//     })
-// }
-
 export default {
   signin,
   signout,
   requireSignin,
   hasAuthorization,
-  cookieAuth
-  // checkAuth0Status
+  cookieAuth,
+  isAdmin
 }

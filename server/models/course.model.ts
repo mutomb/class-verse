@@ -1,31 +1,84 @@
 import mongoose from 'mongoose'
 
 const LessonSchema = new mongoose.Schema({
-  title: String,
-  content: String,
-  media: {type: mongoose.Schema.ObjectId, ref: 'Media'}, 
-  resource_url: String, 
-})
-const Lesson = mongoose.model('Lesson', LessonSchema)
-const CourseSchema = new mongoose.Schema({
-  name: {
+  section: {
     type: String,
     trim: true,
     required: true,
     unique: true
   },
+  title: {
+    type: String,
+    trim: true,
+    required: true,
+    unique: true
+  },
+  aim: {
+    type: String,
+    trim: true,
+    required: true,
+  },
+  content: {
+    type: {},
+    required: true,
+    max: 2000000
+  },
+  media: {type: mongoose.Schema.ObjectId, ref: 'Media'},
+  article: {type: mongoose.Schema.ObjectId, ref: 'Article'},
+  free: {type: Boolean, default: false} 
+})
+const Lesson = mongoose.model('Lesson', LessonSchema)
+
+const RatingSchema = new mongoose.Schema({
+  avg_rating: {
+    type: Number,
+    default: 0
+  },
+  count: {
+    type: Number,
+    default: 0
+  },
+})
+
+const Rating = mongoose.model('Rating', RatingSchema)
+
+const CourseSchema = new mongoose.Schema({
   cover: {
     data: Buffer,
     contentType: String
   },
-  description: {
+  media: {type: mongoose.Schema.ObjectId, ref: 'Media'},
+  title: {
     type: String,
-    trim: true
+    trim: true,
+    required: true,
+    unique: true
+  },
+  subtitle: {
+    type: String,
+    trim: true,
+    required: true,
   },
   category: {
     type: String,
     required: true
   },
+  language: {
+    type: String,
+    required: true,
+    enum: ['English', 'French']
+  },
+  programming_languages: [String],
+  technologies: [String],
+  sections: [String],
+  requirements: [String],
+  level: ['Beginner', 'Intermediate', 'Advanced'],
+  audiences: [String],
+  description: {
+    type: String,
+    trim: true
+  },
+  lessons: [LessonSchema],
   quantity: {
     type: Number,
     default: 1
@@ -35,12 +88,12 @@ const CourseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  teacher: {type: mongoose.Schema.ObjectId, ref: 'User'},
+  specialist: {type: mongoose.Schema.ObjectId, ref: 'User'},
   published: {
     type: Boolean,
     default: false
   },
-  lessons: [LessonSchema],
+  rating: RatingSchema,
   price: {
     type: Number,
     required: true
@@ -49,22 +102,27 @@ const CourseSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    enum: ['ZAR' , 'USD', 'GBP', 'BTC'],
+    enum: ['R' , '$'],
   },
   totalEnrolled: {
     type: Number,
     default: 0
   },
-  type: {
+  status: {
     type: String,
-    default: 'course'
-  }
+    default: 'Not published',
+    enum: ['Not published' , 'Pending approval', 'Approved', 'Not approved']
+  },
+  certificate: {
+    data: Buffer,
+    contentType: String,
+  },
 })
 
 //mongoose schema middlewares
 CourseSchema.pre('remove',function(next){
   console.log("Removing enrollement of course" + this._id);
-  /**remove any user's company */
+  /**remove any user's enrollments in this course */
   this.model('Enrollment').find({ course : this._id }, function(err, enrollments){
       if(err){
           console.log("Error, Enrollment was not deleted");
@@ -84,6 +142,7 @@ CourseSchema.pre('remove',function(next){
   });
   next();
 });
+
 const Course = mongoose.model('Course', CourseSchema)
 
-export{Lesson, Course}
+export default Course

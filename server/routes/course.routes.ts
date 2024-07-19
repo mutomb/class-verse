@@ -14,12 +14,15 @@ router.route('/api/courses/currencies')
 router.route('/api/courses/published')
   .get(courseCtrl.listPublished)
 
+router.route('/api/courses/pending')
+  .get(authCtrl.requireSignin, authCtrl.isAdmin, courseCtrl.listPendingApproval)
+
 router.route('/api/courses/popular')
   .get(courseCtrl.listPopular)
   
 router.route('/api/courses/by/:userId')
-  .post(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.isEducator, courseCtrl.create)
-  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, courseCtrl.listByTeacher)
+  .post(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.isSpecialist, courseCtrl.create)
+  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, courseCtrl.listBySpecialist)
 
 router.route('/api/courses/photo/:courseId')
   .get(courseCtrl.photo, courseCtrl.defaultPhoto)
@@ -28,12 +31,12 @@ router.route('/api/courses/defaultphoto')
   .get(courseCtrl.defaultPhoto)
 
 router.route('/api/courses/:courseId/lesson/new')
-  .put(authCtrl.requireSignin, courseCtrl.isTeacher, courseCtrl.newLesson)
+  .put(authCtrl.requireSignin, courseCtrl.isSpecialist, courseCtrl.newLesson)
 
 router.route('/api/courses/:courseId')
   .get(courseCtrl.read)
-  .put(authCtrl.requireSignin, courseCtrl.isTeacher, courseCtrl.update)
-  .delete(authCtrl.requireSignin, courseCtrl.isTeacher, courseCtrl.remove)
+  .put(authCtrl.requireSignin, courseCtrl.isSpecialist, courseCtrl.update)
+  .delete(authCtrl.requireSignin, courseCtrl.isSpecialist, courseCtrl.remove)
 
 router.param('courseId', courseCtrl.courseByID)
 router.param('userId', userCtrl.userByID)

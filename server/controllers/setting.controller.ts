@@ -1,7 +1,7 @@
 import {Setting} from '../models'
 import extend from 'lodash/extend'
 
-const create = async (req, res) => {
+const create = async (req, res) => { //TODO: use findOneAndUpdate with upsert to combine create and update
   if(!req.profile && !req.profile._id) return res.status('400').json({ error: "Could not create settings"})
   try {
     let setting = new Setting(req.body); 

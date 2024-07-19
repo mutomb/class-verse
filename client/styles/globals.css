@@ -1,13 +1,13 @@
-/* :root {
+:root {
   --color-background: #127c71;
   --color-scrollbar: #ffaf35;
   --color-scrollbar-hover: #bbb;
-} */
-:root {
-  --color-background: #127c7100;
-  --color-scrollbar: #ffae3500;
-  --color-scrollbar-hover: #bbbbbb00;
 }
+/* :root {
+  --color-background: #127c7100;
+  --color-scrollbar: #f3980f00;
+  --color-scrollbar-hover: #bbbbbb00;
+} */
 
 ::-webkit-scrollbar {
   /* width: 6px; */

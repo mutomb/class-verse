@@ -9,7 +9,7 @@ import helmet from 'helmet'
 // import {oidcConfig} from './config'
 import {nocache} from './helpers'
 import Template from './template'
-import {userRoutes, authRoutes, courseRoutes, enrollmentRoutes, settingRoutes, defaultRoutes, mediaRoutes, orderRoutes} from './routes'
+import {userRoutes, authRoutes, anonymousRoutes, courseRoutes, enrollmentRoutes, articleRoutes, settingRoutes, defaultRoutes, mediaRoutes, orderRoutes, messageRoutes} from './routes'
 // modules for SSR
 import {renderToPipeableStream} from 'react-dom/server'
 import MainRouter from '../client/MainRouter'
@@ -24,14 +24,15 @@ import {createEmotionCache} from './helpers'
 import { matchRoutes } from 'react-router-config'
 import routes from './../client/routeConfig'
 import 'isomorphic-fetch'
-
 //comment out before building for production
-import devBundle from './devBundle'
+// import devBundle from './devBundle'
+import config from './config/config'
+import { Server } from 'socket.io'
 
 const CURRENT_WORKING_DIR = process.cwd()
 const app = express()
 //comment out before building for production
-devBundle.compile(app)
+// devBundle.compile(app)
 
 //For SSR with data
 const loadBranchData = (location) => {
@@ -54,7 +55,7 @@ app.use(compress())
 app.use(helmet())
 app.use(helmet.contentSecurityPolicy({ //Set CSP to ensure no one can inject malicious code
   directives: { 
-    defaultSrc: ["'self'"], //sets default source for all types of resources to same origin
+    defaultSrc: ["'self'", `${config.serverUrl}`], //sets default source for all types of resources to same origin
     scriptSrc: ["'self'", "*.stripe.com", "'unsafe-inline'", "'unsafe-eval'"], //source for JS scripts to same origin or inline scripts or .stripe.com
     styleSrc: ["'self'","*.googleapis.com", "'unsafe-inline'", "'unsafe-eval'"], //source for styles to same origin or inline styles
     fontSrc: ["'self'","*.googleapis.com", "*.gstatic.com"], //source for fonts to same origin or inline styles
@@ -70,16 +71,27 @@ app.use(cors())
 app.use(nocache())
 // auth router attaches /login, /logout, and / routes to the baseURL
 // app.use(auth(oidcConfig));
+// Assign socket object to every request
+const io = new Server();
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+export {io}
 // assest routes
 app.use('/dist', express.static(path.join(CURRENT_WORKING_DIR, 'dist'), {index:false}))
 // mount routes
 app.use('/', userRoutes)
 app.use('/', authRoutes)
+app.use('/', anonymousRoutes)
 app.use('/', courseRoutes)
 app.use('/', enrollmentRoutes)
+app.use('/', articleRoutes)
 app.use('/', orderRoutes)
 app.use('/', settingRoutes)
 app.use('/', mediaRoutes)
+app.use('/', messageRoutes)
+
 //catches all GET requests
 app.get('*', defaultRoutes,  async(req, res) => {
     //React Router can fill context after render with urls, which can be used to manually initiate a redirect.

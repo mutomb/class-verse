@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import {List, ListItem, ListItemText, Typography, Collapse, Divider, Box, Container, Grid, listItemClasses, Zoom} from '@mui/material'
-import {ExpandLess, ExpandMore, Info} from '@mui/icons-material'
+import {Error, ExpandLess, ExpandMore, Info} from '@mui/icons-material'
 import {useTheme} from '@mui/material/styles'
 import {useAuth} from '../auth'
-import {listByTeacher, listByUser} from './api-order'
+import {listBySpecialist, listByUser} from './api-order'
 import {CourseOrderEdit} from '.'
-import { StyledBanner } from '../styled-banners'
+import { StyledBanner, StyledSnackbar } from '../styled-banners'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import logo from '../../public/logo.svg'
 
@@ -14,18 +14,19 @@ export default function Orders({match}) {
   const [open, setOpen] = useState(0)
   const {isAuthenticated} = useAuth()
   const theme = useTheme()
-  const isTeacher = () =>{
-    return isAuthenticated().user && isAuthenticated().user.teacher
+  const [error, setError] = useState('')
+  const isSpecialist = () =>{
+    return isAuthenticated().user && isAuthenticated().user.specialist
   } 
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
-    if(isTeacher()){
-      listByTeacher({
+    if(isSpecialist()){
+      listBySpecialist({
         userId: match.params.userId
       }, {token: isAuthenticated().token}, signal).then((data) => {
-        if (data.error) {
-          console.log(data.error)
+        if (data && data.error) {
+           setError(data.error)
         } else {
           setOrders(data)
         }
@@ -34,8 +35,8 @@ export default function Orders({match}) {
       listByUser({
         userId: isAuthenticated().user && isAuthenticated().user._id
       }, {token: isAuthenticated().token}, signal).then((data) => {
-        if (data.error) {
-          console.log(data.error)
+        if (data && data.error) {
+           setError(data.error)
         } else {
           setOrders(data)
         }
@@ -93,7 +94,7 @@ export default function Orders({match}) {
                       </ListItem>
                       <Divider/>
                       <Collapse component="li" in={open == index} timeout="auto" unmountOnExit>
-                        {isAuthenticated().user && isAuthenticated.user().teacher &&
+                        {isAuthenticated().user && isAuthenticated.user().specialist &&
                         (<CourseOrderEdit userId={match.params.userId} order={order} orderIndex={index} updateOrders={updateOrders}/>)
                         }
                         <Box sx={{pl: 4, pt: 2 }}>
@@ -117,6 +118,15 @@ export default function Orders({match}) {
               </List>
             </Grid>
           </Grid>
+          <StyledSnackbar
+            open={error? true: false}
+            duration={3000}
+            handleClose={()=>setError('')}
+            icon={<Error/>}
+            heading={"Error"}
+            body={error}
+            variant='error'
+            />
         </Container>
       </Box>
     </WallPaperYGW>

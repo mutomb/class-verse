@@ -1,97 +1,102 @@
-import React, { FC, FormEvent, useState } from 'react';
+import React, { FC, ReactNode, useEffect, useState } from 'react';
 import Drawer from '@mui/material/Drawer';
 import { Toolbar, IconButton, List, buttonBaseClasses, svgIconClasses, listSubheaderClasses, ListItem, 
-  ListItemButton, typographyClasses, ListItemText, Link as MuiLink, listItemIconClasses } from '@mui/material';
+  ListItemButton, typographyClasses, ListItemText, Link as MuiLink, Fade, useScrollTrigger, Box, ListSubheader} from '@mui/material';
 import {ChevronLeftRounded, ChevronRightRounded, Lock} from '@mui/icons-material';
 import {useAuth} from '../auth'
 import { useTheme } from '@mui/material/styles'
-import NavigationSide from '../navigation/admin-navigation';
+import NavigationSide from '../navigation/side-navigation';
 import { Link } from 'react-router-dom'
 import logo from '../../public/logo.svg'
 
-const SideBar: FC = () => {
-  const [open, setOpen] = useState(false);
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
-  const handleClose = () => {
-    setOpen(false)
-  }
+interface SideBarProps{
+  children?: ReactNode[],
+  open: boolean,
+  toggleDrawer: () => void
+}
+const SideBar: FC<SideBarProps> = ({children, open, toggleDrawer}) => {
   const theme = useTheme();
+  const trigger = useScrollTrigger();
   const {isAuthenticated} = useAuth()
+  
   return (<>
-        <Toolbar
-          sx={{
-            display: open? 'none':'relative',
-            zIndex: 1100,
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: 64,
-            boxShadow: theme.shadows[3],
-            p:0,
-            alignSelf: 'center',
-            position: 'fixed',
-            bottom: {xs: '20%', md:'50%'},
-            top: {xs: '80%', md:'50%'},
-            ':hover': {
-                backgroundColor: 'secondary.main',
-                transition: theme.transitions.create(['transform']),
-                transform: 'translateX(3px)'                   
-            },
-            border: '1px solid',
-            borderColor:'primary.contrastText',
-            borderTopRightRadius: 10,
-            borderBottomRightRadius: 10,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            '&::before': {
-              content: '""',
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
-              backgroundImage: `url(${logo})`,
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'contain',
-              opacity: 0.5,
-            },
-            '& > div':{
-              position: 'relative'
-            }
-          }}
-        >
-          <IconButton onClick={toggleDrawer} 
-          sx={{ border: open? '1px solid': 'none',
-                backgroundColor: open? 'primary.main': 'unset',
-                borderColor: 'primary.contrastText',
-                color: 'primary.contrastText',
-                ':hover': { backgroundColor: open? 'secondary.main': 'unset'}
+        <Fade in={trigger}>
+          <Box>
+            <Toolbar
+              sx={{
+                display: !open? 'relative':'none',
+                zIndex: 1100,
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: 64,
+                width: {xs: 50, sm: 70, md: 90 },
+                boxShadow: theme.shadows[3],
+                p:0,
+                alignSelf: 'center',
+                position: 'fixed',
+                bottom: {xs: '20%', md:'50%'},
+                top: {xs: '80%', md:'50%'},
+                right: -20,
+                transform: 'unset',
+                ':hover': {
+                    transform: 'translateX(-5px) scale(1.1)',  
+                    backgroundColor: 'secondary.main',
+                    right: 0,
+                    transition: theme.transitions.create(['transform', 'right','background-color'], {duration: 500}),                 
+                },
+                border: '1px solid',
+                borderColor:'primary.contrastText',
+                borderTopLeftRadius: 10,
+                borderBottomLeftRadius: 10,
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                '&::before': {
+                  content: '""',
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'contain',
+                  opacity: 0.5,
+                },
+                '& > div':{
+                  position: 'relative'
+                }
               }}>
-            {open? <ChevronLeftRounded /> : <ChevronRightRounded />}
-          </IconButton>
-        </Toolbar>
-        <Drawer elevation={2} open={open} onClose={handleClose} transitionDuration={1000} onClick={handleClose}
+              <IconButton onClick={toggleDrawer} 
+                  sx={{ border: open? '1px solid': 'none',
+                    backgroundColor: open? 'primary.main': 'unset',
+                    borderColor: 'primary.contrastText',
+                    color: 'primary.contrastText',
+                    ':hover': { backgroundColor: open? 'secondary.main': 'unset'}
+                  }}>
+                {!open? <ChevronLeftRounded /> : <ChevronRightRounded />}
+              </IconButton>
+            </Toolbar>
+          </Box>
+        </Fade>
+        <Drawer anchor='right' elevation={2} open={open} onClose={toggleDrawer} transitionDuration={1000} 
           sx={{
             '& .MuiDrawer-paper': {
               backgroundColor: 'background.paper',
               border: 'none',
               display: 'flex', 
-              flexDirection:'row',
+              flexDirection:'row-reverse',
               justifyContent:'flex-end',
               width: {xs: '100%', sm: '50%', md: '40%', lg: '25%', xl: '20%'},
-              borderTopRightRadius: {xs: 100, sm: 150, md: 200, lg: 150, xl:  150},
+              borderTopLeftRadius: {xs: 100, sm: 150, md: 200, lg: 150, xl:  150},
               boxSizing: 'border-box',
               '&::before': {
                 content: '""',
                 width: '100%',
                 height: '100%',
                 position: 'absolute',
-                top: '50%',
-                backgroundImage: `url(${logo})`,
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'contain',
-                opacity: 0.5,
+                backgroundImage:  `url(${logo})`,
+                backgroundRepeat: 'repeat-y',
+                backgroundSize: 'auto',
+                opacity: 0.3,
               },
               '& > ul':{
-                position: 'relative'
+                position: 'relative',
               }
             },
           }}
@@ -102,7 +107,7 @@ const SideBar: FC = () => {
             flexDirection: 'column',
             alignItems: 'flex-start',
             backgroundColor: 'initial',
-            pt: 20,
+            py: 10,
             textWrap: 'nowrap',
             [`.${buttonBaseClasses.root}`]:{ 
               borderTopRightRadius: 10,
@@ -117,12 +122,12 @@ const SideBar: FC = () => {
             [`.${listSubheaderClasses.root}`]:{ 
               backgroundColor: 'background.default',
               width: '100%', 
-              borderTopRightRadius: 10,
-              borderBottomRightRadius: 10,
+              borderTopLeftRadius: 10,
+              borderBottomLeftRadius: 10,
             }
             }}>
               {!isAuthenticated().user && (
-                <Link to={'/signin'} style={{textDecoration: 'none'}} onClick={handleClose}>
+                <Link to={'/signin'} style={{textDecoration: 'none'}} onClick={toggleDrawer}>
                   <MuiLink
                     component='span'
                     sx={{
@@ -147,6 +152,7 @@ const SideBar: FC = () => {
                 </Link>)
               }                
               {isAuthenticated().user && (<NavigationSide userID={isAuthenticated().user._id}/>)}
+              {children}
           </List>
           <Toolbar
             sx={{
@@ -163,11 +169,11 @@ const SideBar: FC = () => {
                   borderColor: 'primary.contrastText',
                   color: 'primary.contrastText',
                   ':hover': { backgroundColor: 'secondary.main',
-                  transition: theme.transitions.create(['transform']),
-                  transform: 'translateX(-3px)' 
+                  transition: theme.transitions.create(['transform'], {duration: 500}),
+                  transform: 'translateX(-3px) scale(1.1)' 
                 }
                 }}>
-              {open? <ChevronLeftRounded /> : <ChevronRightRounded />}
+              {!open? <ChevronLeftRounded /> : <ChevronRightRounded />}
             </IconButton>
           </Toolbar>
         </Drawer>

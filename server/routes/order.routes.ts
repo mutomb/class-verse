@@ -13,21 +13,21 @@ router.route('/api/orders/:userId')
 router.route('/api/orders/user/:userId')
   .get(authCtrl.requireSignin, orderCtrl.listByUser)
 
-router.route('/api/orders/teacher/:userId')
-  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, orderCtrl.listByTeacher)
+router.route('/api/orders/specialist/:userId')
+  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, orderCtrl.listBySpecialist)
 
 router.route('/api/order/status_values')
   .get(authCtrl.requireSignin, orderCtrl.getStatusValues)
 
 router.route('/api/order/:userId/cancel/:courseId')
-  .put(authCtrl.requireSignin, courseCtrl.isTeacher, orderCtrl.update)
-  // .put(authCtrl.requireSignin, courseCtrl.isTeacher, courseCtrl.increaseQuantity, orderCtrl.update)
+  .put(authCtrl.requireSignin, courseCtrl.isSpecialist, orderCtrl.update)
+  // .put(authCtrl.requireSignin, courseCtrl.isSpecialist, courseCtrl.increaseQuantity, orderCtrl.update)
 
 router.route('/api/order/:orderId/charge/:userId')
-  .put(authCtrl.requireSignin, courseCtrl.isTeacher, userCtrl.createCharge, orderCtrl.update)
+  .put(authCtrl.requireSignin, courseCtrl.isSpecialist, userCtrl.createCharge, orderCtrl.update)
 
 router.route('/api/order/status/:userId')
-  .put(authCtrl.requireSignin, courseCtrl.isTeacher, orderCtrl.update)
+  .put(authCtrl.requireSignin, courseCtrl.isSpecialist, orderCtrl.update)
 
 router.route('/api/order/:orderId')
   .get(authCtrl.requireSignin, orderCtrl.read)

@@ -14,5 +14,4 @@ const config = {
   admin: process.env.ADMINISTRATOR_EMAIL || 'YOUR_admin_email_address',
   serverUrl: process.env.BASEURL || 'http://localhost:3000'
 }
-console.log(config)
 export default config

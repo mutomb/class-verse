@@ -18,7 +18,7 @@ const create = async (params: { userId: any }, credentials: { token: any }, cour
   
   const list = async (params: any, signal: AbortSignal) => {
     let query={}
-    if(params) query = queryString.stringify(params)
+    if(params) query = queryString.stringify({...params, limit: params.limit || 10, page: params.page || 1})
     try {
       let response = await fetch('/api/courses/published?'+query, {
         method: 'GET',
@@ -105,7 +105,7 @@ const create = async (params: { userId: any }, credentials: { token: any }, cour
     }
   }
 
-  const listByTeacher = async (params: { userId: any }, credentials: { token: any }, signal: AbortSignal) => {
+  const listBySpecialist = async (params: { userId: any }, credentials: { token: any }, signal: AbortSignal) => {
     try {
       let response = await fetch('/api/courses/by/'+params.userId, {
         method: 'GET',
@@ -121,16 +121,31 @@ const create = async (params: { userId: any }, credentials: { token: any }, cour
     }
   }
 
-  const newLesson = async (params: { courseId: any }, credentials: { token: any }, lesson: { title: String; content: String; resource_url: String }) => {
+  const newLesson = async (params: { courseId: any }, credentials: { token: any }, lesson: FormData) => {
     try {
       let response = await fetch('/api/courses/'+params.courseId+'/lesson/new', {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + credentials.token
         },
-        body: JSON.stringify({lesson:lesson})
+        body: lesson
+      })
+      return response.json()
+    } catch(err){
+      console.log(err)
+    }
+  }
+
+  const newArticle = async (params: { userId: any }, credentials: { token: any }, lesson: FormData) => {
+    try {
+      let response = await fetch('/api/article/new/'+params.userId, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + credentials.token
+        },
+        body: lesson
       })
       return response.json()
     } catch(err){
@@ -169,6 +184,22 @@ const create = async (params: { userId: any }, credentials: { token: any }, cour
     }
   }
 
+  const listPending = async (credentials: { token: any }, signal: AbortSignal) => {
+    try {
+      let response = await fetch('/api/courses/pending', {
+        method: 'GET',
+        signal: signal,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + credentials.token
+        }
+      })
+      return response.json()
+    } catch(err){
+      console.log(err)
+    }
+  }
+
   
   export {
     create,
@@ -176,10 +207,12 @@ const create = async (params: { userId: any }, credentials: { token: any }, cour
     read,
     update,
     remove,
-    listByTeacher,
+    listBySpecialist,
     newLesson,
+    newArticle,
     listPopular,
     listCategories,
     listCurrencies,
-    fetchImage
+    fetchImage,
+    listPending
   }

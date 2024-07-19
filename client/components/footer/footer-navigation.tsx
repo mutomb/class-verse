@@ -1,38 +1,12 @@
 import React, { FC } from 'react'
 import Grid from '@mui/material/Grid'
 import MuiLink from '@mui/material/Link'
-import type { Navigation } from '../../interfaces/navigation'
-import { navigations as headerNavigations } from '../navigation/navigation.data'
+import { navigations as pageMenu, courseMenu, companyMenu } from '../navigation/navigation.data'
 import { FooterSectionTitle } from '.'
 import Box from '@mui/material/Box'
 import { Link as ScrollLink, scroller } from 'react-scroll'
 import { useHistory, useLocation } from 'react-router-dom'
 import {useAuth} from '../auth'
-
-const courseMenu: Array<Navigation> = [
-  {
-    label: 'Web Development',
-    path: '#',
-  },
-  {
-    label: 'Mobile Development',
-    path: '#',
-  },
-  {
-    label: 'ML/AI',
-    path: '#',
-  },
-]
-
-const pageMenu = headerNavigations
-
-const companyMenu: Array<Navigation> = [
-  { label: 'Contact Us', path: 'contact' },
-  { label: 'Privacy & Policy', path: 'privacy' },
-  { label: 'Terms & Conditions', path: "terms-conditions" },
-  { label: 'FAQ', path: 'faq' },
-]
-
 
 const FooterNavigation: FC = () => {
   const {isAuthenticated} = useAuth()
@@ -58,8 +32,8 @@ const FooterNavigation: FC = () => {
   }
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4}>
-        <FooterSectionTitle title="Popular Categories" />
+      <Grid item xs={12} sm={4}>
+        <FooterSectionTitle title="Categories" />
         {courseMenu.map(({ label, path }, index) => (
         <Box
           component={ScrollLink}
@@ -85,11 +59,12 @@ const FooterNavigation: FC = () => {
         </Box>
         ))}
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} sm={4}>
         <FooterSectionTitle title="Menu" />
         {pageMenu.map(({ label, path:destination }, index) => {
           if (!isAuthenticated().user && ['enrolled-in-courses'].includes(destination)) return null
           if (isAuthenticated().user && ['hero', 'testimonial'].includes(destination)) return null
+          if(label === 'About') return null
           else{
             return(<Box
                 component={ScrollLink}
@@ -115,7 +90,7 @@ const FooterNavigation: FC = () => {
               </Box>)}
         })}
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} sm={4}>
         <FooterSectionTitle title="About" />
         {companyMenu.map(({ label, path:destination }, index) => (
         <Box

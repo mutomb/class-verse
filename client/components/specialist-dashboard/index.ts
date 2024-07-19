@@ -1,0 +1,6 @@
+export {default as SpecialistDashBoardOverview} from './overview'
+export {default as SpecialistDashBoardCourses} from './courses'
+export {default as SpecialistDashBoardOrders} from './Orders'
+// export {default as SpecialistDashBoardChart} from './Chart'
+export {default as SpecialistDashBoardDeposits} from './Deposits'
+export {default as SpecialistDashBoardConsult} from './consult'

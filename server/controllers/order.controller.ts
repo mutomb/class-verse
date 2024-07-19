@@ -9,7 +9,7 @@ const create = async (req, res) => {
     res.status(200).json(result)
   } catch (err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -22,7 +22,7 @@ const update = async (req, res) => {
       res.json(order)
   } catch (err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -33,7 +33,7 @@ const getStatusValues = (req, res) => {
 
 const orderByID = async (req, res, next, id) => {
   try {
-    let order = await Order.findById(id).populate('courses.course', 'name price currency').exec()
+    let order = await Order.findById(id).populate('courses.course', 'title price currency').exec()
     if (!order)
       return res.status('400').json({
         error: "Order not found"
@@ -42,7 +42,7 @@ const orderByID = async (req, res, next, id) => {
     next()
   } catch (err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
@@ -55,27 +55,33 @@ const listByUser = async (req, res) => {
     res.json(orders)
   } catch (err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
 
-const listByTeacher = async (req, res) => {
+const listBySpecialist = async (req, res) => {
   try {
-    let orders = await Order.find({"courses.course.teacher": req.profile._id})
-      .populate({path: 'courses.course', select: '_id name price currency teacher'})
+    let orders = await Order.find({"courses.course.specialist": req.profile._id})
+      .populate({path: 'courses.course', select: '_id title price currency specialist'})
       .sort('-created')
       .exec()
     res.json(orders)
   } catch (err){
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
     })
   }
 }
 
 const read = (req, res) => {
-  return res.json(req.order)
+  let order = req.order
+  if(order){
+    return res.json(order)
+  }
+  return res.status(400).json({
+    error: 'Could not Read Order'
+  })
 }
 
 export default {
@@ -84,6 +90,6 @@ export default {
   getStatusValues,
   orderByID,
   listByUser,
-  listByTeacher,
+  listBySpecialist,
   read
 }

@@ -1,7 +1,7 @@
 import React, {FC, FormEvent, useState} from 'react'
-import {Typography, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, MenuItem, Box
+import {Typography, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, MenuItem, Box, dialogClasses
 } from '@mui/material'
-import {Delete} from '@mui/icons-material'
+import {Delete, Error} from '@mui/icons-material'
 import {useAuth} from '../auth'
 import {remove} from './api-user'
 import {Redirect} from 'react-router-dom'
@@ -9,6 +9,7 @@ import { useTheme } from '@mui/material/styles'
 import { Logo } from '../logo';
 import { StyledButton } from '../styled-buttons';
 import { useColorMode } from '../../config/theme/MUItheme-hooks'
+import { StyledSnackbar } from '../styled-banners'
 
 interface DeleteUserProps{
   userId:String
@@ -19,7 +20,8 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
   const [redirect, setRedirect] = useState<boolean>(false)
   const {clearJWT, isAuthenticated} = useAuth()
   const {clearPreference} = useColorMode()
-  const {transitions} = useTheme();
+  const {transitions, palette} = useTheme();
+  const [error, setError] = useState('')
 
   const clickButton = () => {
     setOpen(true)
@@ -29,7 +31,7 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
       userId: userId
     }, {token: isAuthenticated().token}).then((data) => {
       if (data && data.error) {
-        console.log(data.error)
+         setError(data.error)
       } else {
         clearJWT(() => {clearPreference(); setRedirect(true);})
       }
@@ -44,12 +46,12 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
     return <Redirect to='/'/>
   }
     return (<>
-      <MenuItem sx={{color: 'red', transition: transitions.create(['background-color']), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
+      <MenuItem sx={{color: 'error.main', transition: transitions.create(['background-color'], {duration: 500}), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
         <Box aria-label="Delete" onClick={clickButton} color="inherit" sx={{fontSize: '1rem', width: '100%'}}>
           <Delete sx={{mr: 1, verticalAlign: 'text-top'}}/>Delete Account
         </Box>
       </MenuItem>
-      <Dialog transitionDuration={1000} open={open}  onClose={(event, reason) => {if(reason === 'backdropClick'){handleClose(event, reason);}}} aria-labelledby="form-dialog-title">
+      <Dialog PaperComponent={Box} transitionDuration={1000} open={open}  onClose={handleClose} aria-labelledby="form-dialog-title" sx={{[`& .${dialogClasses.paper}`]:{mx: {xs: 0, md: 'unset'}, borderRadius: 4, borderColor: 'primary.main', borderWidth: {xs: 2, md: 4}, borderStyle: 'solid',  bgcolor: palette.mode === 'dark'? 'rgba(0,0,0,0.8)': 'rgba(255,255,255,0.8)'}, background: 'linear-gradient(rgba(18, 124, 113, 0.3) 0%, rgba(255,175,53,0.3) 100%)'}}>
         <DialogTitle sx={{ textAlign: 'center', borderRadius:1, borderColor:'primary.main'}}>
           <Logo />
           <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: 32, md: 42 }, color: 'text.primary' }}>
@@ -67,9 +69,13 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
             flexDirection: {xs: 'column', sm:'row'},
             alignItems: 'center',
             justifyContent: 'center',
-           '& > button':{ 
-            mx: {xs: 'unset', sm: 1},
-            my: {xs: 1, sm: 'unset'}}
+            '& > button':{ 
+              mx: {xs: '0px !important', sm: '8px !important'},
+              my: {xs: 1, sm: 0},
+              width: {xs: '90%', sm: 'initial'},
+              display: 'flex',
+              justifyContent: 'center'
+            }
         }}>
             <StyledButton disableHoverEffect={false} variant="contained" onClick={handleClose}>
               Cancel
@@ -79,6 +85,15 @@ const DeleteUser: FC<DeleteUserProps> = ({userId}) =>{
             </StyledButton>
         </DialogActions>
       </Dialog>
+      <StyledSnackbar
+        open={error? true: false}
+        duration={3000}
+        handleClose={()=>setError('')}
+        icon={<Error/>}
+        heading={"Error"}
+        body={error}
+        variant='error'
+        />
     </>)
 
 }

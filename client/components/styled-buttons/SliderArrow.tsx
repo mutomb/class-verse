@@ -4,12 +4,12 @@ import IconArrowForward from '@mui/icons-material/ArrowForward'
 import { IconButton } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
-interface SliderArrowArrow {
+interface SliderArrowProps {
     onClick?: () => void
     type: 'next' | 'prev'
     className?: 'string'
   }
-  const SliderArrow: FC<SliderArrowArrow> = (props) => {
+  const SliderArrow: FC<SliderArrowProps> = (props) => {
     const { onClick, type, className } = props
     const {  transitions } = useTheme()
     return (
@@ -17,9 +17,9 @@ interface SliderArrowArrow {
         sx={{
           backgroundColor: 'background.paper',
           color: 'primary.main',
-          transition: transitions.create(['background-color']),
+          transition: transitions.create(['background-color'], {duration: 500}),
           '&:hover': { backgroundColor: 'primary.main', color: 'primary.contrastText' },
-          bottom: { xs: '-70px !important', md: '-28px !important' },
+          bottom: { xs: '-70px !important', sm: '-28px !important' },
           left: 'unset !important',
           right: type === 'prev' ? '60px !important' : '0 !important',
           zIndex: 10,

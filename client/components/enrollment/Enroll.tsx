@@ -2,7 +2,7 @@ import React, {FC, useState} from 'react'
 import {create} from './api-enrollment'
 import {useAuth} from '../auth'
 import {Redirect} from 'react-router-dom'
-import { ShoppingCart } from '@mui/icons-material'
+import { LocalLibrary } from '@mui/icons-material'
 import { IconButton} from '@mui/material'
 
 interface EnrollProps{
@@ -35,15 +35,12 @@ const Enroll: FC<EnrollProps> = ({courseId}) =>{
   }
 
     if(values.redirect){
-        return (<Redirect to={'/learn/'+values.enrollmentId}/>)
+        return (<Redirect to={'/client/'+values.enrollmentId}/>)
     }
 
   return (
-      <IconButton
-        onClick={clickEnroll}
-        color="primary"
-      >
-      <ShoppingCart/>
+    <IconButton onClick={clickEnroll}>
+      <LocalLibrary sx={{color: 'secondary.main'}}/>
     </IconButton>
   )
 }

@@ -23,6 +23,7 @@ const AddToCart: FC<AddToCartProps> = ({item}) =>{
         duration={100000}
         handleClose={handleClose}
         icon={<ShoppingCartCheckout/>}
+        action={<></>}
         heading={"Added"}
         body={item.name}
         variant='success'/>

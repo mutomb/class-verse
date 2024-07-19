@@ -46,7 +46,24 @@ const config = {
             {
                 test: /\.css$/,
                 use: ['style-loader','css-loader'] //css-loader parse @import in CSS files. style-loader inject CSS into bundle DOM
-            }
+            },
+            {
+                test: /\.(js|jsx)?$/,
+                include: path.resolve(__dirname, './'),
+                use: [
+                    'babel-loader'
+                ]
+            },
+            {
+                test: /\.(js|jsx)?$/,
+                include: path.join(CURRENT_WORKING_DIR, 'node_modules', 'react-typed'),
+                use: [{
+                    loader:'ts-loader',
+                        options: {
+                            transpileOnly: true
+                        }
+                    }]
+            },
         ]
     },
     plugins: [

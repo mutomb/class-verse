@@ -1,5 +1,5 @@
 import React, { FC, useTransition } from 'react'
-import {Paper, Typography, Box, ImageList, ImageListItem, ImageListItemBar, IconButton, iconButtonClasses, Divider} from '@mui/material'
+import {Paper, Typography, Box, ImageList, ImageListItem, ImageListItemBar, IconButton, iconButtonClasses, Divider, useMediaQuery} from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import {Link} from 'react-router-dom'
 import ReactPlayer from 'react-player'
@@ -12,14 +12,14 @@ interface RelatedMediaProps {
 }
 const RelatedMedia: FC<RelatedMediaProps> = ({media, showPlaylist}) =>{
     const theme = useTheme()
+    const matchMobileView = useMediaQuery(theme.breakpoints.down('md'), {defaultMatches:true})
     const [isPending, startTransition] = useTransition()
     return (
-      <Paper elevation={2} sx={{ width: '100%', maxHeight: {xs: 'unset' , md: '100vh'}, overflowY: 'scroll', backgroundColor: 'background.paper', borderRadius: 4, py: 4, px: {xs: 1, md: 2} }}>
+      <Paper elevation={4} sx={{ width: '100%',  backgroundColor: 'background.paper', borderRadius: {xs: 2, md: 4}, py: 4, px: {xs: 1, md: 2} }}>
         <Typography variant="h2" component="h2" sx={{fontWeight: 600, color: 'text.secondary'}}>
           Up Next
         </Typography>
-
-        <ImageList cols={1} sx={{ width: '100%', height: '100%' }}>
+        <ImageList cols={1} sx={{ maxHeight: {xs: 300 , sm: 400, md: '60vh'}, overflowY: 'scroll', width: '100%'}}>
         {media && media.map((item, i) => {
           return (
           <Box key={i} sx={{ px: {xs: 0, sm: 1.5} }} >
@@ -42,8 +42,8 @@ const RelatedMedia: FC<RelatedMediaProps> = ({media, showPlaylist}) =>{
                     boxShadow: 2,
                   },
                   boxShadow: theme.shadows[5],
-                  transform: 'translateY(-3px)',
-                  transition: (theme) => theme.transitions.create(['box-shadow, transform'], {duration: 1000}),
+                  transform: 'translateY(-3px) scale(1.1)',
+                  transition: (theme) => theme.transitions.create(['box-shadow, transform'], {duration: 500}),
                 },
               }}>
               {!showPlaylist?(<Link to={"/media/"+item._id} style={{textDecoration: 'none'}}>
@@ -72,8 +72,8 @@ const RelatedMedia: FC<RelatedMediaProps> = ({media, showPlaylist}) =>{
               <ImageListItemBar
                   sx={{
                     backgroundColor: 'background.paper',
-                    borderBottomLeftRadius: 4,
-                    borderBottomRightRadius: 4,
+                    borderBottomLeftRadius: {xs: 2, md: 4},
+                    borderBottomRightRadius: {xs: 2, md: 4},
                     py: 0,
                   }}
                   title={
@@ -102,9 +102,7 @@ const RelatedMedia: FC<RelatedMediaProps> = ({media, showPlaylist}) =>{
                   actionIcon={
                   <Box sx={{display: 'flex', alignItems: 'flex-end', justifyContent: 'center', flexDirection: 'column', mr: {xs: 1, md: 3}}}>
                     <Link to={"/media/"+item._id} style={{textDecoration: 'none', color: 'inherit'}}>
-                      <IconButton
-                        aria-label={`Play ${item.title}`}
-                      >
+                      <IconButton aria-label={`Play ${item.title}`}>
                         <PlayArrow />
                       </IconButton>
                     </Link>

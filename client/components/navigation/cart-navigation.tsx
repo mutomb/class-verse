@@ -20,11 +20,11 @@ const CartNavigation: FC<ProfileNavigation> = ({onClick}) => {
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            px: { xs: 0, md: 3 },
-            mb: { xs: 3, md: 0 },
+            px: { xs: 0, md: 1 },
+            mb: 0,
           }}
         >
-        {isAuthenticated().user && isAuthenticated().user.teacher?
+        {isAuthenticated().user && isAuthenticated().user.specialist?
           (<Link style={{textDecoration: 'none'}} onClick={()=> onClick && onClick()} to={`/orders/${isAuthenticated().user._id}`}>
               <NotificationButton variant='badge'/>
             </Link>):

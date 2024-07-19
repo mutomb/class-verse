@@ -1,20 +1,19 @@
 import React, {useState, FormEvent, ChangeEvent, MouseEvent} from 'react';
-import { TextField, formLabelClasses, Link as MuiLink, Paper, Box, Grid, Typography, Dialog, 
+import { TextField, formLabelClasses, Box, Grid, Typography, Dialog, 
   DialogActions, DialogContent, DialogTitle, DialogContentText, Checkbox, FormControlLabel, formControlLabelClasses, 
    inputLabelClasses,IconButton, InputAdornment, Switch,
    SvgIcon,
    Container,
-   textFieldClasses,
-   outlinedInputClasses} from '@mui/material';
+   outlinedInputClasses,
+   dialogClasses} from '@mui/material';
 import {Error, Visibility, VisibilityOff} from '@mui/icons-material'
 import {create} from './api-user'
 import { Logo } from '../logo';
 import { StyledButton } from '../styled-buttons'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import { scroller } from 'react-scroll'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
-// import { checkAuth0Status } from './api-user';
 import { Parallax } from 'react-parallax';
 import image from '../../public/images/workspace/1.png'
 import { HashLoader } from '../progress';
@@ -22,6 +21,7 @@ import { StyledSnackbar } from '../styled-banners';
 import { Copyright, TermsAndConditions } from '../about';
 import { WallPaperYGW } from '../wallpapers/wallpapers';
 import logo from '../../public/logo.svg'
+import { useAuth } from '../auth';
 
 interface SignUpProps{
   name:String,
@@ -30,15 +30,15 @@ interface SignUpProps{
   email:String,
   open:boolean,
   error:String,
-  teacher: boolean,
+  specialist: boolean,
   complied: boolean,
-  isAuthenticated: boolean,
   showTerms: boolean,
   disableSubmit: boolean
 }
 
 export default function SignUp() {
   const theme = useTheme();
+  const {isAuthenticated} = useAuth()
   const [values, setValues] = useState<SignUpProps>({
     name: '',
     surname: '',
@@ -46,14 +46,13 @@ export default function SignUp() {
     email: '',
     open: false,
     error: '',
-    teacher: false,
+    specialist: false,
     complied: false,
-    isAuthenticated: false,
     showTerms: false,
     disableSubmit: false
   })
   
-  const handleChange = (name: string) => (event: FormEvent<HTMLFormElement>) => {
+  const handleChange = (name: string) => (event) => {
     setValues({ ...values, [name]: event.target.value, error: '' })
   }
 
@@ -83,27 +82,27 @@ export default function SignUp() {
       surname: values.surname, 
       email: values.email,
       password: values.password,
-      teacher: values.teacher,
+      specialist: values.specialist,
       complied: values.complied,
     }
-    if (!(values.name && values.surname && values.email && values.complied)){setValues({...values, error: 'Fill in all required fields.'});  return};
+    if (!(values.name && values.surname && values.email && values.complied)){return setValues({...values, error: 'Please fill in all fields'})};
+    if (values.email && values.email.search(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/) !== 0){return setValues({...values, error: 'Please fill in a valid email address'})};
     create(user).then((data) => {
-      if (data.error) {
+      if (data && data.error) {
         setValues({ ...values, error: data.error, disableSubmit: false})
       } else {
         setValues({
-            name: '',
-            surname: '',
-            password: '',
-            email: '',
-            open: true,
-            error: '',
-            teacher: false,
-            complied: false,
-            isAuthenticated: false,
-            showTerms: false,
-            disableSubmit: false
-          })
+          name: '',
+          surname: '',
+          password: '',
+          email: '',
+          open: true,
+          error: '',
+          specialist: false,
+          complied: false,
+          showTerms: false,
+          disableSubmit: false
+        })
       }
     })
   }
@@ -123,17 +122,9 @@ export default function SignUp() {
   }
   const updateComplied = () =>{setValues({...values, complied:true, showTerms: false})}
   const showTerms = () =>{setValues({...values, showTerms: true})}
-  // useEffect(()=> {
-  //   checkAuth0Status().then(data=>{
-  //     console.log(data)
-  //     if(data && data.error) {console.log(data.error)}
-  //     if(data && data.status && data.user) {
-  //       setValues({...values, name: data.user.name, email: data.user.email, isAuthenticated: data.status})
-  //     }
-  //   }) 
-  //   return function cleanup(){}
-  // }, [])
-
+  if(isAuthenticated().user){
+    return <Redirect to='/'/>
+  }
   return (
     <Parallax bgImage={image}  strength={50} blur={5}
     renderLayer={percentage=>(
@@ -157,13 +148,13 @@ export default function SignUp() {
       }}/>
     )}>
       <Container 
-        sx={{px: {xs: 0, sm: 'unset'}, bgcolor: theme.palette.mode ==='dark'?`rgba(0,0,0,0.4)`:`rgba(255,255,255,0.4)`, borderRadius: 4, boxShadow: 4,
+        sx={{px: {xs: 0, sm: 'unset'}, bgcolor: theme.palette.mode ==='dark'?`rgba(0,0,0,0.4)`:`rgba(255,255,255,0.4)`, borderRadius: {xs: 2, sm: 4}, boxShadow: 4,
         transform: 'unset',
-        maxWidth: 'fit-content !important',
+        maxWidth: 'fit-content !important', borderLeftColor: 'secondary.main', borderRightColor: 'secondary.main', borderTopColor: 'primary.main', borderBottomColor: 'primary.main', borderStyle: 'solid', borderWidth: {xs: 1, sm: 2},
         '&:hover': {
           boxShadow: 6,
-          transform: 'translateY(-3px)',
-          transition: (theme) => theme.transitions.create(['box-shadow, transform'], {duration: 1000}),
+          transform: 'translateY(-3px) scale(1.03)',
+          transition: (theme) => theme.transitions.create(['box-shadow, transform'], {duration: 500}),
         },
         }}>
         <Grid container>
@@ -180,7 +171,7 @@ export default function SignUp() {
               <Logo onClick={()=>goToHomeAndScroll('search')} />
               <Box sx={{ textAlign: 'center'}}>
                 <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: '1rem', md: '2rem' }, color: 'text.primary' }}>
-                Create your student or teacher account
+                Create your Client or Specialist account
                 </Typography>
               </Box>
               <Box component="form" onSubmit={handleSubmit} 
@@ -190,9 +181,7 @@ export default function SignUp() {
                 [`& .${inputLabelClasses.focused}`]: { 
                   color: theme.palette.mode === 'dark' ? 'secondary.main': 'primary.main',
                 },
-                [`& .${textFieldClasses.root}`]: {bgcolor: 'background.paper', borderRadius: 4},
-                [`& .${textFieldClasses.root}`]: {bgcolor: 'background.paper', borderRadius: 4},
-                [`& .${outlinedInputClasses.root}`]: {bgcolor: 'background.paper', borderRadius: 4},
+                [`& .${outlinedInputClasses.root}`]: {bgcolor: 'background.paper', borderRadius: {xs: 2, sm: 4}},
               }}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
@@ -217,7 +206,7 @@ export default function SignUp() {
                       id="surname"
                       label="Surname"
                       name="surname"
-                      autoComplete="surname"
+                      autoComplete="name"
                       value={values.surname} 
                       onChange={handleChange('surname')}
                     />
@@ -244,7 +233,6 @@ export default function SignUp() {
                     name="password"
                     label="Password"
                     id="password"
-                    autoComplete="current-password"
                     value={values.password} 
                     onChange={handleChange('password')}
                     type={showPassword ? 'text' : 'password'}
@@ -274,24 +262,25 @@ export default function SignUp() {
                   />
                 <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                   <Typography sx={{mr: 2}} variant="body1">
-                    I am a Teacher?
+                    I am a Specialist?
                   </Typography>
                   <FormControlLabel
-                    control={<Switch checked={values.teacher} color='secondary' onChange={handleCheck('teacher')} />}
-                    label={values.teacher? 'Yes' : 'No'}
+                    control={<Switch checked={values.specialist} color='secondary' onChange={handleCheck('specialist')} />}
+                    label={values.specialist? 'Yes' : 'No'}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={{display: 'flex', alignItems: 'center'}}>
                   <FormControlLabel
+                    sx={{textAlign: 'center', [`& .${formControlLabelClasses.asterisk}`]: {display: 'none'}, [`& .${formLabelClasses.asterisk}`]: {display: 'none'}, mr: 1}}
                     required
                     control={<Checkbox checked={values.complied} onClick={handleCheck('complied')} color="secondary" />}
-                    label={<Typography variant='body2'>{<>Check box if you comply to our </>}
-                                <Box component='span' onClick={showTerms}>
-                                  <MuiLink component='span' underline="hover" variant='body2' sx={{color: 'primary'}}>
-                                    {"Term & Condition."}
-                                  </MuiLink>
-                                </Box>
-                            </Typography>}/>
+                    label={<Typography variant='body1' sx={{color: 'text.primary'}}>
+                                Tick this box to confirm your compliance with our
+                            </Typography>
+                          }/>
+                    <Typography onClick={showTerms} variant='h5' sx={{color: 'secondary.main', cursor: 'pointer', '&:hover':{textDecorationLine: 'underline'}}}>
+                      Terms & Conditions.
+                    </Typography>
                 </Grid>
                 <Box sx={{
                     display: 'flex',
@@ -330,8 +319,8 @@ export default function SignUp() {
           </Grid>
         </Grid>
       </Container>
-      <Dialog transitionDuration={1000} open={values.open}  onClose={handleClose}>
-        <DialogTitle sx={{ textAlign: 'center', borderRadius:1, borderColor:'primary.main'}}>
+      <Dialog PaperComponent={Box} transitionDuration={1000} open={values.open}  onClose={handleClose} sx={{[`& .${dialogClasses.paper}`]:{mx: {xs: 0, md: 'unset'}, borderRadius: {xs: 2, sm: 4}, borderColor: 'primary.main', borderWidth: {xs: 2, md: 4}, borderStyle: 'solid',  bgcolor: theme.palette.mode === 'dark'? 'rgba(0,0,0,0.8)': 'rgba(255,255,255,0.8)'}, background: 'linear-gradient(rgba(18, 124, 113, 0.3) 0%, rgba(255,175,53,0.3) 100%)'}}>
+        <DialogTitle sx={{ textAlign: 'center', borderRadius:1}}>
           <Logo />
           <Typography variant="h1" component="h2" sx={{ mb: 1, fontSize: { xs: 32, md: 42 }, color: 'text.primary' }}>
             New account created.
@@ -356,7 +345,7 @@ export default function SignUp() {
           </Link>
         </DialogActions>
       </Dialog>
-      <Dialog transitionDuration={1000} open={values.showTerms}  onClose={handleClose}>
+      <Dialog PaperComponent={Box} fullWidth maxWidth='lg' transitionDuration={1000} open={values.showTerms}  onClose={handleClose} sx={{[`& .${dialogClasses.paper}`]:{mx: {xs: 0, md: 'unset'}, width:'100%'}, background: 'linear-gradient(rgba(18, 124, 113, 0.3) 0%, rgba(255,175,53,0.3) 100%)'}}>
           <TermsAndConditions updateComplied={updateComplied} />
       </Dialog>
     </Parallax>

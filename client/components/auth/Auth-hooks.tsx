@@ -74,12 +74,18 @@ export const AuthProvider: FC<Props> = ({ children, auth:authProp}) => {
   const updateUser = (user, cb) => {
     setAuth({...auth, user: user}); 
     //optionally set session
-    if(typeof window !== "undefined" && localStorage.getItem('jwt')){
+    if(typeof window !== "undefined" && hasCookie()){
         let auth = JSON.parse(localStorage.getItem('jwt')!)
         auth.user = user
         localStorage.setItem('jwt', JSON.stringify(auth))
-    };
-    cb()}
+    }
+    if(typeof window !== "undefined" && !hasCookie){
+      let auth = JSON.parse(sessionStorage.getItem('jwt')!)
+      auth.user = user
+      sessionStorage.setItem('jwt', JSON.stringify(auth))
+   }
+    cb()
+  }
   
   return (
   <AuthContext.Provider value={{isAuthenticated, authenticate, clearJWT, updateUser, hasCookie}}>

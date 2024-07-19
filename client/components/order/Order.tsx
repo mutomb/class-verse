@@ -3,6 +3,8 @@ import {Card, CardContent, CardMedia, Typography, Grid, Divider, Box} from '@mui
 import {read} from './api-order'
 import {Link} from 'react-router-dom'
 import {useAuth} from '../auth'
+import { StyledSnackbar } from '../styled-banners'
+import { Error } from '@mui/icons-material'
 
 interface OrderProps{
   match: any
@@ -10,14 +12,15 @@ interface OrderProps{
 const Order: FC<OrderProps> = ({match}) => {
   const [order, setOrder] = useState({courses:[], delivery_address:{}})
   const {isAuthenticated} = useAuth()
+  const [error, setError] = useState('')
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
     read({
       orderId: match.params.orderId
     },{token: isAuthenticated().token}, signal).then((data) => {
-      if (data.error) {
-        console.log(data.error)
+      if (data && data.error) {
+         setError(data.error)
       } else {
         setOrder(data)
       }
@@ -51,11 +54,11 @@ const Order: FC<OrderProps> = ({match}) => {
                         <CardMedia
                           sx={{width: 160, height: 125, m: 1}}
                           image={'/api/courses/photo/'+item.course._id}
-                          title={item.course.name}
+                          title={item.course.title}
                         />
                         <Box sx={{display: 'inline-block', width: '100%', p: 1}}>
                           <CardContent sx={{flex: '1 0 auto', pt: 2, px: 1, pb: 0}}>
-                            <Link to={'/course/'+item.course._id}><Typography variant='h3' component="h3" sx={{fontSize: '1.15rem', mb: 1}}>{item.course.name}</Typography></Link>
+                            <Link to={'/course/'+item.course._id}><Typography variant='h3' component="h3" sx={{fontSize: '1.15rem', mb: 1}}>{item.course.title}</Typography></Link>
                             <Typography variant='h3' component="h3" sx={{display: 'block', fontSize: '1rem', color: 'primary.main'}}>$ {item.course.price} x {item.quantity}</Typography>
                             <Box component='span' sx={{float: 'right', mr: 5, fontSize: '1.5rem', color: 'primary.main'}}>${item.course.price * item.quantity}</Box>
                             <Typography variant='h3' component="h3" sx={{color: item.status === "Cancelled" ? "red":"primary.main"}}>Status: {item.status}</Typography>
@@ -87,6 +90,15 @@ const Order: FC<OrderProps> = ({match}) => {
               </Card>
             </Grid>
         </Grid>
+        <StyledSnackbar
+          open={error? true: false}
+          duration={3000}
+          handleClose={()=>setError('')}
+          icon={<Error/>}
+          heading={"Error"}
+          body={error}
+          variant='error'
+          />
       </Card>
     )
 }

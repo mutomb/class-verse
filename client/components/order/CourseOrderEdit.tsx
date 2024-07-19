@@ -20,7 +20,7 @@ const CourseOrderEdit: FC<CourseOrderEditProps> = ({ userId, order, orderIndex, 
     const abortController = new AbortController()
     const signal = abortController.signal
     getStatusValues(signal, {token: isAuthenticated().token}).then((data) => {
-      if (data.error) {
+      if (data && data.error) {
         setValues({...values, error: "Could not get status"})
       } else {
         setValues({...values, statusValues: data, error: ''})
@@ -48,7 +48,7 @@ const CourseOrderEdit: FC<CourseOrderEditProps> = ({ userId, order, orderIndex, 
           quantity: course.quantity
         })
         .then((data) => {
-          if (data.error) {
+          if (data && data.error) {
             setValues({
               ...values,
               error: "Status not updated, try again"
@@ -74,7 +74,7 @@ const CourseOrderEdit: FC<CourseOrderEditProps> = ({ userId, order, orderIndex, 
           currency: course.course.currency
         })
         .then((data) => {
-          if (data.error) {
+          if (data && data.error) {
             setValues({
               ...values,
               error: "Status not updated, try again"
@@ -97,7 +97,7 @@ const CourseOrderEdit: FC<CourseOrderEditProps> = ({ userId, order, orderIndex, 
           status: event.target.value
         })
         .then((data) => {
-          if (data.error) {
+          if (data && data.error) {
             setValues({
               ...values,
               error: "Status not updated, try again"
@@ -120,14 +120,14 @@ const CourseOrderEdit: FC<CourseOrderEditProps> = ({ userId, order, orderIndex, 
       <List disablePadding style={{backgroundColor:'#f8f8f8'}}>
         {order.courses.map((item, index) => {
           return <Box component='span' key={index}>
-                  { item.teacher == userId && //Only show courses belonging to teacher/not order courses in the order
+                  { item.specialist == userId && //Only show courses belonging to specialist/not order courses in the order
                     <ListItem sx={{pl: 4, pb:0}}>
                       <ListItemText
                         sx={{color: 'text.primary'}}
                         primary={<Box>
                                     <Box component='img' sx={{width: 10, mr: 1}} src={'/api/courses/photo/'+item.course._id}/>
                                     <Box sx={{display: 'inline-block'}}>
-                                      {item.course.name}
+                                      {item.course.title}
                                       <Typography variant='body1' sx={{m: 0, fontSize: '0.9rem'}}>{"Quantity: "+item.quantity}</Typography>
                                     </Box>
                                   </Box>}/>
