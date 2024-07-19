@@ -1,9 +1,9 @@
-import React, { FC, EventHandler, CSSProperties } from 'react'
+import React, { FC, EventHandler, CSSProperties, lazy } from 'react'
 import { FormControl} from '@mui/material'
 import { SxProps, Theme } from '@mui/material/styles'
 import { DeltaStatic, Sources, StringMap, } from 'quill';
 import { LoadableVisibility } from '../progress';
-const ReactQuill = LoadableVisibility(import('react-quill'))
+const ReactQuill = lazy(()=>import('react-quill'))
 // import ReactQuill, { Value, UnprivilegedEditor, Range } from 'react-quill'
 import { Value, UnprivilegedEditor, Range } from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
