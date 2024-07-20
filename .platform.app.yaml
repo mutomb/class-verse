@@ -15,9 +15,9 @@ type: 'nodejs:13.12.0'
 # application container. The 'source_path' specifies the subdirectory
 # from within the source that the mount should point at. 
 mounts:
-'web/uploads':
-source: local
-source_path: uploads
+  'web/uploads':
+    source: local
+    source_path: uploads
 
 # The size of the persistent disk of the application (in MB).
 disk: 512
@@ -28,9 +28,9 @@ disk: 512
 # to the application in the PLATFORM_RELATIONSHIPS variable. The right-hand
 # side is in the form '<service name>:<endpoint name>'.
 relationships:
-mongodb: 'mongodb:mongodb'
+    mongodb: 'mongodb:mongodb'
 
 
 web:
-commands: 
-start: "node index.js"
+  commands: 
+    start: "node index.js"
