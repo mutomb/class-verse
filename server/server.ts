@@ -11,7 +11,7 @@ mongoose.connection.on('error', (err) => {
   throw new Error(`Mongoose unable to connect to database ${err}`)
 })
 mongoose.connection.on('connected', function () {
-  console.log('Mongoose connected');
+  console.log('Mongoose connected', config.mongoUri);
 });
 mongoose.connection.on('error',function (err) {
 console.log('Mongoose connection error: ' + err);
