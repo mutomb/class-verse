@@ -24,4 +24,4 @@ disk: 2048
 
 web:
   commands: 
-    start: "node index.js"
+    start: "npm run build && npm run forever"
