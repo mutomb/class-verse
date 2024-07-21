@@ -1,10 +1,12 @@
-import React, {FC, useEffect, useState, useTransition} from "react"
+import React, {FC, ReactNode, useEffect, useState, useTransition} from "react"
 import { CircularProgress, Typography, Box } from "@mui/material"
 
 interface Props{
-  percentage: number
+  percentage: number,
+  heading?: ReactNode,
+  size?: number
 }
-const CircularPercentage: FC<Props>= ({percentage}) => {
+const CircularPercentage: FC<Props>= ({percentage, heading, size=85}) => {
   const [progress, setProgress] = useState(0);
   const [isPending, startTransition] = useTransition()
   useEffect(() => {
@@ -16,8 +18,8 @@ const CircularPercentage: FC<Props>= ({percentage}) => {
             clearInterval(timer);
             return oldProgress
           }
-          const diff = Math.random() * 20;
-          return Math.min(oldProgress + diff, percentage);
+          const diff = Math.random() * 5;
+          return Math.round(Math.min(oldProgress + diff, percentage));
         });
       }, 500);
     });
@@ -35,46 +37,45 @@ const CircularPercentage: FC<Props>= ({percentage}) => {
             flexDirection: 'column',
             '&:hover':{boxShadow: 2},
             textAlign: 'center',
-          }}
-        >
-          <Typography sx={{ fontWeight: 600, lineHeight: 1 }}>Your Progress</Typography>
-          <Typography variant="subtitle1" sx={{ mb: 1, color: 'text.disabled' }}>
-            {percentage < 30 && <>Started</>}
-            {percentage < 50 && <>Half Way</>}
-            {percentage < 60 && <>Almost Done</>}
-            {percentage == 100 && <>Completed</>}
+            color: progress>70?'primary.main':(progress<70 && progress>50)?'secondary.main':'error.main'
+          }}>
+          {heading}
+          <Typography variant="subtitle1" sx={{ mb: 1, color: 'inherit' }}>
+            {percentage < 30 && <>Barely scratched the surface! Keep Going!</>}
+            {percentage >= 30 && percentage < 50 && <>Almost half way through!</>}
+            {percentage >= 50 && percentage < 60 && <>Half Way through! Keep up the good work!</>}
+            {percentage >= 60 && percentage < 80 && <>Keep going!</>}
+            {percentage >= 80 && percentage < 100 && <>Almost Done! Keep going!</>}
+            {percentage == 100 && <>Well Done! Completed!</>}
           </Typography>
           <Box
             sx={{
-              height: 85,
-              width: 85,
+              height: size,
+              width: size,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexDirection: 'column',
-            }}
-          >
-            <Typography variant="h4" sx={{ color: progress < 30? 'error.main':progress < 50? 'secondary.main': progress < 60? 'secondary.light': 'secondary.main' }}>
-              {progress} %
+              position: 'relative',
+              color: 'inherit'
+            }}>
+            <Typography variant="h4" sx={{ color: 'inherit'}}>
+              {progress? progress: 0} %
             </Typography>
             <CircularProgress
               sx={{ position: 'absolute', color: 'divider' }}
               thickness={2}
               variant="determinate"
-              // value={85}
               value={100}
-              size={85}
+              size={size}
             />
             <CircularProgress
               disableShrink
               thickness={2}
-              variant="indeterminate"
-              // value={75}
-              value={75}
-              size={progress}
-              sx={{ transform: 'rotate(96deg) !important', position: 'absolute',
-              color: progress < 30? 'error.main' :progress < 50? 'secondary.main': progress < 60? 'secondary.light': 'secondary.main'
-               }}
+              variant="determinate"
+              value={progress}
+              size={size}
+              sx={{transform: 'rotate(90deg) !important', position: 'absolute', color: 'inherit'}}
             />
           </Box>
         </Box>

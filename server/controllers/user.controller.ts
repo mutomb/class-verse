@@ -57,15 +57,15 @@ const userByID = async (req, res, next, id) => {
   try {
     let user = await User.findById(id).populate('company').exec()
     if (!user){
-      return res.status('400').json({
+      return res.status(400).json({
         error: "User not found"
       })
     }
     req.profile = user
     next()
   } catch (err) {
-    return res.status('400').json({
-      error: "Could not retrieve user"
+    return res.status(400).json({
+      error:  errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "Could not retrieve user"
     })
   }
 }
@@ -81,7 +81,7 @@ const read = (req, res) => {
     if(user.company) user.company.logo = undefined
     return res.json(user)
   }
-  return res.status('400').json({
+  return res.status(400).json({
     error: "Could Read user"
   })
 }
@@ -172,7 +172,7 @@ const update = async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: "User could not be updated"
+        error:  errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "User could not be updated"
       })
     }
     let user = req.profile
@@ -198,7 +198,7 @@ const update = async (req, res) => {
       }
     }else {
         if (user.company){ /**if company already associated with user in DB, remove it */
-          await Company.findByIdAndRemove({_id: user.company._id}).exec()
+          await Company.findByIdAndDelete(user.company._id).exec()
           user.company = null
       }
     }
@@ -310,7 +310,7 @@ const qualification = (req, res, next) => {
 const isSpecialist = (req, res, next) => {
   const isSpecialist = req.profile && req.profile.specialist
   if (!isSpecialist) {
-    return res.status('403').json({
+    return res.status(403).json({
       error: "User is not an specialist"
     })
   }
@@ -359,7 +359,7 @@ const stripe_auth = async (req, res, next) => {
     response.json().then(data=>{
       console.log('stripe_data', data)
       if(data && data.error){
-        return res.status('400').json({
+        return res.status(400).json({
           error:data.error_description
         })
       }
@@ -401,7 +401,7 @@ const stripeCustomer = (req, res, next) => {
             email: req.profile.email,
             source: req.body.token
       }).then((customer) => {
-          User.update({
+          User.updateOne({
             '_id':req.profile._id
             },
             {'$set': { 'stripe_customer': customer.id }},
@@ -425,7 +425,7 @@ const stripeCustomer = (req, res, next) => {
 const createCharge = (req, res, next) => {
   // next()
   if(!req.profile.stripe_seller){
-    return res.status('400').json({
+    return res.status(400).json({
       error: "Please connect your Stripe account"
     })
   }

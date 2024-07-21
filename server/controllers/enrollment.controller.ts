@@ -12,22 +12,16 @@ const create = async (req, res) => {
   })
   const enrollment = new Enrollment(newEnrollment)
   try {
-    await enrollment.save(async function(err, enrollment){
-      if(!err){
-        try {
-          await Course.findOneAndUpdate({_id: enrollment.course}, {$inc: {"totalEnrolled": 1}}, {new: true}).exec()
-          req.io.sockets.emit(`users-${req.course._id}`, req.auth._id);
-          return res.status(200).json(enrollment)
-        }catch (err){
-          return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
-          })
-        }
-      } else{
-          return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
-          })
-        }
+    await enrollment.save().then(async (enrollment)=>{
+      try {
+        await Course.findOneAndUpdate({_id: enrollment.course}, {$inc: {"totalEnrolled": 1}}, {new: true}).exec()
+        req.io.sockets.emit(`users-${req.course._id}`, req.auth._id);
+        return res.status(200).json(enrollment)
+      }catch (err){
+        return res.status(400).json({
+          error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
+        })
+      }
     })
   } catch (err) {
     return res.status(400).json({
@@ -42,9 +36,8 @@ const create = async (req, res) => {
 const enrollmentByID = async (req, res, next, id) => {
   try {
     let enrollment = await Enrollment.findById(id).populate({path: 'course', populate:{ path: 'specialist media lessons.media lessons.article'}}).populate('client', '_id name')
-    console.log('enrollment', enrollment)
     if (!enrollment){
-      return res.status('400').json({
+      return res.status(400).json({
         error: "Enrollment not found"
       })
     }
@@ -61,8 +54,8 @@ const enrollmentByID = async (req, res, next, id) => {
     req.enrollment = enrollment
     next()
   } catch (err) {
-    return res.status('400').json({
-      error: "Could not retrieve enrollment"
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err):"Could not retrieve enrollment"
     })
   }
 }
@@ -72,7 +65,7 @@ const read = (req, res) => {
   if(enrollment){
     return res.json(enrollment)
   }
-  return res.status('400').json({
+  return res.status(400).json({
     error: "Could not Read enrollment"
   })
 }
@@ -109,7 +102,7 @@ const remove = async (req, res) => {
 const isClient = (req, res, next) => {
   const isClient = req.auth && req.auth._id == req.enrollment.client._id
   if (!isClient) {
-    return res.status('403').json({
+    return res.status(403).json({
       error: "User is not enrolled"
     })
   }

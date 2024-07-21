@@ -6,7 +6,8 @@ import calling from './controllers/calling.controller'
 // import https from 'https'
 // async connect to MongoDB via mongoose
 mongoose.Promise = global.Promise
-mongoose.connect(config.mongoUri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true,  useFindAndModify: false  })
+// mongoose.connect(config.mongoUri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true,  useFindAndModify: false  })
+mongoose.connect(config.mongoUri)
 mongoose.connection.on('error', (err) => {
   throw new Error(`Mongoose unable to connect to database ${err}`)
 })

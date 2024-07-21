@@ -3,29 +3,27 @@ import {Box, Container, Grid, Typography} from '@mui/material'
 import {useTheme} from '@mui/material/styles'
 import {useAuth} from '../auth'
 import {listBySpecialist} from '../courses/api-course'
-import {Info} from '@mui/icons-material'
-import {Redirect} from 'react-router-dom'
+import {Error, Info} from '@mui/icons-material'
 import Courses from '../courses/Courses'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
-import { StyledBanner } from '../styled-banners'
+import { StyledBanner, StyledSnackbar } from '../styled-banners'
 import logo from '../../public/logo.svg'
 import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
 
 export default function TeachingCourses(){
     const {isAuthenticated} = useAuth()
     const [courses, setCourses] = useState([])
-    const [redirectToSignin, setRedirectToSignin] = useState<Boolean>(false)
+    const [error, setError] = useState('')
     const theme = useTheme()
     /** Fetch courses I am teaching*/
     useEffect(() => {
         const abortController = new AbortController()
         const signal = abortController.signal
-        if (!isAuthenticated().user || (isAuthenticated().user && !isAuthenticated().user.specialist)) return function cleanup(){ setRedirectToSignin(true)}
         listBySpecialist({
           userId: isAuthenticated().user && isAuthenticated().user._id
         }, {token: isAuthenticated().token}, signal).then((data) => {
           if (data && data.error) {
-            setRedirectToSignin(true)
+            setError(data.error)
           } else {
             setCourses(data)
           }
@@ -35,9 +33,6 @@ export default function TeachingCourses(){
         }
       }, [])
 
-    if (redirectToSignin) {
-        return <Redirect to='/signin'/>
-    }
 
     return (<>
     {isAuthenticated().user && isAuthenticated().user.specialist && (
@@ -69,8 +64,7 @@ export default function TeachingCourses(){
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: { xs: 'center', md: 'flex-start' },
-                }}
-            >
+                }}>
               <Typography
                 component="h2"
                 sx={{
@@ -92,8 +86,7 @@ export default function TeachingCourses(){
                     fontSize: 'inherit',
                     fontWeight: 'inherit',
                     backgroundColor: 'unset',
-                  }}
-                >
+                  }}>
                   Courses{' '}
                   <Box
                     sx={{
@@ -101,8 +94,7 @@ export default function TeachingCourses(){
                       top: { xs: 20, md: 28 },
                       left: 2,
                       '& img': { width: { xs: 100, md: 200 }, height: 'auto' },
-                    }}
-                  >
+                    }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={HeadLineCurve} alt="Headline curve" />
                   </Box>
@@ -116,6 +108,15 @@ export default function TeachingCourses(){
             }
             </Grid>
         </Grid>
+        <StyledSnackbar
+            open={error? true: false}
+            duration={3000}
+            handleClose={()=>setError('')}
+            icon={<Error/>}
+            heading={"Error"}
+            body={error}
+            variant='error'
+            />
         </Container>
         </Box>
         </WallPaperYGW>)}

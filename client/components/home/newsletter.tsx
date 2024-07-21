@@ -109,7 +109,7 @@ const HomeNewsLetter: FC = () => {
           </Typography>
           <Typography sx={{ mb: 6, fontWeight: 600, color: 'text.primary' }}>
             {isAuthenticated().user? 
-            "To help us improve your experience on the App, please review the app or request a feature you'd like us to see in future."
+            "To help us improve existing features or add new ones, please send us a short review upvoting or downvoting our current features or requesting new ones."
             :"Please submit your email address to benefit from our marketing promotions and updates."}
           </Typography>
           <Box

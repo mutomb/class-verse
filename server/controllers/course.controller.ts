@@ -12,7 +12,7 @@ const create = (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: "Image could not be uploaded"
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "Image could not be uploaded"
       })
     }
     let course = new Course({...fields, rating: {avg_rating: 0, count: 0}})
@@ -54,7 +54,7 @@ const courseByID = async (req, res, next, id) => {
   try {
     let course = await Course.findById(id).populate('specialist', '_id name').populate('lessons.media').populate('media').populate('lessons.article', '_id postedBy').exec()
     if (!course){
-      return res.status('400').json({
+      return res.status(400).json({
         error: "Course not found"
       })
     }
@@ -71,8 +71,8 @@ const courseByID = async (req, res, next, id) => {
     req.course = course
     next()
   } catch (err) {
-    return res.status('400').json({
-      error: "Could not retrieve course"
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "Could not retrieve course"
     })
   }
 }
@@ -82,7 +82,7 @@ const read = (req, res) => {
   if(course){course.cover = undefined
     return res.json(course)
   }
-  return res.status('400').json({
+  return res.status(400).json({
     error: "Could not Read course"
   })
 }
@@ -186,22 +186,22 @@ const remove = async (req, res) => {
 const isSpecialist = (req, res, next) => {
     const isSpecialist = (req.course && req.auth && req.course.specialist._id == req.auth._id) || (req.auth && req.auth.role === 'admin')
     if(!isSpecialist){
-      return res.status('403').json({
+      return res.status(403).json({
         error: "User is not authorized"
       })
     }
     next()
 }
 
-const listBySpecialist = (req, res) => {
-  Course.find({specialist: req.profile._id}, (err, courses) => {
-    if (err) {
-      return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
-      })
-    }
-    res.json(courses)
-  }).select('-cover -lessons.content -media -article').sort('-created').populate('specialist', '_id name')
+const listBySpecialist = async (req, res) => {
+  try{
+   let courses = await Course.find({specialist: req.profile._id}).select('-cover -lessons.content -media -article').sort('-created').populate('specialist', '_id name')
+    return res.json(courses)
+  }catch(err){
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): err
+    })
+  }
 }
 
 const listCategories = async (req, res) => {

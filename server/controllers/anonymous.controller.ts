@@ -12,7 +12,7 @@ const create = async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: "anonymous could not be created"
+        error:errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "anonymous could not be created"
       })
     }
     let anonymous = new Anonymous(fields)
@@ -34,7 +34,7 @@ const update = async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: "Anonymous could not be updated"
+        error:errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "Anonymous could not be updated"
       })
     }
     let anonymous = req.anonymous
@@ -58,17 +58,17 @@ const update = async (req, res) => {
  */
 const anonymousByID = async (req, res, next, id) => {
   try {
-    let anonymous = await Anonymous.findById(id).populate('company').exec()
+    let anonymous = await Anonymous.findById(id).exec()
     if (!anonymous){
-      return res.status('400').json({
+      return res.status(400).json({
         error: "Anonymous not found"
       })
     }
     req.anonymous = anonymous
     next()
   } catch (err) {
-    return res.status('400').json({
-      error: "Could not retrieve anonymous"
+    return res.status(400).json({
+      error:errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "Could not retrieve anonymous"
     })
   }
 }
@@ -78,8 +78,8 @@ const read = (req, res) => {
   if(anonymous){
     return res.json(anonymous)
   }
-  return res.status('400').json({
-    error: "Could Read anonymous"
+  return res.status(400).json({
+    error:  "Could Read anonymous"
   })
 }
 

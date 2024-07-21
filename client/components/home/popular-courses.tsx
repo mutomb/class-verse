@@ -141,14 +141,14 @@ const HomePopularCourse: FC = () => {
   }
   return (<>
           {(courses.length < 3) ? 
-          (<Box sx={{['& .slick-list']: { ml: 0}, ['& .slick-slider']: { width: '100%'}, ['& .slick-slide> div > div > div']: { transform: 'scale(0.8)', transition: theme.transitions.create(['box-shadow', 'transform'], {duration: 2000})}, ['& .slick-slide.slick-active.slick-current > div > div > div']: {boxShadow: 4, transform: 'scale(1.03)', transition: theme.transitions.create(['box-shadow', 'transform'], {duration: 2000})}, width: '100%', display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
+          (<Box sx={{['& .slick-list']: { ml: 0}, ['& .slick-slider']: { width: '100%'}, ['& .slick-slide> div > div > div']: {filter: 'blur(1px)', transform: 'scale(0.8)', transition: theme.transitions.create(['box-shadow', 'transform', 'filter'], {duration: 2000})}, ['& .slick-slide.slick-active.slick-current > div > div > div']: {filter: 'blur(0px)', boxShadow: 4, transform: 'scale(1.03)', transition: theme.transitions.create(['box-shadow', 'transform', 'filter'], {duration: 2000})}, width: '100%', display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
             <Slider {...sliderConfig}>
             {[...courses, ...courses, ...courses].map((course, index)=>(
               <CourseCardItem key={index} item={course} action={getAction(course)} enrollmentID= {isEnrolled(course) && isEnrolled(course)._id} />
             ))}
             </Slider>
           </Box>):
-          (<Box sx={{['& .slick-list']: { ml: 0}, ['& .slick-slider']: { width: '100%'}, ['& .slick-slide> div > div > div']: { transform: 'scale(0.8)', transition: theme.transitions.create(['box-shadow', 'transform'], {duration: 2000})}, ['& .slick-slide.slick-active.slick-current > div > div > div']: {boxShadow: 4, transform: 'scale(1.03)', transition: theme.transitions.create(['box-shadow', 'transform'], {duration: 2000})}, width: '100%', display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
+          (<Box sx={{['& .slick-list']: { ml: 0}, ['& .slick-slider']: { width: '100%'}, ['& .slick-slide> div > div > div']: {filter: 'blur(1px)', transform: 'scale(0.8)', transition: theme.transitions.create(['box-shadow', 'transform', 'filter'], {duration: 2000})}, ['& .slick-slide.slick-active.slick-current > div > div > div']: {filter: 'blur(0px)', boxShadow: 4, transform: 'scale(1.03)', transition: theme.transitions.create(['box-shadow', 'transform', 'filter'], {duration: 2000})}, width: '100%', display: 'flex', flexDirection: {xs: 'column', sm: 'row'}}}>
             <Slider {...sliderConfig}>
             {courses.map((course) => (
               <CourseCardItem key={String(course._id)} item={course} action={getAction(course)} enrollmentID={isEnrolled(course) && isEnrolled(course)._id} 

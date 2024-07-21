@@ -183,18 +183,18 @@ const StyledButtonRoot = styled('button', {
 }))
 
 interface Props extends BaseButtonProps {
-  children: ReactNode
+  children: ReactNode,
 }
 
 const StyledButton: FC<Props> = (props: Props) => {
-  const { children, onClick, disableHoverEffect, startIcon, endIcon, disabled, size, ...rest } = props
+  const {color='primary', variant='contained', disableHoverEffect=false, children, onClick, startIcon, endIcon, disabled, size, ...rest } = props
   const theme = useTheme()
   const xsMobileView = useMediaQuery(theme.breakpoints.down('sm'), {defaultMatches: true})
   const smMobileView = useMediaQuery(theme.breakpoints.down('md'), {defaultMatches: true})
   const mdMobileView = useMediaQuery(theme.breakpoints.down('lg'), {defaultMatches: true})
 
   return (
-    <StyledButtonRoot size={size || (xsMobileView || smMobileView)? 'small': mdMobileView? 'medium': 'large' } disabled={disabled} onClick={disabled? undefined: onClick} disableHoverEffect={disableHoverEffect} {...rest}>
+    <StyledButtonRoot color={color} variant={variant} size={size || (xsMobileView || smMobileView)? 'small': mdMobileView? 'medium': 'large' } disabled={disabled} onClick={disabled? undefined: onClick} disableHoverEffect={disableHoverEffect} {...rest}>
       {startIcon && (
         <Box component="span" sx={{ display: 'inherit', mr: 1, ml: -0.5 }}>
           {startIcon}
@@ -208,12 +208,6 @@ const StyledButton: FC<Props> = (props: Props) => {
       )}
     </StyledButtonRoot>
   )
-}
-
-StyledButton.defaultProps = {
-  color: 'primary',
-  variant: 'contained',
-  disableHoverEffect: false,
 }
 
 export default StyledButton

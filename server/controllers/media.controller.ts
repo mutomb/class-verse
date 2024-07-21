@@ -16,7 +16,7 @@ const create = (req, res) => {
   form.parse(req, async (err, fields, files) => {
       if (err) {
         return res.status(400).json({
-          error: "Video could not be uploaded"
+          error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err):"Video could not be uploaded"
         })
       }
       let media = new Media(fields)
@@ -68,7 +68,7 @@ const mediaByID = async (req, res, next, id) => {
   try{
   let media = await Media.findById(id).populate('postedBy', '_id name').exec()
     if (!media){
-      return res.status('400').json({
+      return res.status(400).json({
         error: "Media not found"
       })
     }
@@ -206,7 +206,7 @@ const update = async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: "Video could not be updated"
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err):"Video could not be updated"
       })
     }
     let media = req.media
@@ -244,7 +244,7 @@ const update = async (req, res) => {
 const isPoster = (req, res, next) => {
   let isPoster = (req.media && req.auth && req.media.postedBy._id == req.auth._id) || (req.auth && req.auth.role === 'admin')
   if(!isPoster){
-    return res.status('403').json({
+    return res.status(403).json({
       error: "User is not authorized"
     })
   }

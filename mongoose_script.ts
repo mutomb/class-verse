@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://localhost:27017/greenorangesquare', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true,  useFindAndModify: false  })
+mongoose.connect('mongodb://localhost:27017/greenorangesquare')
 mongoose.connection.on('connected', function () {
   console.log('Mongoose connected');
 });
@@ -286,16 +286,9 @@ const courseByID = async (id) => {
 // courseByID('66731cf65e74733f7ceecb0b').then((course)=>console.log(course))
 
 const listCourses = async () => {
-  let courses = await Course.find({}, async (err, courses) => {
-    if (err) {
-      return ({
-        error: err
-      })
-    }
-    return courses
-  }).select('-covers').sort('-created')
+  let courses = await Course.find({}).select('-covers').sort('-created')
   return courses
 }
 listCourses().then((courses)=>{
-  console.log(courses[0].lessons[0].content)
+  console.log(courses[0].lessons[0].content.substring(0, 1000))
 })

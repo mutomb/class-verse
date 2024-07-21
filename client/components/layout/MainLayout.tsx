@@ -1,11 +1,10 @@
-import React, { FC, ReactNode, useEffect, useTransition} from 'react'
+import React, { FC, ReactNode, useEffect} from 'react'
 import Box from '@mui/material/Box'
 import { Footer } from '../footer'
 import { Header } from '../header'
 import { ScrollToTop } from '../styled-buttons'
 import { ChatBot } from '../chat/chatbot'
 import { useColorMode } from '../../config/theme/MUItheme-hooks'
-import { LoadingProvider } from '../progress'
 
 interface Props {
   children: ReactNode
@@ -14,7 +13,6 @@ interface Props {
 const MainLayout: FC<Props> = ({ children }) => {
  
   const {toggleColorMode, getColorMode} = useColorMode()
-  const [isPending, startTransition] = useTransition()
 
   useEffect(()=>{
     let toDark: any; 
@@ -33,11 +31,9 @@ const MainLayout: FC<Props> = ({ children }) => {
   return (
     <Box sx={{backgroundColor: 'background.paper'}}>
       <Header />
-      <LoadingProvider>
         <Box component="main" sx={{display:'flex', flexDirection:'column', minHeight:'88vh', backgroundColor: 'inherit'}}> {/*Ensures both atleast 88% viewport given to main (even on empty contain) and sticky footer (including on page load)*/}
         {children}
         </Box>
-      </LoadingProvider>
       <ChatBot />
       <ScrollToTop />
       <Footer />

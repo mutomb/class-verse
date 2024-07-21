@@ -5,6 +5,9 @@ const nodeExternals = require('webpack-node-externals')
 // import path from 'path'
 // import nodeExternals from 'webpack-node-externals'
 const CURRENT_WORKING_DIR = process.cwd()
+const crypto = require("crypto");
+const crypto_orig_createHash = crypto.createHash;
+crypto.createHash = algorithm => crypto_orig_createHash(algorithm == "md4" ? "sha256" : algorithm);
 
 const config = {
     name: "server",

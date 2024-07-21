@@ -4,7 +4,7 @@ import {Edit, Email, Error, ExpandLess, ExpandMore, FileDownload, People, Person
 import DeleteUser from './DeleteUser'
 import {useAuth} from '../auth'
 import {fetchImage, read, update} from './api-user'
-import {Redirect, Link} from 'react-router-dom'
+import { Link} from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import { MoreMenuVertButton, SelectButton, StyledButton } from '../styled-buttons'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
@@ -17,10 +17,10 @@ import { ProfileSkeleton } from '../skeletons'
 import { TiersConnect } from '../users';
 import {tiers} from '../users/tiers.data'
 import { scroller } from 'react-scroll'
+import { SnowEditor } from '../forms'
 
 export default function Profile({match}){
   const [user, setUser] = useState({})
-  const [redirectToSignin, setRedirectToSignin] = useState<Boolean>(false)
   const {isAuthenticated} = useAuth()
   const theme = useTheme()
   const xsMobileView = useMediaQuery(theme.breakpoints.down('sm'), {defaultMatches: true})
@@ -85,7 +85,7 @@ export default function Profile({match}){
       userId: match.params.userId
     }, {token: isAuthenticated().token}, signal).then((data) => {
       if (data && data.error) {
-        setRedirectToSignin(true)
+        setError(data.error)
         setLoading(false)
       } else {
         setUser(data)
@@ -146,10 +146,8 @@ export default function Profile({match}){
     })
     
   }, [])
-  if (redirectToSignin) {
-    return <Redirect to='/signin'/>
-  }
-  if(loading){
+  
+  if(loading || !user._id){
     return <ProfileSkeleton />
   }
   return (<>
@@ -422,7 +420,22 @@ export default function Profile({match}){
                 </Grid>
                 <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent:{xs: 'center', sm: 'flex-start'}, textAlign: 'start', pl: {xs: 0, sm: 'inherit'}, pt: {xs: 0, sm: 'inherit'}}}>
                   <Typography component="p" variant="body1" sx={{color: 'text.secondary', fontSize: {xs:'0.8rem', sm:'1rem'} }}>
-                    {expandExperience?
+                    <SnowEditor readOnly={true} value={user.experience}
+                      sx={{
+                        ['& .ql-editor.ql-blank']: {
+                          bgcolor: 'background.paper', height: {xs: '100vh', sm: '90vh', md: '80vh'},
+                        },
+                        ['& .ql-editor']: {
+                          bgcolor: 'background.paper', height: {xs: '100vh', sm: '90vh', md: '80vh'},
+                        },
+                        ['& .ql-toolbar.ql-snow']: {
+                           border: 'none !important'
+                        },
+                        ['& .ql-container.ql-snow']: {
+                          border: 'none !important',
+                        },
+                    }}/>
+                    {/* {expandExperience?
                     (<>
                     {user.experience}
                     {user.experience && user.experience.substring(xsMobileView? 300: 500).length>0 && 
@@ -438,7 +451,7 @@ export default function Profile({match}){
                         <StyledButton style={{border: 'none !important'}} color='secondary' variant='outlined' endIcon={<ExpandMore/>} onClick={()=>{setExpandExperience(true)}}>Show More</StyledButton>
                       </Box>
                     </Grid>)}
-                    </>)}
+                    </>)} */}
                   </Typography>
                 </Grid>
               </Grid>

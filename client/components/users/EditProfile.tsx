@@ -18,6 +18,7 @@ import logo from '../../public/logo.svg'
 import image from '../../public/images/workspace/1.png'
 import { Logo } from '../logo';
 import { scroller } from 'react-scroll';
+import { SnowEditor } from '../forms';
 
 interface SignUpProps{
   id: string,
@@ -82,7 +83,32 @@ export default function EditProfile({ match }) {
   const resumeRef = useRef<HTMLElement>(null);
   const qualificationRef = useRef<HTMLElement>(null);
   const [loading, setLoading] = useState(false)
-
+  const modules = {
+    toolbar: [
+      [{ font: [] }],
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ color: [
+        '#fbfbfb', "#fff", '#f2f5f5', "#f5f5f5", "#e0e0e0","#9e9e9e", "#212121", '#222128',
+        theme.palette.primary.light, theme.palette.primary.main, theme.palette.primary.dark, 
+        theme.palette.secondary.light, theme.palette.secondary.main, theme.palette.secondary.dark, 
+        theme.palette.error.light, theme.palette.error.main, theme.palette.error.dark 
+        ]},
+        { background: [
+          '#fbfbfb', "#fff", '#f2f5f5', "#f5f5f5", "#e0e0e0","#9e9e9e", "#212121", '#222128',
+          theme.palette.primary.light, theme.palette.primary.main, theme.palette.primary.dark, 
+          theme.palette.secondary.light, theme.palette.secondary.main, theme.palette.secondary.dark, 
+          theme.palette.error.light, theme.palette.error.main, theme.palette.error.dark 
+          ]
+      }],
+      [{ script: "sub" }, { script: "super" }],
+      ["blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
+      ["link"],      
+      // ["clean"],
+    ],
+  };
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
@@ -145,8 +171,7 @@ export default function EditProfile({ match }) {
     
   const handleChange = (name: string) => (event) => {
     const value = name === 'photo' || name === 'companyLogo' || name === 'resume' || name === 'qualification'
-    ? event.target.files[0]
-    : event.target.value
+    ? event.target.files[0]: name === 'experience'? event: event.target.value
     name.indexOf('company') > -1 
     ? setValues({ ...values, company:{ ...values.company, [name.slice(7).toLocaleLowerCase()]: value}}) 
     :setValues({ ...values, [name]: value })
@@ -421,23 +446,12 @@ export default function EditProfile({ match }) {
                     </IconButton>
                 </InputAdornment>)}}/>    
               { values.specialist &&
-              (<><TextField
-                margin="dense"
-                multiline
-                minRows="5"
-                maxRows='10'
-                inputProps={{ maxLength: 5000 }}
-                type="text"
-                required
-                fullWidth
-                name="experience"
-                label="Experience"
-                placeholder='Example: Worked at Google for 10 years as a DevOps engineer....'
-                id="experience"
-                autoComplete="name"
-                value={values.experience} 
-                onChange={handleChange('experience')}
-              />
+              (<>
+              <Box>
+                <Typography component='h4' variant='h3' sx={{fontSize: '1rem', color: 'text.primary'}}> Tell Us Your Experience </Typography>
+              </Box>
+              <SnowEditor modules={modules} value={values.experience} onChange={handleChange('experience')} 
+                placeholder={"Example: Worked at Google for 10 years as a DevOps engineer...."}/>
               <ChipsArray handleDelete={handleDeleteChip} chipData={values.skills}  />
               <TextField
                 margin="dense"

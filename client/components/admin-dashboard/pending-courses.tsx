@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import {List, ListItemAvatar, ListItemText, Avatar, ListItem, IconButton, listItemClasses,Typography, Box, Grid, Container, Slide,
   MenuItem,  Zoom} from '@mui/material'
-import { VerifiedOutlined, ReadMore} from '@mui/icons-material'
+import { VerifiedOutlined, ReadMore, Error} from '@mui/icons-material'
 import {useTheme} from '@mui/material/styles'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import logo from '../../public/logo.svg'
 import {useAuth} from '../auth'
 import {listPending} from '../courses/api-course'
-import {Redirect, Link} from 'react-router-dom'
 import { MoreMenuVertButton } from '../styled-buttons'
 import {socket} from './communication'
+import { StyledSnackbar } from '../styled-banners'
 
 export default function Courses(){
   const theme = useTheme()
   const {isAuthenticated} = useAuth()
   const [courses, setCourses] = useState([])
-  const [redirectToSignin, setRedirectToSignin] = useState<Boolean>(false)
+  const [error, setError] = useState('')
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
-    if (!isAuthenticated().user || (isAuthenticated().user && isAuthenticated().user.role !== 'admin')) return function cleanup(){ setRedirectToSignin(true)}
     const refresh_list = () => listPending({token: isAuthenticated().token}, signal).then((data) => {
                                   if (data && data.error) {
-                                    setRedirectToSignin(true)
+                                    setError(data.error)
                                   } else {
                                     setCourses(data)
                                   }
@@ -37,10 +36,6 @@ export default function Courses(){
     }
   }, [])
 
-
-  if (redirectToSignin) {
-    return <Redirect to='/signin'/>
-  }
   return (
     <WallPaperYGW secondaryColor={theme.palette.background.paper} primaryColor={theme.palette.background.default}
     style={{
@@ -170,6 +165,15 @@ export default function Courses(){
               </Box>
             </Grid>
           </Grid>
+          <StyledSnackbar
+            open={error? true: false}
+            duration={3000}
+            handleClose={()=>setError('')}
+            icon={<Error/>}
+            heading={"Error"}
+            body={error}
+            variant='error'
+            />
         </Container>
       </Box>
     </WallPaperYGW>

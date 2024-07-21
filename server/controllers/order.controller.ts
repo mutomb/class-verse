@@ -16,7 +16,7 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    let order = await Order.update({'courses._id':req.body.cartItemId}, {'$set': {
+    let order = await Order.updateOne({'courses._id':req.body.cartItemId}, {'$set': {
         'courses.$.status': req.body.status
     }})
       res.json(order)
@@ -35,7 +35,7 @@ const orderByID = async (req, res, next, id) => {
   try {
     let order = await Order.findById(id).populate('courses.course', 'title price currency').exec()
     if (!order)
-      return res.status('400').json({
+      return res.status(400).json({
         error: "Order not found"
       })
     req.order = order

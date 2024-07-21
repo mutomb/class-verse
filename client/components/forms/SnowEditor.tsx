@@ -1,12 +1,11 @@
-import React, { FC, EventHandler, CSSProperties, lazy } from 'react'
-import { FormControl} from '@mui/material'
+import React, { FC, EventHandler, CSSProperties, useEffect, useRef, useState} from 'react'
+import { Box, FormControl} from '@mui/material'
 import { SxProps, Theme } from '@mui/material/styles'
 import { DeltaStatic, Sources, StringMap, } from 'quill';
-import { LoadableVisibility } from '../progress';
-const ReactQuill = lazy(()=>import('react-quill'))
+import  { Value, UnprivilegedEditor, Range } from 'react-quill'
 // import ReactQuill, { Value, UnprivilegedEditor, Range } from 'react-quill'
-import { Value, UnprivilegedEditor, Range } from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
+// import 'react-quill/dist/quill.snow.css'
+import renderHTML from "react-render-html";
 
 interface Editor{
   onChange?: (value: string, delta: DeltaStatic, source: Sources, editor: UnprivilegedEditor) => void,
@@ -34,7 +33,35 @@ interface Editor{
 }
 const Editor: FC<Editor> = ({onChange, modules, value, placeholder, bounds, children, className="", defaultValue, formats, id,
                              onChangeSelection=undefined, onFocus, onBlur, onKeyDown, onKeyPress, onKeyUp, preserveWhitespace, readOnly, scrollingContainer, style, tabIndex, sx}) => {
-  if(typeof window ==='undefined') return <></>
+  const [Editor, setEditor] = useState(<></>)
+  useEffect(()=>{
+    const ReactQuill = require('react-quill');
+    return setEditor(
+      <ReactQuill
+        modules={modules}
+        onChange={onChange}
+        value={value}
+        theme={'snow'}
+        className={className}
+        placeholder={placeholder}
+        bounds={bounds}
+        defaultValue={defaultValue}
+        formats={formats}
+        id={id}
+        onChangeSelection={onChangeSelection}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
+        onKeyUp={onKeyUp}
+        onKeyPress={onKeyPress}
+        preserveWhitespace={preserveWhitespace}
+        readOnly={readOnly}
+        scrollingContainer={scrollingContainer}
+        style={{ cursor: 'pointer !important' }}
+        tabIndex={tabIndex}>
+          {children}
+        </ReactQuill>);
+  },[])
   return (
   <FormControl
     aria-label="editor"
@@ -101,30 +128,14 @@ const Editor: FC<Editor> = ({onChange, modules, value, placeholder, bounds, chil
       },
       ...sx
     }}>
-    <ReactQuill
-      modules={modules}
-      onChange={onChange}      
-      value={value}
-      theme={'snow'}
-      className={className}
-      placeholder={placeholder}
-      bounds={bounds}
-      defaultValue={defaultValue}
-      formats={formats}
-      id={id}
-      onChangeSelection={onChangeSelection}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      onKeyDown={onKeyDown}
-      onKeyUp={onKeyUp}
-      onKeyPress={onKeyPress}
-      preserveWhitespace={preserveWhitespace} 
-      readOnly={readOnly} 
-      scrollingContainer={scrollingContainer} 
-      style={{cursor: 'pointer !important'}} 
-      tabIndex={tabIndex}
-      children={children}
-    />
+      {!readOnly? Editor: 
+      (<Box component='div' className='quill' sx={{width: '100%', cursor: 'pointer', scrollbarWidth: {xs: 'none', md: 'thin'}, scrollbarColor: 'primary.main', ...sx}}>
+        <Box component='div' className='ql-container ql-snow ql-disabled' sx={{width: '100%'}}>
+         <Box component='div' className='ql-editor' sx={{width: '100%'}}>
+          {renderHTML(value)}
+         </Box>
+        </Box>
+      </Box>)}
   </FormControl>)
 }
 export default Editor

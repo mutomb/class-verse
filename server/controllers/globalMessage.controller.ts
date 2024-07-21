@@ -9,7 +9,7 @@ const create = async (req, res) => {
     form.parse(req, async (err, fields, files) => {
         if (err) {
             return res.status(400).json({
-            error: "Global Message could not be created"
+            error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err):"Global Message could not be created"
             })
         }
         let message = new GlobalMessage(fields)
@@ -35,7 +35,7 @@ const createByCourse = async (req, res) => {
     form.parse(req, async (err, fields, files) => {
         if (err) {
             return res.status(400).json({
-            error: "Global Message could not be created"
+            error:errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "Global Message could not be created"
             })
         }
         let message = new GlobalMessage(fields)

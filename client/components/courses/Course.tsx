@@ -23,7 +23,6 @@ import cart from '../cart/cart-helper'
 import { scroller } from 'react-scroll'
 import SpecialistCardItem from '../home/specialist-card-item'
 import Enroll from '../enrollment/Enroll'
-// import renderHTML from "react-render-html";
 import {SnowEditor } from '../forms'
 
 interface ValuesState{
@@ -764,7 +763,7 @@ export default function Course({match}){
                             </AccordionSummary>
                             <AccordionDetails sx={{p: {xs: '0px !important', md: 2}}}>
                               <ListItem sx={{display: 'flex', px: {xs:0, sm: 3}, flexDirection: {xs: 'column', sm: 'row'}, alignItems: 'center', justifyContent: 'center'}}>
-                                <SnowEditor readOnly={true} modules={{ toolbar: []}} value={lesson.content} onChange={()=>{}}
+                                <SnowEditor readOnly={true} value={lesson.content}
                                   sx={{
                                     ['& .ql-editor.ql-blank']: {
                                       bgcolor: 'background.paper', height: {xs: '100vh', sm: '90vh', md: '80vh'},

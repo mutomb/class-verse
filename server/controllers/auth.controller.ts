@@ -10,13 +10,13 @@ const signin = async (req, res) => {
       "email": req.body.email
     })
     if (!user) {
-      return res.status('401').json({
+      return res.status(401).json({
         error: "User not found"
       })
     }
 
     if (!user.authenticate(req.body.password)) {
-      return res.status('401').send({
+      return res.status(401).send({
         error: "Email and password don't match."
       })
     }
@@ -50,8 +50,8 @@ const signin = async (req, res) => {
 
   } catch (err) {
 
-    return res.status('401').json({
-      error: "Could not sign in"
+    return res.status(401).json({
+      error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "Could not sign in"
     })
 
   }
@@ -59,7 +59,7 @@ const signin = async (req, res) => {
 
 const signout = (req, res) => {
   res.clearCookie("token") /**deletes cookie 'token'*/
-  return res.status('200').json({
+  return res.status(200).json({
     message: "signed out"
   })
 }

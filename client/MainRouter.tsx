@@ -5,6 +5,7 @@ import {Loadable} from './components/progress'
 import '../node_modules/slick-carousel/slick/slick.css'
 import './styles/globals.css'
 import './styles/react-slick.css'
+import '../node_modules/react-quill/dist/quill.snow.css'
 import {Cart, Checkout} from './components/cart'
 
 const LazyHome = Loadable(import('./components/home/Home'))

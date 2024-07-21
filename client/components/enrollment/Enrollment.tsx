@@ -3,7 +3,7 @@ import {Card, CardHeader, Typography, IconButton, List, ListItem, ListItemAvatar
   Link as MuiLink, cardHeaderClasses, Box, listItemClasses, 
   Accordion, AccordionDetails, AccordionSummary, iconButtonClasses, avatarClasses, listItemTextClasses, accordionSummaryClasses,
   useMediaQuery, svgIconClasses, Grid, Container} from '@mui/material'
-import {Group, Info, VerifiedUser, ExpandMore, ViewList, Error, ArtTrack, PublishedWithChanges, VideoFile, Star, StarBorder, Language, Person, Article, MobileFriendly, Grade, Check, QuestionMark, People, PlayArrow, FileDownload, ExpandLess, PlayLesson} from '@mui/icons-material'
+import {Group, Info, VerifiedUser, ExpandMore, ViewList, Error, ArtTrack, PublishedWithChanges, VideoFile, Star, StarBorder, Language, Person, Article, MobileFriendly, Grade, Check, QuestionMark, People, PlayArrow, FileDownload, ExpandLess, PlayLesson, CheckOutlined} from '@mui/icons-material'
 import {read as readSpecialist} from '../users/api-user'
 import {enrollmentStats, read, complete} from './api-enrollment'
 import {Link} from 'react-router-dom'
@@ -37,6 +37,7 @@ export default function Enrollment({match}){
   const [enrollment, setEnrollment] = useState({ course: { specialist: [] }, lessonStatus: [] })
   const [totalComplete, setTotalComplete] = useState<number>(0)
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState('')
   const xsMobileView = useMediaQuery(theme.breakpoints.down('sm'), {defaultMatches: true})
   const {course, setCourse} = useCourse()
   const [specialist, setSpecialist] = useState()
@@ -84,6 +85,9 @@ export default function Enrollment({match}){
           setValues({ ...values, error: data.error })
         } else {
           setEnrollment({ ...enrollment, lessonStatus: lessonStatus })
+          count !== lessonStatus.length? 
+          setSuccess('Your progress has been saved. Move on to the next lesson.'):
+          setSuccess("You have completed all the lessons! I hope you enjoyed the course and don't forget to rate it.")
         }
       })
     }
@@ -179,7 +183,6 @@ export default function Enrollment({match}){
     })
     
   }, [])
-
   if(loading){
     return (
       <WallPaperYGW variant='radial' primaryColor={theme.palette.background.paper} secondaryColor={theme.palette.background.default}
@@ -291,15 +294,25 @@ export default function Enrollment({match}){
                     <ChipsArray chipData={course.technologies? course.technologies.map((technology, index)=>({key: index, label:technology})):[]} style={{justifyContent: 'flex-start'}}/>
                 </Box>}
             action={
-                  <Box sx={{width: '100%', display: 'flex', flexDirection: {xs: 'column', md: 'row'}, alignItems: 'center', justifyContent: {xs: 'center', md: 'flex-end'}}}>
-                    <Box sx={{flex: 1, textAlign: 'center', width:'100%'}}>
-                      <StyledBanner heading={enrollment && enrollment.lessonStatus && totalComplete === enrollment.lessonStatus.length ? 'Completed' : 'Not Completed'} body={enrollment && enrollment.lessonStatus && totalComplete === enrollment.lessonStatus.length ? "Well Done! You completed all lessons in this courses." : "You have not yet completed all lessons in this courses."} icon={<Info />} />
-                        <Box component='span' sx={{color: 'text.secondary'}}>
+                  <Box sx={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: {xs: 'center', md: 'flex-end'}}}>
+                    <Box sx={{ textAlign: 'center', width:'100%'}}>
+                        <Box component='span' sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.secondary', mr:1}}>
                           <Group sx={{color: stats.totalEnrolled>0? 'primary.main': 'text.secondary', width: '1rem', height: '1rem'}} /> {stats.totalEnrolled} enrolled 
                         </Box>
-                        <Box component='span'sx={{color: 'text.secondary'}}>
+                        <Box component='span'sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.secondary'}}>
                           <VerifiedUser sx={{color: stats.totalCompleted>0? 'primary.main': 'text.secondary', width: '1rem', height: '1rem'}}/> {stats.totalCompleted} completed 
                         </Box>
+                    </Box>
+                    <Divider sx={{my: 0.5}}/>
+                    <Box sx={{ textAlign: 'center', width:'100%'}}>
+                      {enrollment && enrollment.lessonStatus && enrollment.lessonStatus && 
+                      (<CircularPercentage
+                        percentage={parseInt(`${totalComplete/enrollment.lessonStatus.length*100}`)} 
+                        heading={
+                        <Typography variant="h6" sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem', md: '2rem' }, mb: 1, color: 'inherit'}}>
+                          Your Progress
+                        </Typography>}
+                      />)}
                     </Box>
                   </Box>}
           />
@@ -445,7 +458,6 @@ export default function Enrollment({match}){
                 Certificate of completion
               </Grid>
             </Grid>
-            {enrollment && enrollment.lessonStatus && enrollment.lessonStatus && (<CircularPercentage percentage={parseInt(`${totalComplete/enrollment.lessonStatus.length*100}`)}/>)}
             <Typography component='h2' variant='h2' sx={{display: 'flex', alignItems: 'center', textAlign: {xs: 'center', sm: 'start'}, py: 4, color: 'secondary.main'}}>
                 Course Content
             </Typography>
@@ -579,7 +591,7 @@ export default function Enrollment({match}){
                                     </Box>}
                                 />
                                 <ListItemAvatar>
-                                  {lesson.complete ? <CheckCircle sx={{ color: 'primary.main' }} /> : <RadioButtonUnchecked />}
+                                  {enrollment.lessonStatus[index].complete ? <CheckCircle sx={{ color: 'primary.main' }} /> : <RadioButtonUnchecked />}
                                 </ListItemAvatar>
                               </ListItem>
                             </AccordionSummary>
@@ -587,9 +599,6 @@ export default function Enrollment({match}){
                               <CardHeader id="lesson-header"  sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'center', alignItems: 'center', width: '100%' }}
                                 action={<Box sx={{ width: '100%', display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-end' } }}>
                                   <Box sx={{ flex: 1, textAlign: 'center', width: '100%' }}>
-                                    <StyledBanner  variant={lesson.complete? 'success': 'info'} heading={lesson.complete ? 'Completed' : 'Not Completed'} 
-                                    body={lesson.complete ? "Well Done! You completed this lesson." : "You have not yet completed this lesson. Estimated completion time is 1 hour. Pace yourself study as you wish. Track your progress by clicking Mark As Completed."} 
-                                    icon={<Info />} />
                                     <Box component='span'
                                       sx={{
                                         margin: '7px 10px 0 10px',
@@ -610,7 +619,7 @@ export default function Enrollment({match}){
                                 {/* <ListItemText sx={{ flex: 1, px: {xs:1, sm: 'unset'}, textAlign: 'center'}}
                                     primary={renderHTML(lesson.content)}
                                 /> */}
-                                <SnowEditor readOnly={true} modules={{ toolbar: []}} value={lesson.content}
+                                <SnowEditor readOnly={true} value={lesson.content}
                                   sx={{
                                     ['& .ql-editor.ql-blank']: {
                                       bgcolor: 'background.paper', height: {xs: '100vh', sm: '90vh', md: '80vh'},
@@ -792,6 +801,15 @@ export default function Enrollment({match}){
           heading={"Error"}
           body={values.error}
           variant='error'
+          />
+        <StyledSnackbar
+          open={success? true: false}
+          duration={3000}
+          handleClose={()=>setSuccess('')}
+          icon={<CheckOutlined/>}
+          heading={"Well Done!"}
+          body={success}
+          variant='success'
           />
     </WallPaperYGW>)
 }

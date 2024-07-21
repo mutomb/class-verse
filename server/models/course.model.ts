@@ -120,26 +120,27 @@ const CourseSchema = new mongoose.Schema({
 })
 
 //mongoose schema middlewares
-CourseSchema.pre('remove',function(next){
-  console.log("Removing enrollement of course" + this._id);
+CourseSchema.pre(/delete/,function(next){
+  console.log("Removing enrollement of course" + this.get('_id'));
   /**remove any user's enrollments in this course */
-  this.model('Enrollment').find({ course : this._id }, function(err, enrollments){
-      if(err){
-          console.log("Error, Enrollment was not deleted");
-      }else if(enrollments.length == 0){
-          console.log("No enrollment found for this course");
-      }else{
-          for (var i=0; i<enrollments.length; i++){
-            enrollments[i].remove(function(delete_err, delete_data){
-                  if(delete_err){
-                      console.log("one of the enrollments for this course was not deleted");
-                  }else{
-                      console.log("enrollement deleted");
-                  }
-              });
+  try{
+    let enrollments = this.model('Enrollment').find({ course : this.get('_id') }).exec()
+    if(enrollments.length == 0){
+      console.log("No enrollment found for this course");
+    }else{
+      for (var i=0; i<enrollments.length; i++){
+        enrollments[i].remove(function(delete_err, delete_data){
+          if(delete_err){
+              console.log("one of the enrollments for this course was not deleted");
+          }else{
+              console.log("enrollement deleted");
           }
+          });
       }
-  });
+    }
+  }catch(err){
+    console.log("Error, Enrollment was not deleted", err)
+  }
   next();
 });
 

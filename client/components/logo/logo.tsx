@@ -8,7 +8,7 @@ interface Props {
   style?: any
 }
 
-const Logo: FC<Props> = ({ onClick, variant, style }) => {
+const Logo: FC<Props> = ({ onClick, variant='primary', style }) => {
 
   return (
     <Box
@@ -50,10 +50,6 @@ const Logo: FC<Props> = ({ onClick, variant, style }) => {
     </Box>
   </Box>
   )
-}
-
-Logo.defaultProps = {
-  variant: 'primary',
 }
 
 export default Logo

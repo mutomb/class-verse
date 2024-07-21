@@ -10,7 +10,6 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { cart } from '../cart'
 import { SideBar } from '../sidebar'
 import { useAuth } from '../auth'
-import { useColorMode } from '../../config/theme/MUItheme-hooks'
 
 const Header: FC = () => {
   const [visibleMenu, setVisibleMenu] = useState<boolean>(false)

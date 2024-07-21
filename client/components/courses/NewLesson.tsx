@@ -1,4 +1,4 @@
-import React, {FC, useState, ReactNode, ChangeEvent, useRef, FormEvent} from 'react'
+import React, {FC, useState, ReactNode, ChangeEvent, useRef, FormEvent, useEffect} from 'react'
 import {TextField, Typography, Box, Stepper, Step, StepLabel, formControlLabelClasses, inputLabelClasses, 
   formLabelClasses, useMediaQuery, Grid, Slide, FormControlLabel, Switch, Container, FormControl, svgIconClasses} from '@mui/material'
 import {newLesson} from './api-course'
@@ -17,6 +17,7 @@ import image from '../../public/images/workspace/1.png'
 import { useCourse } from './Course-hooks'
 import { create } from '../article/api-article'
 import { SnowEditor } from '../forms'
+import { FormSkeleton } from '../skeletons'
 
 interface NewLessonProps{
   courseId:string,
@@ -60,6 +61,7 @@ const NewLesson: FC<NewLessonProps>= ({match}) => {
   const articleRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLElement>(null);
   const {course, setCourse} = useCourse()
+
   const modules = {
     toolbar: [
       [{ font: [] }],
@@ -196,6 +198,7 @@ const NewLesson: FC<NewLessonProps>= ({match}) => {
   if (values.redirect) {
     return <Redirect to={match.params && '/specialist/course/'+match.params.courseId}/>
   }
+
   return (
     <Parallax bgImage={image}  strength={50} blur={5}
     renderLayer={percentage=>(

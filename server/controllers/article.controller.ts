@@ -10,7 +10,7 @@ const create = (req, res) => {
   form.parse(req, async (err, fields, files) => {
       if (err) {
         return res.status(400).json({
-          error: "Ariticle could not be uploaded"
+          error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): "Ariticle could not be uploaded"
         })
       }
       let article = new Article({postedBy: req.profile})
@@ -45,14 +45,14 @@ const articleByID = async (req, res, next, id) => {
   try{
   let article = await Article.findById(id).populate('postedBy', '_id name').exec()
     if (!article)
-      return res.status('400').json({
+      return res.status(400).json({
         error: "Article not found"
       })
       req.article = article
       next()
     }catch(err) {
       return res.status(404).send({
-        error: 'Could not retrieve article file'
+        error: errorHandler.getErrorMessage(err)? errorHandler.getErrorMessage(err): 'Could not retrieve article file'
       })
     }
 }
@@ -81,7 +81,7 @@ const update = async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(400).json({
-        error: "Article could not be updated"
+        error: "Article could not be updated: "+ err
       })
     }
     let article = req.article
@@ -106,7 +106,7 @@ const update = async (req, res) => {
 const isPoster = (req, res, next) => {
   let isPoster = (req.article && req.auth && req.article.postedBy._id == req.auth._id) || (req.auth && req.auth.role === 'admin')
   if(!isPoster){
-    return res.status('403').json({
+    return res.status(403).json({
       error: "User is not authorized"
     })
   }

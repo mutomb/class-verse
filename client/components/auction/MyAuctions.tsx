@@ -6,8 +6,10 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import auth from '../auth/auth-helper'
 import {listBySeller} from './api-auction'
-import {Redirect, Link} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import Auctions from './Auctions'
+import { StyledSnackbar } from '../styled-banners'
+import { Error } from '@mui/icons-material'
 
 const useStyles = makeStyles(theme => ({
   root: theme.mixins.gutters({
@@ -31,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 export default function MyAuctions(){
   const classes = useStyles()
   const [auctions, setAuctions] = useState([])
-  const [redirectToSignin, setRedirectToSignin] = useState(false)
+  const [error, setError] = useState('')
   const jwt = auth.isAuthenticated()
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function MyAuctions(){
       userId: jwt.user._id
     }, {t: jwt.token}, signal).then((data) => {
       if (data && data.error) {
-        setRedirectToSignin(true)
+        setError(data.error)
       } else {
         setAuctions(data)
       }
@@ -58,9 +60,6 @@ export default function MyAuctions(){
     setAuctions(updatedAuctions)
   }
 
-    if (redirectToSignin) {
-      return <Redirect to='/signin'/>
-    }
     return (
     <div>
       <Paper className={classes.root} elevation={4}>
@@ -75,6 +74,15 @@ export default function MyAuctions(){
           </span>
         </Typography>
         <Auctions auctions={auctions} removeAuction={removeAuction}/>
+        <StyledSnackbar
+        open={error? true: false}
+        duration={3000}
+        handleClose={()=>setError('')}
+        icon={<Error/>}
+        heading={"Error"}
+        body={error}
+        variant='error'
+        />
       </Paper>
     </div>)
 }

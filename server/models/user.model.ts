@@ -74,8 +74,9 @@ const UserSchema = new mongoose.Schema({
     type: Boolean
   },
   experience: {
-    type: String,
-    trim: true
+    type: {},
+    required: true,
+    max: 100000
   },
   skills: [String],
   // role: {type: mongoose.Schema.ObjectId, ref: 'Role'}, //Continuous role to be implemented
@@ -149,13 +150,12 @@ UserSchema.methods = {
 }
 
 //mongoose schema middlewares
-UserSchema.pre('remove',function(next){
-  console.log("Removing company of user " + this._id);
+UserSchema.pre(/delete/,function(next){
+  console.log("Removing company of user " + this.get('_id'));
   /**remove any user's company */
-  this.model('Company').find({ _id : this.company }, function(err, companies){
-      if(err){
-          console.log("Error, Company was not deleted");
-      }else if(companies.length == 0){
+  try{
+    let companies = this.model('Company').find({ _id : this.company }).exec()
+     if(companies.length == 0){
           console.log("No company found for this user");
       }else{
           for (var i=0; i<companies.length; i++){
@@ -168,22 +168,25 @@ UserSchema.pre('remove',function(next){
               });
           }
       }
-  });
+  }catch(err){
+      console.log("Error, Company was not deleted", err);
+  }
   /**remove user's settings */
-  this.model('Setting').findByIdAndRemove(this._id, function (err, setting) {
-    if(err){
-      console.log("Error, Setting not deleted");
-    }else{
+  try{
+    let setting = this.model('Setting').findByIdAndDelete(this.get('_id')).exec()
+    if(setting){
       console.log("Setting deleted:", setting._id);
     }
-  });
+  }catch(err){
+    console.log("Error, Setting not deleted", err);
+  }
   next();
 });
 
 UserSchema.pre(['save', 'updateOne', 'findOneAndUpdate'],function(next){
   console.log('user pre save, updateOne, findOneAndupdate', this.get('email'))
   if(this.get('email') === config.admin){
-    this.role = 'admin'
+    this.set('role', 'admin')
   }
   next()
 });
