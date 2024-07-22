@@ -6,3 +6,4 @@ npm-debug.log
 .idea
 .vscode
 mongoose_script.ts
+app.yaml

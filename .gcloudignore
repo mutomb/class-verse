@@ -12,7 +12,13 @@
 # below:
 .git
 .gitignore
-#!include:.gitignore
+dist/
+data/
+npm-debug.log
+.env
+.idea
+.vscode
+mongoose_script.ts
 
 # Node.js dependencies:
 node_modules/
