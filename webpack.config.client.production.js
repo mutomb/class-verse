@@ -5,7 +5,9 @@ const Dotenv = require('dotenv-webpack');
 // import path from 'path'
 // import Dotenv from 'dotenv-webpack'
 const CURRENT_WORKING_DIR = process.cwd()
-
+const crypto = require("crypto");
+const crypto_orig_createHash = crypto.createHash;
+crypto.createHash = algorithm => crypto_orig_createHash(algorithm == "md4" ? "sha256" : algorithm);
 const config = {
     mode: "production",
     entry: [
