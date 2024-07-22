@@ -30,33 +30,35 @@ export default function MyCourses(){
     const abortController = new AbortController()
     const signal = abortController.signal
     setLoading(true)
-    listBySpecialist({
-      userId: isAuthenticated().user && isAuthenticated().user._id 
-    }, {token: isAuthenticated().token}, signal).then((data) => {
-      if (data && data.error) {
-        return data
-      } else {
-        setCourses(data)
-        return data
-      }
-    }).then((data)=>{
-      if(data && data.error){
-         setError(data.error)
-        setLoading(false)
-      }else{
-        read({
-          userId: isAuthenticated().user && isAuthenticated().user._id 
-        }, {token: isAuthenticated().token}, signal).then((data) => {
-          if (data && data.error) {
-             setError(data.error)
-            setLoading(false)
-          } else {
-            setUser(data)
-            setLoading(false)
-          }
-        })
-      }
-    })
+    if(isAuthenticated().user){
+      listBySpecialist({
+        userId: isAuthenticated().user && isAuthenticated().user._id 
+      }, {token: isAuthenticated().token}, signal).then((data) => {
+        if (data && data.error) {
+          return data
+        } else {
+          setCourses(data)
+          return data
+        }
+      }).then((data)=>{
+        if(data && data.error){
+          setError(data.error)
+          setLoading(false)
+        }else{
+          read({
+            userId: isAuthenticated().user && isAuthenticated().user._id 
+          }, {token: isAuthenticated().token}, signal).then((data) => {
+            if (data && data.error) {
+              setError(data.error)
+              setLoading(false)
+            } else {
+              setUser(data)
+              setLoading(false)
+            }
+          })
+        }
+      })
+    }
     return function cleanup(){
       abortController.abort()
     }

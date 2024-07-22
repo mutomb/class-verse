@@ -93,7 +93,7 @@ const HomeHero: FC = () => {
                           '& img': { width: { xs: 100, sm: 120, md: 210 }, height: 'auto' },
                         }}
                       >
-                        <Box component='img' src={HeadLineCurve} alt="Headline curve" />
+                        <Box component='img' src={HeadLineCurve}  />
                       </Box>
                     </Typography>
                     With{' '}

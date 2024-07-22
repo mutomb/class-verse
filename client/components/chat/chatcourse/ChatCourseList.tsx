@@ -6,7 +6,6 @@ import { listBySpecialist, list } from '../../courses/api-course';
 import { useAuth } from '../../auth';
 import { Error, Group } from '@mui/icons-material';
 import { StyledSnackbar } from '../../styled-banners';
-import image from '../../../public/images/avatars/5.jpg'
 
 const ChatCourseList = () => {
     const [courses, setCourses] = useState([])

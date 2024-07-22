@@ -48,7 +48,7 @@ const CourseCardItem: FC<Props> = ({ item, action, enrollmentID, wrapperStyle })
             }}
           >
             <Link style={{textDecoration: 'none', width:'100%', height:'100%'}} to={enrollmentID? "/client/"+ enrollmentID : "/course/"+item._id}>
-            <Box component='img' src={'/api/courses/photo/'+item._id} sx={{width:'100%', height:'100%'}} alt={'Course ' + item._id}/>
+            <Box component='img' src={'/api/courses/photo/'+item._id} sx={{width:'100%', height:'100%'}}/>
             </Link>
           </Box>
           <Box sx={{ mb: 2 }}>

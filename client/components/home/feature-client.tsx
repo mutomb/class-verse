@@ -37,7 +37,7 @@ const HomeFeature: FC = () => {
             <Grid item xs={12} sm={5}>
               <Zoom timeout={1000} id="zoom-image" appear={true} in={true} color='inherit' unmountOnExit={true}>
                 <Box sx={{ position: 'relative' }}>
-                  <Box component='img' src={HomeFeatureIcon} sx={{width:'100%', height:'auto'}} alt="Feature img"/>
+                  <Box component='img' src={HomeFeatureIcon} sx={{width:'100%', height:'auto'}}/>
                   <Box
                     sx={{
                       position: 'absolute', top: -36, right: { xs: 0, md: -36 }, '&:hover':{boxShadow: 2}, borderRadius: 1, px: 2.2, 
@@ -95,7 +95,7 @@ const HomeFeature: FC = () => {
                         left: 2,
                         '& img': { width: { xs: 140, md: 175 }, height: 'auto' },
                       }}>
-                      <Box component='img' src={HeadLineCurve} alt="Headline curve" />
+                      <Box component='img' src={HeadLineCurve}  />
                     </Box>
                   </Typography>
                   Enjoyable

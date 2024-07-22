@@ -241,7 +241,6 @@ export default function Profile({match}){
               <Box sx={{width: '100%', height: {xs:100, sm:'100%'}, display: 'flex', justifyContent: 'center'}}>
                 <Avatar 
                   src={localPhoto.url? localPhoto.url : defaultPhotoURL}
-                  alt='profile picture' 
                   sx={{
                     width: {xs: 100, sm: 150, md: 200},
                     height: {xs: 100, sm: 150, md: 200},

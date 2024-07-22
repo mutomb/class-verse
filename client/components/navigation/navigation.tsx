@@ -95,7 +95,7 @@ const Navigation: FC<NavigationProps> = ({onClick, orientation}) => {
                 }}
               >
                 {/* eslint-disable-next-line */}
-                <img src={HeadLineCurve} alt="Headline curve" />
+                <img src={HeadLineCurve}  />
               </Box>
               {label} {subpaths && subpaths.length>0 && (anchor.path === path ? <ExpandLess /> : <ExpandMore />)}
             </Box>

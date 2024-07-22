@@ -82,7 +82,7 @@ export const otherLinks: Navigation[] = [
     label: 'Certificates',
     path: 'certificates', // '/client/courses/#certificates'
     icon: <Box sx={{ borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', '& img': { width: 24, height: 'auto' },}}>
-            <Box component='img' src={CertificateIcon} alt="Certificate icon" sx={{width:'100%', height:'auto'}} />
+            <Box component='img' src={CertificateIcon}  sx={{width:'100%', height:'auto'}} />
           </Box>
   },
   {

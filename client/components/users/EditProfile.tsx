@@ -320,7 +320,7 @@ export default function EditProfile({ match }) {
             <Typography component='h4' variant='h3' sx={{fontSize: '1rem', color: 'text.primary'}}> Upload Profile Picture </Typography>
             <Box sx={{ position: 'relative', mx: 'auto'}}>
               <Box sx={{ overflow: 'hidden', borderRadius: '50%', height: {xs: 100, sm: 200}, mb: 2, boxShadow: 2}}>
-                <Box component='img' src={localPhoto.url? localPhoto.url : defaultphotoURL} sx={{width: {xs: 100, sm: 200}, height:'auto'}} alt={'Specialist ' + values.name +" "+ values.surname + ' profile picture'} />
+                <Box component='img' src={localPhoto.url? localPhoto.url : defaultphotoURL} sx={{width: {xs: 100, sm: 200}, height:'auto'}}/>
               </Box>
               <Box sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: {xs: 100, sm: 200}, height: {xs: 100, sm: 200}, borderRadius: '50%',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', 

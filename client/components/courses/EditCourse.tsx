@@ -457,7 +457,7 @@ export default function EditCourse({match}){
               </Box>
               <Box sx={{ position: 'relative', mx: 'auto'}}>
                 <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', borderRadius: 10, height: {xs: 150, sm:300}}}>
-                  <Box component='img' src={localCover.url? localCover.url : defaultphotoURL} sx={{width: {xs: 150, sm:300}, height:'auto'}} alt={'Course ' + course.title +" "+ ' picture'} />
+                  <Box component='img' src={localCover.url? localCover.url : defaultphotoURL} sx={{width: {xs: 150, sm:300}, height:'auto'}}/>
                 </Box>
                 <Box id="course-image-inputs" 
                     sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: {xs: 150, sm: 300}, height: {xs: 150, sm: 300}, borderRadius: 10,

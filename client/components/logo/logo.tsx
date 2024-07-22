@@ -37,7 +37,7 @@ const Logo: FC<Props> = ({ onClick, variant='primary', style }) => {
         display:'flex',
         alignItems: 'flex-start',
       }}>
-      <Box component='img' src={HeadLineCurve} alt="Headline curve" />
+      <Box component='img' src={HeadLineCurve}  />
     </Box>
     <Box
       sx={{ 

@@ -80,7 +80,7 @@ const HomeTestimonial: FC = () => {
                     }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={HeadLineCurve} alt="Headline curve" />
+                    <img src={HeadLineCurve}  />
                   </Box>
                 </Typography>
                 Testimonials
@@ -97,7 +97,7 @@ const HomeTestimonial: FC = () => {
           <Grid item xs={12} sm={6}>
             <Zoom timeout={1000} id="zoom-image" appear={true} in={true} color='inherit' unmountOnExit={true}>
               <Box sx={{ width: { xs: '100%', md: '90%' } }}>
-                <Box component='img' src={HomeTestimonialIcon} sx={{width:'100%', height:'auto'}} alt="Testimonial img" />
+                <Box component='img' src={HomeTestimonialIcon} sx={{width:'100%', height:'auto'}} />
               </Box>
             </Zoom>
           </Grid>

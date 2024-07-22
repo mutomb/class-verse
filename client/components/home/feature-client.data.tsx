@@ -24,7 +24,7 @@ export const data: Data[] = [
   {
     title: 'Verifiable Certificate',
     description: 'Unlock a unique certificate upon course completing, that employers can verify.',
-    icon: <Box component='img' src={CertificateIcon} alt="Certificate icon" sx={{width:'100%', height:'auto'}} />,
+    icon: <Box component='img' src={CertificateIcon}  sx={{width:'100%', height:'auto'}} />,
     iconStyle: {backgroundColor: 'unset'}
   },
   {

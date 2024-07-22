@@ -622,7 +622,7 @@ export default function Course({match}){
               <Grid item xs={12} sm={6} md={4} lg={3} sx={{display: 'flex', alignItems: 'center', pl: {xs: 0, sm: 'inherit'}, py: {xs: 1, sm: 2}, boxShadow: 2, borderRadius: {xs: 2, sm: 4}}}>
                 <Box sx={{mr: 1, backgroundColor: 'unset', borderRadius: '50%', height: {xs: 30, md: 36}, width: {xs: 30, md: 36}, display: 'flex', alignItems: 'center',
                           justifyContent: 'center', color: 'primary.contrastText','& svg': { fontSize: {xs: 24, md: 30}, }}}>
-                  <Box component='img' src={CertificateIcon} alt="Certificate icon" sx={{width: '1rem', height: '1rem'}} /> 
+                  <Box component='img' src={CertificateIcon} sx={{width: '1rem', height: '1rem'}} /> 
                 </Box>
                 Certificate of completion
               </Grid>

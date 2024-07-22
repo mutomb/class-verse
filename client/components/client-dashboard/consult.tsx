@@ -72,7 +72,7 @@ export default function Consult(){
                     }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={HeadLineCurve} alt="Headline curve" />
+                    <img src={HeadLineCurve}/>
                   </Box>
                 </Typography>
                 Specialists

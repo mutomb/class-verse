@@ -133,7 +133,7 @@ const NewMedia:FC<NewMediaProps> = ({lessonId, courseId, handleNext, direction='
         <Typography component='h4' variant='h3' sx={{fontSize: '1rem', color: 'text.primary'}}> Upload Cover Image </Typography>
         <Box sx={{ position: 'relative', mx: 'auto'}}>
           <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', borderRadius: 10, height: {xs: 150, sm:300}, mb: 2 }}>
-            <Box component='img' src={localCover.url? localCover.url : defaultCoverURL} sx={{width: {xs: 150, sm:300}, height:'auto'}} alt={'Course ' + values.title +" "+ ' picture'} />
+            <Box component='img' src={localCover.url? localCover.url : defaultCoverURL} sx={{width: {xs: 150, sm:300}, height:'auto'}} />
           </Box>
           <MoreMenuVertButton style={{position: 'absolute', top: 0, right: 0, color: "primary.main", bgcolor: 'primary.contrastText', boxShadow: 4,  transition: theme.transitions.create(['background-color'], {duration: 500}), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>
             <MenuItem sx={{color: "primary.main", transition: theme.transitions.create(['background-color'], {duration: 500}), '&:hover':{ bgcolor: 'primary.main', color: 'primary.contrastText'}}}>

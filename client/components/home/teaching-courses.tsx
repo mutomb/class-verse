@@ -19,15 +19,17 @@ export default function TeachingCourses(){
     useEffect(() => {
         const abortController = new AbortController()
         const signal = abortController.signal
-        listBySpecialist({
-          userId: isAuthenticated().user && isAuthenticated().user._id
-        }, {token: isAuthenticated().token}, signal).then((data) => {
-          if (data && data.error) {
-            setError(data.error)
-          } else {
-            setCourses(data)
-          }
-        })
+        if(isAuthenticated().user){
+          listBySpecialist({
+            userId: isAuthenticated().user && isAuthenticated().user._id
+          }, {token: isAuthenticated().token}, signal).then((data) => {
+            if (data && data.error) {
+              setError(data.error)
+            } else {
+              setCourses(data)
+            }
+          })
+        }
         return function cleanup(){
           abortController.abort()
         }
@@ -96,7 +98,7 @@ export default function TeachingCourses(){
                       '& img': { width: { xs: 100, md: 200 }, height: 'auto' },
                     }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={HeadLineCurve} alt="Headline curve" />
+                    <img src={HeadLineCurve}  />
                   </Box>
                 </Typography>
               </Typography>  

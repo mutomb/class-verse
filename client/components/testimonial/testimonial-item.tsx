@@ -47,7 +47,6 @@ const TestimonialItem: FC<Props> = ({ item }) => {
             <Box component='img' 
             src={avatar1} 
             sx={{width:'100%', height:'auto'}}
-            alt={item.user.name}
             />
           </Box>
           <Box>

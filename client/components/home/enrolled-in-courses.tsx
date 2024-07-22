@@ -19,13 +19,15 @@ export default function EnrolledInCourses(){
     useEffect(() => {
         const abortController = new AbortController()
         const signal = abortController.signal
-        listEnrolled({token: isAuthenticated().token}, signal).then((data) => {
-            if (data && data.error) {
-             setError(data.error)
-            } else {
-            setEnrolled(data)
-            }
-        })
+        if(isAuthenticated().user){
+            listEnrolled({token: isAuthenticated().token}, signal).then((data) => {
+                if (data && data.error) {
+                 setError(data.error)
+                } else {
+                setEnrolled(data)
+                }
+            })
+        }
         return function cleanup(){
             abortController.abort()
         }
@@ -95,7 +97,7 @@ export default function EnrolledInCourses(){
                         }}
                     >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={HeadLineCurve} alt="Headline curve" />
+                        <img src={HeadLineCurve}  />
                     </Box>
                     </Typography>
                 </Typography>

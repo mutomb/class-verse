@@ -18,7 +18,7 @@ const SpecialistCardItem: FC<Props> = ({ item }) => {
         <Box sx={{ p: 2, backgroundColor: 'background.paper', borderRadius: 4, transition: (theme) => theme.transitions.create(['box-shadow'], {duration: 500}), '&:hover': { boxShadow: 2, }, }} >
           <Box sx={{ lineHeight: 0, overflow: 'hidden', borderRadius: 3, height: 200, mb: 2, }} >
             <Link style={{textDecoration: 'none', width:'100%', height:'100%'}} to={"/user/"+item._id}>
-              <Box component='img' src={item.photo || `/api/users/photo/${item._id}?${new Date().getTime()}`} sx={{width:'100%', height:'100%'}} alt={'Specialist ' + item.id} />
+              <Box component='img' src={item.photo || `/api/users/photo/${item._id}?${new Date().getTime()}`} sx={{width:'100%', height:'100%'}} />
             </Link>
           </Box>
           <Box sx={{ mb: 2}}>

@@ -65,7 +65,7 @@ export default function Overview(){
                       }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={HeadLineCurve} alt="Headline curve" />
+                      <img src={HeadLineCurve}/>
                     </Box>
                   </Typography>
                 </Typography>

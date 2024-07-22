@@ -9,7 +9,7 @@ const TeamCardItem = ({ item }) => {
       <Box sx={{ px: {xs: 0, sm: 1.5}, py: 5, }} >
         <Box sx={{ p: 2, backgroundColor: 'background.paper', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }} >
           <Box sx={{ lineHeight: 0, overflow: 'hidden', borderRadius: 3, width: 200, height: 200, mb: 2}} >
-              <Box component='img' src={item.photo} sx={{width:'100%', height:'100%', borderRadius: '50%'}} alt={item.name} />
+              <Box component='img' src={item.photo} sx={{width:'100%', height:'100%', borderRadius: '50%'}}/>
           </Box>
           <Box sx={{ mb: 2,  }}>
             <Typography component="h2" variant="h4" sx={{ color: 'text.primary', fontSize: '1.4rem' }}>
