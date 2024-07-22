@@ -129,7 +129,7 @@ const Editor: FC<Editor> = ({onChange, modules, value, placeholder, bounds, chil
       ...sx
     }}>
       {!readOnly? Editor: 
-      (<Box component='div' className='quill' sx={{width: '100%', cursor: 'pointer', scrollbarWidth: {xs: 'none', md: 'thin'}, scrollbarColor: 'primary.main', ...sx}}>
+      (<Box component='div' className='quill' sx={{overflowY: 'scroll', resize: 'vertical', width: '100%', cursor: 'pointer', scrollbarWidth: {xs: 'none', md: 'thin'}, scrollbarColor: 'primary.main', ...sx}}>
         <Box component='div' className='ql-container ql-snow ql-disabled' sx={{width: '100%'}}>
          <Box component='div' className='ql-editor' sx={{width: '100%'}}>
           {renderHTML(value)}

@@ -32,7 +32,12 @@ const create = (req, res) => {
       if(fields.lesson && fields.course) { /** for lessons */
         try {
           let course = await Course.findById(fields.course)
-          course.lessons.id(fields.lesson).media = media
+          if(!course){
+            return res.status(400).json({
+              error: "Course not found"
+            })
+          }
+          course.lessons.id(fields.lesson).media = media._id
           await course.save()
         } catch (err) {
             return res.status(400).json({
@@ -43,7 +48,12 @@ const create = (req, res) => {
       if(!fields.lesson && fields.course) { /** for  course preview */
         try {
           let course = await Course.findById(fields.course)
-          course.media = media
+          if(!course){
+            return res.status(400).json({
+              error: "Course not found"
+            })
+          }
+          course.media = media._id
           await course.save()
         } catch (err) {
             return res.status(400).json({
@@ -155,6 +165,11 @@ const listPopular = async (req, res) => {
 const listAdmin = async (req, res) => {
   try{
     let admin = await User.findOne({'role': 'admin'}).exec()
+    if(!admin) {
+      return res.status(400).json({
+        error: 'List Admin Not found'
+      })
+    }
     let media = await Media.find({'postedBy': admin._id}).populate('postedBy', '_id name').select('-cover').exec()
     res.json(media)
   } catch(err){
