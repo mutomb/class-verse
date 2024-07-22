@@ -9,6 +9,7 @@ mongoose.Promise = global.Promise
 // mongoose.connect(config.mongoUri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true,  useFindAndModify: false  })
 mongoose.connect(config.mongoUri)
 mongoose.connection.on('error', (err) => {
+  console.log(config.mongoUri)
   throw new Error(`Mongoose unable to connect to database ${err}`)
 })
 mongoose.connection.on('connected', function () {

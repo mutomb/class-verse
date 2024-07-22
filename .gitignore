@@ -1,8 +1,8 @@
 /node_modules/
 /dist/
 /data/
-/npm-debug.log/
-/.env/
-/.idea/
-/.vscode/
-/mongoose_script.ts/
+npm-debug.log
+.env
+.idea
+.vscode
+mongoose_script.ts
