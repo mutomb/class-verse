@@ -22,7 +22,7 @@
   "scripts": {
     "dev": "nodemon --ext js,json,ts,tsx",
     "build": "webpack --config webpack.config.client.production.js && webpack --mode=production --config webpack.config.server.js",
-    "start": "node ./dist/js/server.generated.js",
+    "start": "NODE_ENV=production node ./dist/js/server.generated.js",
     "forever": "NODE_ENV=production forever ./dist/js/server.generated.js",
     "test": "jest"
   },

@@ -75,8 +75,7 @@ const UserSchema = new mongoose.Schema({
   },
   experience: {
     type: {},
-    required: true,
-    max: 100000
+    max: 100000,
   },
   skills: [String],
   // role: {type: mongoose.Schema.ObjectId, ref: 'Role'}, //Continuous role to be implemented

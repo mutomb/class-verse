@@ -63,6 +63,10 @@ const ChatBot = () => {
                         setError(data.error)
                     } else {
                         let admin = data[Math.floor(Math.random()*data.length)];
+                        if(!admin){
+                            setError('Support Team unavailable');
+                            return setLoading(false)
+                        }
                         let fullname = admin.name && admin.surname && (admin.name +" "+ admin.surname)
                         let scope = fullname && fullname.substring(0, fullname.length>15? 15: fullname.length)
                         scope+= fullname.substring(15).length>0? '...': ''

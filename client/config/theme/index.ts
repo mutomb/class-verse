@@ -10,9 +10,9 @@ import {DarkShadows, LightShadows} from './shadows'
 ***Augment the DefaultTheme (empty object) in @mui/styles with Theme from the core.
 ***Prevents Property "palette", "spacing" does not exist on type 'DefaultTheme' Warning
 */
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
+// declare module '@mui/styles/defaultTheme' {
+//   interface DefaultTheme extends Theme {}
+// }
 
 // default
 let shadows = DarkShadows;

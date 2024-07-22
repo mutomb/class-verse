@@ -1,0 +1,9 @@
+runtime: nodejs20
+env_variables:
+  ADMINISTRATOR_EMAIL: "jeanlucmutomb@admin.com"
+  SECRET: "e2b02e9222879eeb5bd55c0c01bb933508cb1f7ff484f274314ebcaf1e3e9463" 
+  CLIENTID: "rJzGN3b14XS8bqLBT6T5mzwSXvhApyY8"
+  MONGODB_URI: "mongodb+srv://jeanlucmutomb:7ck0bci7i8YQ6Iyn@gosquare-cluster.keeuhsr.mongodb.net/?retryWrites=true&w=majority&appName=gosquare-cluster"
+  STRIPE_TEST_CLIENT_ID: "ca_QAOtjwED3Hak3PM1DTj2PSPkoPXcRBKJ"
+  STRIPE_SECRET: "sk_test_51PK3Zd02HRIa5MHklz2QGQK3m1CEhCSevc13ekA4chVpVRpji3U8xUSErMG8S8aNKbGNpSerXSzrMLfHkeb3ViMC00xNY5StUK"
+  STRIPE_TEST_PUBLISHABLE: "pk_test_51PK3Zd02HRIa5MHks8tMIawhL2ILHIIvdkQZHISxEFpTTYEjF1Zs83BdrlYrsCzqgrlhvkODviWHoyEAN8IqbxM000fjy3XE0v"

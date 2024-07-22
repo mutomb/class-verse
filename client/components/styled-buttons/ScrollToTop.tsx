@@ -1,7 +1,7 @@
 import React from 'react';
 import {useScrollTrigger, Box, Fab, Fade} from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { useTheme } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 import { scroller } from 'react-scroll';
 import {useAuth} from '../auth';
 

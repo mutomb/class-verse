@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react'
 import { Box, Fade, Fab, Badge, badgeClasses, fabClasses, IconButton, iconButtonClasses } from '@mui/material'
 import {Close, Email} from '@mui/icons-material'
-import { useTheme } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import {socket} from '../communication'
 import { useAuth } from '../../auth';
