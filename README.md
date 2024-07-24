@@ -1,4 +1,4 @@
-# GreenOrangeSquare
+# GO<sup>2</sup>
 
 A simple web-based classroom application that allows specialists to add courses with lessons, while clients can enroll in these courses and track their progress. - developed using the latest versions of **React.js**(React Hooks, Redux/Context API), **Node.js**, **Express.js** and **MongoDB** (Mongoose). The UI is built on top of **MaterialUI 5**, which is simple & light designed to provide all the basic components using the `sx` prop for a developer need to create slick page views.
 
@@ -111,8 +111,8 @@ Take a look the live demo here 👉![GreenOrangeSquare Prototype](https://github
 ### [Live Demo](http://URL_To_Demo "GreenOrangeSquare") 
 
 #### What you need to run this code
-1. Node (20.11.1)
-2. NPM (10.2.4)
+1. Node (20.15.1)
+2. NPM (10.7.0)
 3. MongoDB (7.0.5)
 
 ####  How to run this code

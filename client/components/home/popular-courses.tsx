@@ -99,7 +99,7 @@ const HomePopularCourse: FC = () => {
     setLoading(true)
     listPopular(signal).then((data) => {
       if (data && data.error) {
-         setError(data.error)
+         setError(typeof data.error ==='object'?'Unknown Error': data.error)
          setLoading(false)
       } else {
         setCourses(data)
