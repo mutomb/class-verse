@@ -5,7 +5,7 @@ import {SliderArrow, SliderDots} from '../styled-buttons'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
 import SpecialistCardItem from './specialist-card-item'
-import { data } from './specialists.data'
+// import { data } from './specialists.data'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import logo from '../../public/logo.svg'
 import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
@@ -13,11 +13,13 @@ import { listApprovedSpecialists } from '../users/api-user'
 import { useAuth } from '../auth'
 import { StyledSnackbar } from '../styled-banners'
 import { Error } from '@mui/icons-material'
+import { CardItemSkeleton } from '../skeletons'
 
 const HomeOurSpecialists: FC = () => {
   const theme = useTheme()
   const [users, setUsers] = useState()
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const {isAuthenticated} = useAuth()
   const smMobileView = useMediaQuery(theme.breakpoints.down('md'), {defaultMatches: true})
   const xsMobileView = useMediaQuery(theme.breakpoints.down('sm'), {defaultMatches: true})
@@ -38,14 +40,16 @@ const HomeOurSpecialists: FC = () => {
   useEffect(()=>{
     const abortController = new AbortController()
     const signal = abortController.signal
-
+    setLoading(true)
     listApprovedSpecialists(signal, {
       token: isAuthenticated().token
     }).then((data) => {
       if (data && data.error) {
          setError(data.error)
+         setLoading(false)
       } else {
         setUsers(data)
+        setLoading(false)
       }
     })
   },[])
@@ -81,8 +85,7 @@ const HomeOurSpecialists: FC = () => {
               lineHeight: 1,
               fontWeight: 'bold',
               color: 'text.primary'
-            }}
-          >
+            }}>
             Our{' '}
             <Typography
               component="mark"
@@ -109,14 +112,21 @@ const HomeOurSpecialists: FC = () => {
             </Typography>
           </Typography>        
         </Slide>
-        <Slider {...sliderConfig}>
-          {data.map((item) => (
-            <SpecialistCardItem key={String(item.id)} item={item} />
+        {(loading || !users || users.length===0)?
+        (<Slider {...sliderConfig}>
+          {Array.from(new Array(4)).map(()=>(<CardItemSkeleton />))}
+        </Slider>):
+        (users.length < 3)?
+        (<Slider {...sliderConfig}>
+          {[...users, ...users, ...users].map((specialist) => (
+            <SpecialistCardItem key={String(specialist._id)} item={specialist} />
           ))}
-          {users && users.map((item) => (
-            <SpecialistCardItem key={String(item._id)} item={item} />
+        </Slider>): 
+        (<Slider {...sliderConfig}>
+          {users.map((specialist) => (
+            <SpecialistCardItem key={String(specialist._id)} item={specialist} />
           ))}
-        </Slider>
+        </Slider>)}
       </Container>
     </Box>
     <StyledSnackbar

@@ -30,9 +30,9 @@ const SpecialistCardItem: FC<Props> = ({ item }) => {
               {item.category || (item.skills && item.skills[0])} 
               {item.skills && item.skills.length>1 && ` (+${item.skills.length})`}
               </Typography>
-              <Typography sx={{ mb: 2, color: 'text.secondary', height: 100 }} variant="subtitle1">
+              {/* <Typography sx={{ mb: 2, color: 'text.secondary', height: 100 }} variant="subtitle1">
                 {item.experience && item.experience.substring(0,150)}{item.experience && item.experience.substring(150).length>0 && '...'}
-              </Typography>
+              </Typography> */}
             </Link>
             <Box sx={{ '& img': { height: 26 }, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               {/* eslint-disable-next-line */}
