@@ -10,7 +10,7 @@ import renderHTML from "react-render-html";
 interface Editor{
   onChange?: (value: string, delta: DeltaStatic, source: Sources, editor: UnprivilegedEditor) => void,
   modules?: StringMap,
-  value: Value,
+  value?: Value,
   placeholder?: string,
   bounds?: string | HTMLElement,
   children?: React.ReactElement<any>,
@@ -31,7 +31,7 @@ interface Editor{
   tabIndex?: number,
   sx?: SxProps<Theme>
 }
-const Editor: FC<Editor> = ({onChange, modules, value, placeholder, bounds, children, className="", defaultValue, formats, id,
+const Editor: FC<Editor> = ({onChange, modules, value='', placeholder, bounds, children, className="", defaultValue, formats, id,
                              onChangeSelection=undefined, onFocus, onBlur, onKeyDown, onKeyPress, onKeyUp, preserveWhitespace, readOnly, scrollingContainer, style, tabIndex, sx}) => {
   const [Editor, setEditor] = useState(<></>)
   useEffect(()=>{
