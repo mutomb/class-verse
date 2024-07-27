@@ -194,7 +194,10 @@ export default function EditCourse({match}){
     const value = name === 'cover'
     ? event.target.files[0]
     : event.target.value
-    setCourse({ ...course, [name]: value })
+    setCourse((prev_values)=>{
+      console.log(prev_values)
+      return {...prev_values, [name]: value}
+    })
     name === 'cover' && setLocalCover({...localCover, url: URL.createObjectURL(value), isDefault: false})
   }
   const handleChangePrice = event => {

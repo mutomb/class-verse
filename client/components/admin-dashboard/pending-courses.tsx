@@ -10,6 +10,7 @@ import {listPending} from '../courses/api-course'
 import { MoreMenuVertButton } from '../styled-buttons'
 import {socket} from './communication'
 import { StyledSnackbar } from '../styled-banners'
+import { Link } from 'react-router-dom'
 
 export default function Courses(){
   const theme = useTheme()

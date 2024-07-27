@@ -17,7 +17,6 @@ import image from '../../public/images/workspace/1.png'
 import { useCourse } from './Course-hooks'
 import { create } from '../article/api-article'
 import { SnowEditor } from '../forms'
-import { FormSkeleton } from '../skeletons'
 
 interface NewLessonProps{
   courseId:string,
@@ -93,8 +92,11 @@ const NewLesson: FC<NewLessonProps>= ({match}) => {
   }
  
   const handleChange = (name: string) => (event) => {
-    const value = name === 'article'? event.target.files[0] : name === 'content'? event: event.target.value
-    setValues({ ...values, [name]: value, error: '' })
+    const value = name === 'content'? event : name === 'article'? event.target.files[0] : event.target.value
+    setValues((prev_values)=>{
+      console.log(prev_values)
+      return {...prev_values, [name]: value, error: ''}
+    })
   }
 
   const handleCheck = (name: string) => (event: ChangeEvent<HTMLFormElement>) => {

@@ -2,7 +2,7 @@ import React, {useState, useEffect, MouseEvent, useRef} from 'react';
 import { TextField, Box, Grid, Typography,  IconButton, formControlLabelClasses, formLabelClasses, inputLabelClasses, InputAdornment, 
   MenuItem, iconButtonClasses, Divider, Container, textFieldClasses, outlinedInputClasses,
   formHelperTextClasses} from '@mui/material';
-import {Error, Delete, Edit, Visibility, VisibilityOff, CheckOutlined, FileUpload} from '@mui/icons-material'
+import {Error, Delete, Edit, Visibility, VisibilityOff, CheckOutlined, FileUpload, HouseTwoTone} from '@mui/icons-material'
 import { fetchImage, read, update } from './api-user'
 import { MoreMenuVertButton, StyledButton } from '../styled-buttons'
 import { Link, Redirect, useHistory} from 'react-router-dom'
@@ -174,7 +174,9 @@ export default function EditProfile({ match }) {
     ? event.target.files[0]: name === 'experience'? event: event.target.value
     name.indexOf('company') > -1 
     ? setValues({ ...values, company:{ ...values.company, [name.slice(7).toLocaleLowerCase()]: value}}) 
-    :setValues({ ...values, [name]: value })
+    :setValues((prev_values)=>{
+      return {...prev_values, [name]: value, error: ''}
+    })
     name === 'photo' && setLocalPhoto({...localPhoto, url: URL.createObjectURL(value), isDefault: false})
     name === 'companyLogo' && setLocalLogo({ ...localLogo, url: URL.createObjectURL(value), isDefault: false })
   }
@@ -520,8 +522,10 @@ export default function EditProfile({ match }) {
               <Box sx={{ mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                 <Typography component='h4' variant='h3' sx={{fontSize: '1rem', color: 'text.primary'}}> Upload Company Logo </Typography>
                 <Box sx={{ position: 'relative', mx: 'auto'}}>
-                  <Box sx={{ overflow: 'hidden', borderRadius: '50%', height: 100, mb: 2 }}>
-                    <Box component='img' src={localLogo.url? localLogo.url : defaultphotoURL } sx={{width: 100, height:'auto'}} />
+                  <Box sx={{ overflow: 'hidden', height: 100, mb: 2 }}>
+                    {localLogo.url?
+                    (<Box component='img' src={localLogo.url} sx={{width: 100, height:'auto'}} />):
+                    (<HouseTwoTone sx={{width: 100, height: 'auto', color: 'primary.main'}}/>)}
                   </Box>
                   <Box 
                   sx={{zIndex: 1, position: 'absolute', top: 0, right: 0, width: 100, height: 100, borderRadius: 2,

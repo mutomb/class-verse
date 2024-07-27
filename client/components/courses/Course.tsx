@@ -416,7 +416,7 @@ export default function Course({match}){
                       (<Box sx={{flex: 1, textAlign: 'center', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
                           {course.lessons.length > 0 && isAuthenticated().user && isAuthenticated().user.stripe_seller &&
                           (<StyledButton color="secondary" variant="outlined" onClick={clickPublish}> Publish </StyledButton>)}
-                          <StyledButton color="secondary" variant="outlined" onClick={clickPublish}> Publish </StyledButton>
+                          {/* <StyledButton color="secondary" variant="outlined" onClick={clickPublish}> Publish </StyledButton> */}
                           {getStatus(course)}
                       </Box>)  
                     }

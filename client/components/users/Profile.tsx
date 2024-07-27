@@ -265,8 +265,8 @@ export default function Profile({match}){
                     <Work sx={{color: 'primary.main', verticalAlign: 'text-top', width: '1rem', height: '1rem'}}/> {user.company.name}
                   </Typography>
                   {localLogo.url && !localLogo.isDefault &&
-                  (<Box sx={{ overflow: 'hidden', borderRadius: 2, height: 40, width: 100, mb: 2 }}>
-                    <Box component='img' src={localLogo.url} sx={{width: 'auto', height: '100%'}}/>
+                  (<Box sx={{ '& img': { height: 26 }, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Divider component='span' sx={{ height: 28, m: 0.5,}} orientation="vertical" /><Box component='img' src={localLogo.url}/>
                   </Box>)}
                 </Box>
                 )}
