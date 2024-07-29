@@ -5,7 +5,7 @@ import {useTheme} from '@mui/material/styles'
 import { TestimonialItem } from '../testimonial'
 import { data } from './testimonial.data'
 import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
-import HomeTestimonialIcon from "../../public/images/home/home-testimonial.png"
+import HomeTestimonialIcon from "../../public/images/home/9_SCENE.svg"
 import logo from '../../public/logo.svg'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import { SliderArrow } from '../styled-buttons'
@@ -96,8 +96,8 @@ const HomeTestimonial: FC = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Zoom timeout={1000} id="zoom-image" appear={true} in={true} color='inherit' unmountOnExit={true}>
-              <Box sx={{ width: { xs: '100%', md: '90%' } }}>
-                <Box component='img' src={HomeTestimonialIcon} sx={{width:'100%', height:'auto'}} />
+              <Box sx={{ position: 'relative', width: { xs: '100%', md: '90%' } }}>
+                <Box component='img' src={HomeTestimonialIcon} sx={{position: 'absolute', right: {xs: 0, md:-200}, zIndex: -1, width:{xs: '100%', md: '150%'}, height:'auto'}} />
               </Box>
             </Zoom>
           </Grid>

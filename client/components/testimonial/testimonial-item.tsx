@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
 import { Testimonial } from '../../interfaces/testimonial'
-import avatar1 from '../../public/images/avatars/1.jpg'
 import { Slide, Typography, Box } from '@mui/material'
 
 interface Props {
@@ -45,14 +44,14 @@ const TestimonialItem: FC<Props> = ({ item }) => {
             }}
           >
             <Box component='img' 
-            src={avatar1} 
+            src={item.user?.photo} 
             sx={{width:'100%', height:'auto'}}
             />
           </Box>
           <Box>
             <Typography variant="h6">{item.user.name}</Typography>
             <Typography variant="subtitle1" sx={{ color: 'text.secondary' }}>
-              {item.user.professional}
+              {item.user.experience}
             </Typography>
           </Box>
         </Box>

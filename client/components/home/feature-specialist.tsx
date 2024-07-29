@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import {Box, Grid, Container, Typography, Slide, Zoom, gridClasses} from '@mui/material'
 import { data } from './feature-specialist.data'
-import HomeFeatureIcon from "../../public/images/home/home-feature.png"
+import HomeFeatureIcon from "../../public/images/home/Project_Manager_7.svg"
 import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
 import logo from "../../public/logo.svg"
 import {useAuth} from '../auth'
@@ -102,10 +102,10 @@ const HomeFeature: FC = () => {
                 ))}
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={5}>
+            <Grid sx={{pl: '0px important'}} item xs={12} sm={5}>
               <Zoom timeout={1000} id="zoom-image" appear={true} in={true} color='inherit' unmountOnExit={true}>
                 <Box sx={{ position: 'relative' }}>
-                  <Box component='img' src={HomeFeatureIcon} sx={{width:'100%', height:'auto'}}/>
+                  <Box component='img' src={HomeFeatureIcon} sx={{position: 'absolute', right: {xs: 0, md:-100}, zIndex: -1, width:{xs: '100%', md: '150%'}, height:'auto'}}/>
                 </Box>
               </Zoom>
             </Grid>

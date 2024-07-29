@@ -1,15 +1,23 @@
 import React, {} from 'react'
-import {Typography, Box, Grid, Container, Slide} from '@mui/material'
+import {Typography, Box, Grid, Container, Slide, Divider} from '@mui/material'
 import {useTheme} from '@mui/material/styles'
 import { WallPaperYGW } from '../wallpapers/wallpapers'
 import logo from '../../public/logo.svg'
 import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
 import { ChatCourseList } from '../chat/chatcourse'
 import { StyledBanner } from '../styled-banners'
-import { ChatTwoTone, Info } from '@mui/icons-material'
+import { ChatTwoTone, Info, VideoCall } from '@mui/icons-material'
+import { StyledButton } from '../styled-buttons'
+import {useHistory} from 'react-router-dom'
+import { useAuth } from '../auth'
 
 export default function Consult(){
   const theme = useTheme()
+  const history = useHistory()
+  const {isAuthenticated} = useAuth()
+  const toCall = ()=>{
+    isAuthenticated().user && history.push('/call') 
+  }
   return (
     <WallPaperYGW id='consult' secondaryColor={theme.palette.background.paper} primaryColor={theme.palette.background.default}
     style={{
@@ -87,6 +95,18 @@ export default function Consult(){
                 alignItems: 'center', bgcolor:'background.default'}}>
                 <Box sx={{ mt: 1, width: '100%'}}>
                   <Box sx={{  width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: {xs: 'start', md: 'center'}, borderRadius: 3}}>
+                      <Box sx={{  width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'text.disabled',
+                        textAlign: {xs: 'start', md: 'center'}, bgcolor: 'background.default', borderRadius: 3}}>
+                        <StyledBanner icon={<VideoCall sx={{color: 'secondary.main'}}/>} heading={<>Video Call</>} 
+                        body={<>
+                        {"Connect, meet and consult from anywhere."}
+                        </>} />
+                        <Box sx={{  width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', color: 'text.disabled',
+                          textAlign: {xs: 'start', md: 'center'}, bgcolor: 'background.default', borderRadius: 3}}>
+                            <StyledButton onClick={toCall} variant='contained' color='primary' startIcon={<VideoCall/>}> New meeting</StyledButton> 
+                        </Box>
+                        <Divider sx={{my: 1}}/>
+                      </Box>
                       <Typography variant="h1" component="h1" 
                       sx={{ flex: 1, textAlign: 'center', mb: 1, fontSize: { xs: '1.5rem', sm: '2.5rem', color: 'text.primary' }, color: 'text.primary'}}>
                         Course consultation rooms

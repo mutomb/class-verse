@@ -20,7 +20,7 @@ const ChatCourseList = () => {
                 if (data && data.error) {
                     setError(data.error)
                 } else {
-                    setCourses(data.map(enrollment=>enrollment.course))
+                    Array.isArray(data) && data.length>0 && setCourses(data.map(enrollment=>enrollment.course))
                 }
             })
         }
@@ -70,7 +70,7 @@ const ChatCourseList = () => {
     return (
         <Container id='chat-course-list' maxWidth="lg" sx={{px:{xs:0, sm: 'inherit'}}}>
           <Grid container spacing={2}>
-            {courses && courses.map((course, index) => {
+            {Array.isArray(courses) && courses.map((course, index) => {
             return (
             <Grid item xs={12} sm={6} md={4} key={String(course._id)}>
                 <Zoom key={index} timeout={1000} id="zoom-course-chat" appear={true} in={true} color='inherit' unmountOnExit={true}>

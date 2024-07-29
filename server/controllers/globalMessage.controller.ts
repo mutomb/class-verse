@@ -104,16 +104,14 @@ const list = async (req, res) =>{
             'fromObj.created': 0,
             'photo': 0
         })
-        .exec((err, messages) => {
-            if (err) {
-                console.log(err)
-                return res.status(400).json({
-                    error: err
-                })
-            } else {
-                res.json(messages);
-            }
-        });
+        .exec().then(messages=>{
+            res.json(messages);
+        }).catch(err=>{
+            console.log(err)
+            return res.status(400).json({
+                error: err
+            })
+        })
 }
 const listByCourse= async (req, res) =>{
     GlobalMessage.aggregate([
@@ -155,17 +153,14 @@ const listByCourse= async (req, res) =>{
             'fromObj.__v': 0,
             'fromObj.created': 0,
             'photo': 0
+        }).exec().then(messages=>{
+            res.json(messages);
+        }).catch(err=>{
+            console.log(err)
+            return res.status(400).json({
+                error: err
+            })
         })
-        .exec((err, messages) => {
-            if (err) {
-                console.log(err)
-                return res.status(400).json({
-                    error: err
-                })
-            } else {
-                res.json(messages);
-            }
-        });
 }
 const lastGlobalByCourse= async (req, res) =>{
     GlobalMessage.aggregate([
@@ -208,15 +203,13 @@ const lastGlobalByCourse= async (req, res) =>{
             'fromObj.created': 0,
             'photo': 0
         })
-        .exec((err, messages) => {
-            if (err) {
-                console.log(err)
-                return res.status(400).json({
-                    error: err
-                })
-            } else {
-                res.json((messages && messages.length>0)?messages[messages.length-1]: {});
-            }
-        });
+        .exec().then(messages=>{
+            res.json((messages && messages.length>0)?messages[messages.length-1]: {});
+        }).catch(err=>{
+            console.log(err)
+            return res.status(400).json({
+                error: err
+            })
+        })
 }
 export default {list, listByCourse, create, createByCourse, lastGlobalByCourse}

@@ -5,7 +5,8 @@ import { Link as ScrollLink } from 'react-scroll'
 import { StyledButton } from '../styled-buttons'
 import {Check, PlayArrow} from '@mui/icons-material'
 import { data } from './hero.data'
-import HomeHeroIcon from "../../public/images/home/home-hero.png"
+// import HomeHeroIcon from "../../public/images/home/home-hero.png"
+import HomeHeroIcon from "../../public/images/home/Project_Manager_7.svg"
 import HeadLineCurve from "../../public/images/icons/headline-curve.svg"
 import logo from "../../public/logo.svg"
 import { WallPaperYGW } from '../wallpapers/wallpapers'

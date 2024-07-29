@@ -1,8 +1,9 @@
 export interface User {
   id: number | string
   name: string
-  email: string
+  email?: string
   photo?: string
-  specialist?: boolean
+  specialist?: boolean,
+  experience?: string
 }
  

@@ -11,6 +11,11 @@ const palette: PaletteOptions = {
     primary: grey[900],
     secondary: '#717171', // grey[700],
     disabled: grey[500],
+  },
+  error: {
+    light: '#ff6d75',
+    main: '#f7111e',
+    dark: '#b70e18',
   }
 }
 

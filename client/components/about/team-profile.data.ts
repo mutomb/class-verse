@@ -1,4 +1,4 @@
-import jeanluc from '../../public/images/workspace/jeanluc.png'
+import jeanluc from '../../public/images/specialists/jeanluc.png'
 import specialist1 from '../../public/images/specialists/christian-buehner-DItYlc26zVI-unsplash.jpg'
 import specialist2 from '../../public/images/specialists/jonas-kakaroto-KIPqvvTOC1s-unsplash.jpg'
 import specialist3 from '../../public/images/specialists/noah-buscher-8A7fD6Y5VF8-unsplash.jpg'
