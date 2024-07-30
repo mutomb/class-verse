@@ -65,48 +65,73 @@ Take a look the live demo here 👉![GreenOrangeSquare Prototype](https://github
 
 ## Snapshots
 ### HomePage
-  ![HomePage](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+
+Dark Theme            |  Light Theme
+:-------------------------:|:-------------------------:
+![localhost_3000_ (3)](https://github.com/user-attachments/assets/b9cf547b-8b8d-406a-8aff-7c12c8f9a18c) | ![localhost_3000_ (1 1)](https://github.com/user-attachments/assets/45267c82-bf23-4e5b-b377-9c471fc6396e)
 
 ### SignUp
-  ![HomePage](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
+![localhost_3000_ (11)](https://github.com/user-attachments/assets/50e34fba-367c-4042-9ece-8adc283c5d6c)  |  ![localhost_3000_ (10)](https://github.com/user-attachments/assets/cfa12ea6-fbdd-47d1-8916-6e80d9c57a2b)  | ![localhost_3000_ (9)](https://github.com/user-attachments/assets/1194c9d4-899f-4698-a67d-ac8083a0ac87)
+
+
 
 ### SignIn
-  ![HomePage](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
   
 ### Specialist Profile
-  ![Dashboard](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
+![localhost_3000_ (21)](https://github.com/user-attachments/assets/b46f4eee-e739-41a5-939a-3719db45d456)  | ![localhost_3000_ (20)](https://github.com/user-attachments/assets/97c5e4d2-f083-4904-bf70-82a5fad28d49)  | ![localhost_3000_ (19)](https://github.com/user-attachments/assets/fdac4e1a-0337-43e1-b910-4bf04aea12cf)
+
 
 ### Browse Courses and Specialists
-  ![Dashboard](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
 
 ### Selling Course
-  ![Dashboard](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
+![localhost_3000_](https://github.com/user-attachments/assets/50d2f53e-5015-484f-a878-aee1b51137f8)  |  ![localhost_3000_ (2)](https://github.com/user-attachments/assets/cc036a18-088b-43de-b409-ba500727cc54) |  ![gosquare onrender com_](https://github.com/user-attachments/assets/bff3908c-9ab1-46ad-9128-54a971869a1d)
+
 
 ### Buying Course
-  ![Dashboard](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
 
-### Global Chat
-  ![Dashboard](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
+![localhost_3000_ (8)](https://github.com/user-attachments/assets/c9e530a6-018c-478b-9b83-fc6235814f99)  | | ![localhost_3000_ (7)](https://github.com/user-attachments/assets/e12be8e4-eb41-4765-8b30-ab25fec1788c)
 
-### Private Chat
-  ![Dashboard](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+### Course-based Specialist Consulation via Global and Private Chat and video call
 
-### Course Enrollment and Certification
-  ![Dashboard](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
+![localhost_3000_ (18)](https://github.com/user-attachments/assets/eb72db60-80bb-401e-8cfb-03438d1cf786) |  ![localhost_3000_ (17)](https://github.com/user-attachments/assets/409f9058-bb82-475d-9f79-8638479900fb)  |  ![localhost_3000_ (16)](https://github.com/user-attachments/assets/dc0c1984-ff7f-4c3a-8101-13cffab06162)
+:-------------------------:|:-------------------------:|:-------------------------:
+![localhost_3000_ (24)](https://github.com/user-attachments/assets/c232c1c0-f417-4f42-ae6d-1a7075c3aafb)  | ![localhost_3000_ (23)](https://github.com/user-attachments/assets/c16ffe6a-108c-458e-ac10-ef4000636a71)  |  ![localhost_3000_ (22)](https://github.com/user-attachments/assets/4516216f-bb8e-4e79-999b-c060b82a884f)
 
-### Course Statistics
-  ![Dashboard](https://github.com/mutomb/greenorangesquare/blob/skeleton/client/public/images/prototype.png)
-  <br />
+### Customer Service and ChatBot
+For visitors and registered users to interact with Support team</br>
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
+![localhost_3000_ (5)](https://github.com/user-attachments/assets/12fce53d-b6c8-45dd-b447-ff5507c80a6c)  |  ![localhost_3000_ (6)](https://github.com/user-attachments/assets/e78e4948-2d5c-4f57-b1c9-97c2446780fd)  | ![localhost_3000_ (4)](https://github.com/user-attachments/assets/49bafcae-e8d8-4afd-9973-b07197029fb3)
+
+### Course Enrollment and Progress Tracking
+
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
+![localhost_3000_ (14)](https://github.com/user-attachments/assets/f24e7b69-8660-4377-84f3-1769c27b4074)  | ![localhost_3000_ (13)](https://github.com/user-attachments/assets/2b1b03e9-94b1-4aab-848e-fddb81fcc610)  | ![localhost_3000_ (12)](https://github.com/user-attachments/assets/256b695a-7306-4f9a-bfd0-e55fc547d32e)
+
+
+### Course Completion Certification
+
+Extra Small                    |Small                      | Medium+
+:-------------------------:|:-------------------------:|:-------------------------:
 
 ### [Live Demo](http://URL_To_Demo "GreenOrangeSquare") 
 
